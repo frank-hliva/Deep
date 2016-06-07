@@ -12,12 +12,9 @@ type [<AbstractClass>] HttpApplication() =
 
     let getActionParams (context : HttpListenerContext) (matchResult : MatchResult) : obj list =
         [
-            fun () -> context;
-            fun () -> matchResult.Parameters
-            fun () -> context.Request
-            fun () -> context.Response
-            fun () -> new StreamReader(context.Request.InputStream)
-            fun () -> new StreamWriter(context.Response.OutputStream)
+            fun () -> context
+            fun () -> new Request(context.Request, matchResult.Parameters)
+            fun () -> new Response(context.Response)
         ]
 
     abstract RegisterRoutes : routes -> routes
