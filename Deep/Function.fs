@@ -34,17 +34,12 @@ let invoke (paramCreators : obj list) func =
         paramCreators
         |> List.map(fun c -> (c |> Creator.returnType).GUID, c)
         |> Map |> Map.add typedefof<unit>.GUID ((fun () -> null) |> box)
-    methodInfo.Invoke(func,
-        parameterInfos
-        |> Array.map
-            (fun p ->
-                let param =
-                    creatorMap
-                    |> Map.tryPick
-                        (fun guid creator ->
-                            if guid = p.ParameterType.GUID
-                            then creator |> Creator.invoke |> Some
-                            else None)
-                match param with
-                | Some p -> p 
-                | _ -> failwith "Invalid params"))
+    let paramChooser (paramInfo : ParameterInfo) (guid : Guid) (creator : obj) =
+        if guid = paramInfo.ParameterType.GUID
+        then Some(creator |> Creator.invoke)
+        else None
+    let toParam (paramInfo : ParameterInfo) =
+        match creatorMap |> Map.tryPick(paramChooser paramInfo) with
+        | Some param -> param 
+        | _ -> failwith "Invalid parameter"
+    methodInfo.Invoke(func, parameterInfos |> Array.map toParam)
