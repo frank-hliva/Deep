@@ -1,4 +1,4 @@
-# IoC.JS
+# Deep
 
 F# MVC Web framework version 1.0.0
 
