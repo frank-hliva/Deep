@@ -9,17 +9,17 @@ https://github.com/frank-hliva/Deep/blob/master/LICENSE.md
 ## Example:
 
 ```fs
-open System.Net
+open System
 open System.Text
 open System.IO
 open Deep
 open Deep.Routing
 
 [<Get("/?controller/?action")>]
-let controllerHandler (outputStream : StreamWriter) (res : HttpListenerResponse) =
+let controllerHandler (req : Request) (res : Response) =
     res.ContentType <- "text/html"
-    use stream = outputStream
-    stream.WriteLine("Hello <strong>World!</strong>")
+    use writer = res.Writer
+    writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["controller"])
     |> ignore
 
 type App() =

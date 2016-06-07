@@ -45,7 +45,7 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : P
     member this.LocalEndPoint with get() : IPEndPoint = httpListenerRequest.LocalEndPoint
 
     member this.Reader with get() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
-    member this.Parameters = parameters
+    member this.Params = parameters
 
 type Response internal (httpListenerResponse : HttpListenerResponse) =
     member this.CopyFrom(templateResponse : HttpListenerResponse) : unit = httpListenerResponse.CopyFrom(templateResponse)

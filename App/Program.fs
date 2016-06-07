@@ -8,7 +8,7 @@ open Deep.Routing
 let controllerHandler (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer.WriteLine("Hello <strong>World!</strong> " + req.Parameters.["controller"])
+    writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["controller"])
     |> ignore
 
 type App() =
