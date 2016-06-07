@@ -4,11 +4,11 @@ open System.IO
 open Deep
 open Deep.Routing
 
-[<Get("/?controller/?action")>]
-let controllerHandler (req : Request) (res : Response) =
+[<Get("/?param1/?param2")>]
+let hello (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["controller"])
+    writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["param1"])
     |> ignore
 
 type App() =
