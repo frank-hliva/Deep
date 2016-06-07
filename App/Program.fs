@@ -20,6 +20,6 @@ type App() =
 [<EntryPoint>]
 let main argv =
     App().Run("http://127.0.0.1:3000/")
-    System.Console.WriteLine("Server running on port 3000...")
-    System.Console.ReadLine() |> ignore
+    Console.WriteLine("Server running on port 3000...")
+    Console.ReadKey() |> ignore
     0
