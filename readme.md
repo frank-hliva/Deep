@@ -4,7 +4,7 @@ F# MVC Web framework version 1.0.0
 
 ## License:
 
-https://github.com/xxar3s/IoC.js/blob/master/LICENSE.md
+https://github.com/frank-hliva/Deep/blob/master/LICENSE.md
 
 ## Example:
 
