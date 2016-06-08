@@ -53,6 +53,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Deep.fs" />
     <Compile Include="Url.fs" />
+    <Compile Include="Writer.fs" />
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
     <Compile Include="Routing.RouteFinder.fs" />
@@ -60,6 +61,7 @@
     <Compile Include="Http.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="HttpApplication.fs" />
+    <None Include="Research.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
