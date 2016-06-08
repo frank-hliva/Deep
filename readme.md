@@ -22,7 +22,7 @@ let hello (req : Request) (res : Response) =
 type App() =
     inherit HttpApplication()
 
-    override a.RegisterRoutes(routes : routes) =
+    override a.RegisterRoutes(routes) =
         routes |> RouteFinder.findMarkedFunctions [System.Reflection.Assembly.GetExecutingAssembly()]
 
 [<EntryPoint>]
