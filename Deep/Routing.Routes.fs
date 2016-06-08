@@ -6,6 +6,10 @@ open FSharp.Reflection
 
 let private delimiter = '/'
 
+module private Prefix =
+    let Param = ":"
+    let OptionalParam = "?"
+
 let private parseByPrefix (prefix : string) (input : string) =
     if input.StartsWith(prefix)
     then Some(input.[1..])
@@ -14,7 +18,7 @@ let private parseByPrefix (prefix : string) (input : string) =
 let private (|Param|_|) (input : string) = input |> parseByPrefix Prefix.Param
 let private (|OptionalParam|_|) (input : string) = input |> parseByPrefix Prefix.OptionalParam
 
-let rec private parseItems (i : int) (acc : ParamMap) (urlItems : string[]) = function
+let rec private parseItems (i : int) (acc : RouteParams) (urlItems : string[]) = function
 | [] -> Some acc
 | x :: xs ->
     match (x : string) with
@@ -32,7 +36,7 @@ let private matchRoute (urlItems : string[]) (patternItems : string[]) =
     if urlItems.Length > patternItems.Length then None
     else patternItems |> List.ofSeq |> parseItems 0 Map.empty urlItems
 
-let addHandler (httpMethod : string) (pattern : string) (handler : IRouteHandler) (filter : ParamMapFilter option) (items : routes) =
+let addHandler (httpMethod : string) (pattern : string) (handler : IRouteHandler) (filter : RouteParamFilter option) (items : routes) =
     items @ [httpMethod, pattern, handler, filter]
 
 let private addBase httpMethod pattern handler filter items =

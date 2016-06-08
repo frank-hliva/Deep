@@ -9,7 +9,7 @@ open System.Threading.Tasks
 open System.Security.Cryptography.X509Certificates
 open Deep.Routing
 
-type Request internal (httpListenerRequest : HttpListenerRequest, parameters : ParamMap) =
+type Request internal (httpListenerRequest : HttpListenerRequest, parameters : RouteParams) =
     member this.GetClientCertificate() : X509Certificate2 = httpListenerRequest.GetClientCertificate()
     member this.BeginGetClientCertificate(requestCallback : AsyncCallback, state : Object) : IAsyncResult = httpListenerRequest.BeginGetClientCertificate(requestCallback, state)
     member this.EndGetClientCertificate(asyncResult : IAsyncResult) : X509Certificate2 = httpListenerRequest.EndGetClientCertificate(asyncResult)

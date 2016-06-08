@@ -10,7 +10,7 @@ type [<AbstractClass>] HttpApplication() =
 
     let routes = []
 
-    let getActionParams (context : HttpListenerContext) (matchResult : MatchResult) : obj list =
+    let getActionParams (context : HttpListenerContext) (matchResult : RouteMatchResult) : obj list =
         [
             fun () -> context
             fun () -> new Request(context.Request, matchResult.Parameters)
@@ -19,10 +19,10 @@ type [<AbstractClass>] HttpApplication() =
 
     abstract RegisterRoutes : routes -> routes
 
-    member a.RegisterActionParams (context : HttpListenerContext) (matchResult : MatchResult) (actionParams : obj list) =
+    member a.RegisterActionParams (context : HttpListenerContext) (matchResult : RouteMatchResult) (actionParams : obj list) =
         actionParams
 
-    member a.ProccessResult (context : HttpListenerContext) (matchResult : MatchResult option) =
+    member a.ProccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
         match matchResult with
         | Some result ->
             let actionParams =

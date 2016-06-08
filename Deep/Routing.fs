@@ -3,10 +3,6 @@
 open Deep
 open System.Net
 
-module Prefix =
-    let Param = ":"
-    let OptionalParam = "?"
-
 type IRouteHandler =
     abstract InvokeAction : obj list -> unit
 
@@ -22,9 +18,9 @@ type MvcRouteHandler(defaults : obj) =
         member h.InvokeAction(parameters : obj list) =
             ()
 
-type ParamMap = Map<string, string>
-type ParamMapFilter = ParamMap -> ParamMap
+type RouteParams = Map<string, string>
+type RouteParamFilter = RouteParams -> RouteParams
 
-type route = string * string * IRouteHandler * ParamMapFilter option
+type route = string * string * IRouteHandler * RouteParamFilter option
 type routes = route list
-type MatchResult = { Method: string; Handler: IRouteHandler; Parameters: ParamMap }
+type RouteMatchResult = { Method: string; Handler: IRouteHandler; Parameters: RouteParams }
