@@ -9,7 +9,6 @@ let hello (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
     writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["param1"])
-    |> ignore
 
 type App() =
     inherit HttpApplication()
