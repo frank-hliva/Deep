@@ -3,12 +3,12 @@
 open System
 open System.IO
 
-let private printToWriter s (writer : TextWriter) =
-    writer.Write(s |> box :?> string)
+let private printToWriter (value : string) (writer : TextWriter) =
+    writer.Write(value)
     writer
 
-let private printToWriterLineEnd s (writer : TextWriter) =
-    writer.Write(s |> box :?> string + Environment.NewLine)
+let private printToWriterLineEnd (value : string) (writer : TextWriter) =
+    writer.Write(value + Environment.NewLine)
     writer
 
 let printf format = Printf.ksprintf printToWriter format
