@@ -10,16 +10,15 @@ https://github.com/frank-hliva/Deep/blob/master/LICENSE.md
 
 ```fs
 open System
-open System.Text
-open System.IO
 open Deep
 open Deep.Routing
+open Deep.Writer
 
 [<Get("/?param1/?param2")>]
 let hello (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer.WriteLine("Hello <strong>World!</strong> " + req.Params.["param1"])
+    writer |> printf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 type App() =
     inherit HttpApplication()
