@@ -9,10 +9,10 @@ let hello (req : Request) (res : Response) =
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 type App() =
-    inherit HttpApplication()
+    inherit HttpApplication(new Router())
 
     override a.RegisterRoutes(routes) =
-        routes |> RouteFinder.findMarkedFunctions [System.Reflection.Assembly.GetExecutingAssembly()]
+        routes |> Routes.AddMarkedActions [System.Reflection.Assembly.GetExecutingAssembly()]
 
 [<EntryPoint>]
 let main argv =

@@ -58,6 +58,7 @@
     <Compile Include="Routing.fs" />
     <Compile Include="Routing.Routes.fs" />
     <Compile Include="Routing.RouteFinder.fs" />
+    <Compile Include="Routing.Router.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="HttpApplication.fs" />

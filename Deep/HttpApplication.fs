@@ -6,7 +6,7 @@ open System
 open System.Net
 open System.IO
 
-type [<AbstractClass>] HttpApplication() =
+type [<AbstractClass>] HttpApplication(router : Router) =
 
     let routes = []
 
@@ -34,7 +34,7 @@ type [<AbstractClass>] HttpApplication() =
     member a.Listener(context : HttpListenerContext) =
         let req = context.Request
         a.RegisterRoutes(routes)
-        |> Routes.match' req.HttpMethod req.RawUrl
+        |> router.Match req.HttpMethod req.RawUrl
         |> a.ProccessResult context
 
     member a.Run(uri : string) =

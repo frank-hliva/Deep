@@ -21,6 +21,18 @@ type MvcRouteHandler(defaults : obj) =
 type RouteParams = Map<string, string>
 type RouteParamFilter = RouteParams -> RouteParams
 
-type route = string * string * IRouteHandler * RouteParamFilter option
+type route =
+    {
+        HttpMethod : string
+        Pattern : string
+        Handler : IRouteHandler
+        Filter : RouteParamFilter option
+    }
+
 type routes = route list
-type RouteMatchResult = { Method: string; Handler: IRouteHandler; Parameters: RouteParams }
+
+type RouteMatchResult =
+    {
+        Handler: IRouteHandler
+        Parameters: RouteParams
+    }
