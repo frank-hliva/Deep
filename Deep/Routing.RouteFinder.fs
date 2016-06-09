@@ -4,9 +4,6 @@ module Deep.Routing.RouteFinder
 open Deep
 open System.Reflection
 
-let private getAttribute<'t> (m : MethodInfo) =
-    m.GetCustomAttributes(typedefof<'t>, false) |> Seq.head :?> 't
-
 type Routes with
 
     static member AddMarkedActions (assemblies : Assembly seq) (routes : routes) =
@@ -14,7 +11,7 @@ type Routes with
         |> Function.findByAttribute<RouteAttribute>
         |> Seq.map
             (fun mi ->
-                let attr = mi |> getAttribute<RouteAttribute>
+                let attr = mi |> Function.getAttribute<RouteAttribute>
                 {
                     HttpMethod = attr.HttpMethod
                     Pattern = attr.RoutePattern

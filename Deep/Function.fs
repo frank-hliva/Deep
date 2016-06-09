@@ -15,6 +15,15 @@ let findByAttribute<'t> (assemblies : Assembly seq) =
     |> Seq.collect(fun t -> t.GetMethods())
     |> Seq.filter(fun m -> m.GetCustomAttributes(typedefof<'t>, false).Length > 0)
 
+let getAttribute<'t> (m : MethodInfo) =
+    m.GetCustomAttributes(typedefof<'t>, false) |> Seq.head :?> 't
+
+let tryGetAttribute<'t> (m : MethodInfo) =
+    let attrs = m.GetCustomAttributes(typedefof<'t>, false)
+    match attrs.Length with
+    | 0 -> None
+    | _ -> Some(attrs |> Seq.head :?> 't)
+
 module private Creator =
 
     let returnType creator =
