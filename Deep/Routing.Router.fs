@@ -50,4 +50,6 @@ type Router() =
 
     member r.Match (httpMethod : string) (url : string) (items : routes) =
         let urlItems = (url |> Url.removeQueryString).Split [| delimiter |]
-        items |> List.tryPick (matchChooser urlItems httpMethod)
+        items
+        |> List.sortByDescending (fun i -> i.Priority)
+        |> List.tryPick (matchChooser urlItems httpMethod)

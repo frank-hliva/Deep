@@ -14,30 +14,31 @@ type Routes() =
     static member AddRoute (route : route) (routes : routes) =
         routes @ [route]
 
-    static member private AddBase(routes, httpMethod, pattern, handler, filter) =
+    static member private AddBase(routes, httpMethod, pattern, handler, priority, filter) =
         routes
         |> Routes.AddRoute
             {
                 HttpMethod = httpMethod
                 Pattern = pattern
                 Handler = handler |> objToHandler
+                Priority = defaultArg priority 0
                 Filter = filter
             }
 
-    static member Add(routes, httpMethod, pattern, handler, ?filter) =
-        Routes.AddBase(routes, httpMethod, pattern, handler, filter)
+    static member Add(routes, httpMethod, pattern, handler, ?priority, ?filter) =
+        Routes.AddBase(routes, httpMethod, pattern, handler, filter, priority)
 
-    static member Any(routes, pattern, handler, ?filter) =
-        Routes.AddBase(routes, HttpMethods.Any, pattern, handler, filter)
+    static member Any(routes, pattern, handler, ?filter, ?priority) =
+        Routes.AddBase(routes, HttpMethods.Any, pattern, handler, priority, filter)
 
-    static member Get(routes, pattern, handler, ?filter) =
-        Routes.AddBase(routes, HttpMethods.Get, pattern, handler, filter)
+    static member Get(routes, pattern, handler, ?filter, ?priority) =
+        Routes.AddBase(routes, HttpMethods.Get, pattern, handler, priority, filter)
 
-    static member Post(routes, pattern, handler, ?filter) =
-        Routes.AddBase(routes, HttpMethods.Post, pattern, handler, filter)
+    static member Post(routes, pattern, handler, ?filter, ?priority) =
+        Routes.AddBase(routes, HttpMethods.Post, pattern, handler, priority, filter)
 
-    static member Put(routes, pattern, handler, ?filter) =
-        Routes.AddBase(routes, HttpMethods.Put, pattern, handler, filter)
+    static member Put(routes, pattern, handler, ?filter, ?priority) =
+        Routes.AddBase(routes, HttpMethods.Put, pattern, handler, priority, filter)
 
-    static member Delete(routes, pattern, handler, ?filter) =
-        Routes.AddBase(routes, HttpMethods.Delete, pattern, handler, filter)
+    static member Delete(routes, pattern, handler, ?filter, ?priority) =
+        Routes.AddBase(routes, HttpMethods.Delete, pattern, handler, priority, filter)

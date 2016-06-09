@@ -26,6 +26,7 @@ type route =
         HttpMethod : string
         Pattern : string
         Handler : IRouteHandler
+        Priority : int
         Filter : RouteParamFilter option
     }
 

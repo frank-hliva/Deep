@@ -14,7 +14,7 @@ open Deep
 open Deep.Routing
 
 [<Get("/?param1/?param2")>]
-let hello (req : Request) (res : Response) =
+let hello1 (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]

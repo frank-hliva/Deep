@@ -20,5 +20,6 @@ type Routes with
                     Pattern = attr.RoutePattern
                     Handler = new FunctionRouteHandler(mi) :> IRouteHandler
                     Filter = None
+                    Priority = attr.Priority
                 })
         |> fun r -> routes |> Seq.append r |> List.ofSeq
