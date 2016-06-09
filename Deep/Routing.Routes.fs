@@ -26,19 +26,19 @@ type Routes() =
             }
 
     static member Add(routes, httpMethod, pattern, handler, ?priority, ?filter) =
-        Routes.AddBase(routes, httpMethod, pattern, handler, filter, priority)
+        Routes.AddBase(routes, httpMethod, pattern, handler, priority, filter)
 
-    static member Any(routes, pattern, handler, ?filter, ?priority) =
+    static member Any(routes, pattern, handler, ?priority, ?filter) =
         Routes.AddBase(routes, HttpMethods.Any, pattern, handler, priority, filter)
 
-    static member Get(routes, pattern, handler, ?filter, ?priority) =
+    static member Get(routes, pattern, handler, ?priority, ?filter) =
         Routes.AddBase(routes, HttpMethods.Get, pattern, handler, priority, filter)
 
-    static member Post(routes, pattern, handler, ?filter, ?priority) =
+    static member Post(routes, pattern, handler, ?priority, ?filter) =
         Routes.AddBase(routes, HttpMethods.Post, pattern, handler, priority, filter)
 
-    static member Put(routes, pattern, handler, ?filter, ?priority) =
+    static member Put(routes, pattern, handler, ?priority, ?filter) =
         Routes.AddBase(routes, HttpMethods.Put, pattern, handler, priority, filter)
 
-    static member Delete(routes, pattern, handler, ?filter, ?priority) =
+    static member Delete(routes, pattern, handler, ?priority, ?filter) =
         Routes.AddBase(routes, HttpMethods.Delete, pattern, handler, priority, filter)
