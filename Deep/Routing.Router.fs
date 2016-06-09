@@ -36,16 +36,14 @@ type Router() =
 
     let matchChooser urlItems httpMethod' (route : route) =
         match route.Pattern.Split [| delimiter |] |> matchRoute urlItems with
-        | Some parameters ->
-            if route.HttpMethod = HttpMethods.Any || route.HttpMethod = httpMethod' then
-                Some {
-                    Handler = route.Handler
-                    Parameters =
-                        match route.Filter with
-                        | Some filter -> filter(parameters)
-                        | _ -> parameters
-                }
-            else None
+        | Some parameters when route.HttpMethod = HttpMethods.Any || route.HttpMethod = httpMethod' ->
+            {
+                Handler = route.Handler
+                Parameters =
+                    match route.Filter with
+                    | Some filter -> filter(parameters)
+                    | _ -> parameters
+            } |> Some
         | _ -> None
 
     member r.Match (httpMethod : string) (url : string) (items : routes) =
