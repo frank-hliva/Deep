@@ -14,7 +14,7 @@ type FunctionRouteHandler(func : obj) =
 
 type MvcDefaults = { Controller : string; Action : string; Id : string }
 
-type MvcRouteHandler(defaults : obj) =
+type MvcRouteHandler(defaults : MvcDefaults) =
     interface IRouteHandler with
         member h.InvokeAction(parameters : obj list) =
             ()

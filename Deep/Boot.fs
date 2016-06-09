@@ -1,0 +1,3 @@
+﻿namespace Deep
+
+open System

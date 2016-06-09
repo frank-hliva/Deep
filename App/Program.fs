@@ -2,8 +2,6 @@
 open Deep
 open Deep.Routing
 
-let x (p : RouteParams) = p
-
 [<Get("/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
     res.ContentType <- "text/html"
