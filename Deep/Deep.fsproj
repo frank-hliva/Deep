@@ -62,7 +62,6 @@
     <Compile Include="Http.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="HttpApplication.fs" />
-    <None Include="Research.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
