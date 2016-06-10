@@ -19,6 +19,8 @@ type [<AbstractClass>] HttpApplication(kernel : IKernel, router : IRouter) =
 
     abstract RegisterRoutes : routes -> routes
 
+    member a.Kernel = kernel
+
     member a.RegisterActionParams (context : HttpListenerContext) (matchResult : RouteMatchResult) (actionParams : obj list) =
         actionParams
 

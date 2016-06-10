@@ -3,6 +3,8 @@
 open System
 
 type IKernel =
+    abstract RegisterInstance : Type * obj -> unit
+    abstract RegisterInstance : obj -> unit
     abstract Register : Type * Type -> unit
     abstract Register : Type -> unit
     abstract Resolve<'t> : unit -> 't

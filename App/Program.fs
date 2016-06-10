@@ -8,15 +8,15 @@ let hello1 (req : Request) (res : Response) =
     use writer = res.Writer
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
-type App() =
-    inherit HttpApplication(new WindsorKernel(), new Router())
+type App(kernel, router) =
+    inherit HttpApplication(kernel, router)
 
     override a.RegisterRoutes(routes) =
         routes |> Routes.AddMarkedActions [System.Reflection.Assembly.GetExecutingAssembly()]
 
 [<EntryPoint>]
 let main argv =
-    App().Run("http://127.0.0.1:3000/")
+    App(new WindsorKernel(), new Router()).Run("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")
     Console.ReadKey() |> ignore
     0

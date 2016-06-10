@@ -8,12 +8,20 @@ type WindsorKernel(container : IWindsorContainer) =
 
     interface IKernel with
 
+        member k.RegisterInstance(t, instance) =
+            container.Register(Component.For(t).Instance(instance))
+            |> ignore
+
+        member k.RegisterInstance(instance) =
+            container.Register(Component.For(instance.GetType()).Instance(instance))
+            |> ignore
+
         member k.Register(t1, t2) =
             container.Register(Component.For(t1).ImplementedBy(t2))
             |> ignore
 
         member k.Register(t) =
-            container.Register(Component.For(t).ImplementedBy(t))
+            (k :> IKernel).Register(t, t)
             |> ignore
 
         member k.Resolve<'t>() =
