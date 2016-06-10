@@ -46,8 +46,10 @@ type Router() =
             } |> Some
         | _ -> None
 
-    member r.Match (httpMethod : string) (url : string) (items : routes) =
-        let urlItems = (url |> Url.removeQueryString).Split [| delimiter |]
-        items
-        |> List.sortByDescending (fun i -> i.Priority)
-        |> List.tryPick (matchChooser urlItems httpMethod)
+    interface IRouter with
+
+        member r.Match (httpMethod : string) (url : string) (items : routes) =
+            let urlItems = (url |> Url.removeQueryString).Split [| delimiter |]
+            items
+            |> List.sortByDescending (fun i -> i.Priority)
+            |> List.tryPick (matchChooser urlItems httpMethod)

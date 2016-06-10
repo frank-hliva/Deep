@@ -6,7 +6,7 @@ open System
 open System.Net
 open System.IO
 
-type [<AbstractClass>] HttpApplication(router : Router) =
+type [<AbstractClass>] HttpApplication(kernel : IKernel, router : IRouter) =
 
     let routes = []
 

@@ -20,7 +20,7 @@ let hello1 (req : Request) (res : Response) =
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 type App() =
-    inherit HttpApplication(new Router())
+    inherit HttpApplication(new WindsorKernel(), new Router())
 
     override a.RegisterRoutes(routes) =
         routes |> Routes.AddMarkedActions [System.Reflection.Assembly.GetExecutingAssembly()]

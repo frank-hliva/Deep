@@ -38,3 +38,6 @@ type RouteMatchResult =
         Handler: IRouteHandler
         Parameters: RouteParams
     }
+
+type IRouter =
+    abstract Match : string -> string -> routes -> RouteMatchResult option

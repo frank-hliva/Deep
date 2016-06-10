@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>cd3028a7-f13a-4395-a046-8520a51d33ce</ProjectGuid>
+    <ProjectGuid>323e6f6c-b725-4cd3-b095-0b81eba5f599</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>App</RootNamespace>
-    <AssemblyName>App</AssemblyName>
+    <RootNamespace>CelebAgency</RootNamespace>
+    <AssemblyName>CelebAgency</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
-    <Name>App</Name>
+    <Name>CelebAgency</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,7 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\App.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\CelebAgency.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
@@ -34,7 +34,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Release\App.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\CelebAgency.XML</DocumentationFile>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
@@ -60,6 +60,11 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Deep.WindsorKernel\Deep.WindsorKernel.fsproj">
+      <Name>Deep.WindsorKernel</Name>
+      <Project>{9f81a8e1-159f-4c45-8691-15a8fad82e31}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
@@ -75,11 +80,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <ProjectReference Include="..\Deep.WindsorKernel\Deep.WindsorKernel.fsproj">
-      <Name>Deep.WindsorKernel</Name>
-      <Project>{9f81a8e1-159f-4c45-8691-15a8fad82e31}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Deep\Deep.fsproj">
       <Name>Deep</Name>
       <Project>{10553a39-e7a5-4329-ac07-fb68416b72e1}</Project>

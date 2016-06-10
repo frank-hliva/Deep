@@ -2,6 +2,12 @@
 
 open System
 
+type IKernel =
+    abstract Register : Type * Type -> unit
+    abstract Register : Type -> unit
+    abstract Resolve<'t> : unit -> 't
+    abstract Resolve<'t> : string -> 't
+
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
 type RouteAttribute(httpMethod : string, routePattern : string, priority : int) =
     inherit Attribute()
