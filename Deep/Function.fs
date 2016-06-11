@@ -2,6 +2,7 @@
 
 open System
 open System.Reflection
+open Castle.Windsor
 
 let getMethodInfo (func : obj) =
     func.GetType().GetMethods()
@@ -33,7 +34,17 @@ module private Creator =
     let invoke creator =
         (creator |> getMethodInfo |> fst).Invoke(creator, [| null |])
 
-let invoke (paramCreators : obj list) func =
+let invoke (container : IWindsorContainer) func =
+    let methodInfo, parameterInfos = 
+        match box func with
+        | :? MethodInfo as methodInfo ->
+            methodInfo, methodInfo.GetParameters()
+        | _ -> func |> getMethodInfo
+    let toParam (paramInfo : ParameterInfo) =
+        container.Resolve(paramInfo.ParameterType)
+    methodInfo.Invoke(func, parameterInfos |> Array.map toParam)
+
+(*let invoke (paramCreators : obj list) func =
     let methodInfo, parameterInfos = 
         match box func with
         | :? MethodInfo as methodInfo ->
@@ -51,4 +62,4 @@ let invoke (paramCreators : obj list) func =
         match creatorMap |> Map.tryPick(paramChooser paramInfo) with
         | Some param -> param 
         | _ -> failwith "Invalid parameter"
-    methodInfo.Invoke(func, parameterInfos |> Array.map toParam)
+    methodInfo.Invoke(func, parameterInfos |> Array.map toParam)*)

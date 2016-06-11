@@ -5,32 +5,29 @@ open Deep.Routing
 open System
 open System.Net
 open System.IO
+open Castle.Windsor
+open Castle.MicroKernel.Registration
 
-type [<AbstractClass>] HttpApplication(kernel : IKernel, router : IRouter) =
+type [<AbstractClass>] HttpApplication(applicationContainer : IWindsorContainer, router : IRouter) =
 
     let routes = []
 
-    let getActionParams (context : HttpListenerContext) (matchResult : RouteMatchResult) : obj list =
-        [
-            fun () -> context
-            fun () -> new Request(context.Request, matchResult.Parameters)
-            fun () -> new Response(context.Response)
-        ]
-
     abstract RegisterRoutes : routes -> routes
 
-    member a.Kernel = kernel
-
-    member a.RegisterActionParams (context : HttpListenerContext) (matchResult : RouteMatchResult) (actionParams : obj list) =
-        actionParams
+    member a.Container = applicationContainer
 
     member a.ProccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
         match matchResult with
         | Some result ->
-            let actionParams =
-                getActionParams context result
-                |> a.RegisterActionParams context result
-            result.Handler.InvokeAction(actionParams)
+            use requestContainer = new WindsorContainer() :> IWindsorContainer
+            applicationContainer.AddChildContainer(requestContainer)
+            requestContainer
+                .Register(Component.For<HttpListenerContext>().Instance(context).LifestylePerThread())
+                .Register(Component.For<Request>().Instance(new Request(context.Request, result.Parameters)).LifestylePerThread())
+                .Register(Component.For<Response>().Instance(new Response(context.Response)).LifestylePerThread())
+                |> ignore
+            result.Handler.InvokeAction(requestContainer)
+            applicationContainer.RemoveChildContainer(requestContainer)
         | _ -> ()
 
     member a.Listener(context : HttpListenerContext) =

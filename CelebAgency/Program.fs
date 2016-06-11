@@ -6,10 +6,10 @@ open Deep.Routing
 open Castle.Windsor
 
 [<Get("/?param1/?param2")>]
-let hello1 (req : Request) (res : Response) =
+let hello1 (req : Request) (res : Response) (test : Container.TestClass) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
+    writer |> wprintf "Hello <strong>World!</strong> %s %s" req.Params.["param1"] test.Member
 
 type App(kernel, router) =
     inherit HttpApplication(kernel, router)
@@ -19,8 +19,8 @@ type App(kernel, router) =
 
 [<EntryPoint>]
 let main argv =
-    let booter = new ApplicationBooter<App>(new WindsorKernel())
-    booter.Config(Container.fromKernel >> Container.config)
+    let booter = new ApplicationBooter<App>(new WindsorContainer())
+    booter.Config(Container.config)
     booter.Boot("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")
     Console.ReadKey() |> ignore

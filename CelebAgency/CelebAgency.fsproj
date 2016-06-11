@@ -61,11 +61,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Deep.WindsorKernel\Deep.WindsorKernel.fsproj">
-      <Name>Deep.WindsorKernel</Name>
-      <Project>{9f81a8e1-159f-4c45-8691-15a8fad82e31}</Project>
-      <Private>True</Private>
-    </ProjectReference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>

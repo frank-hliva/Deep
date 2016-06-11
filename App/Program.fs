@@ -1,6 +1,7 @@
 ﻿open System
 open Deep
 open Deep.Routing
+open Castle.Windsor
 
 [<Get("/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
@@ -16,7 +17,7 @@ type App(kernel, router) =
 
 [<EntryPoint>]
 let main argv =
-    App(new WindsorKernel(), new Router()).Run("http://127.0.0.1:3000/")
+    App(new WindsorContainer(), new Router()).Run("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")
     Console.ReadKey() |> ignore
     0
