@@ -75,6 +75,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\Deep.Windsor\Deep.Windsor.fsproj">
+      <Name>Deep.Windsor</Name>
+      <Project>{a8a00952-8baa-4e9e-a3ba-2684274cc62c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Deep\Deep.fsproj">
       <Name>Deep</Name>
       <Project>{10553a39-e7a5-4329-ac07-fb68416b72e1}</Project>

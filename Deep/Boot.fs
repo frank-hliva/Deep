@@ -3,24 +3,22 @@
 open System
 open Deep
 open Deep.Routing
-open Castle.Windsor
-open Castle.MicroKernel.Registration
 
-type [<AbstractClass>] Booter(container : IWindsorContainer) =
-    do container.Register(Component.For<IWindsorContainer>().Instance(container)) |> ignore
-    abstract DefaultConfigurator : IWindsorContainer -> unit
+type [<AbstractClass>] Booter(kernel : IKernel) =
+    let mutable container = kernel.RegisterInstance<IKernel>(kernel)
+    abstract DefaultConfigurator : IKernel -> IKernel
     member b.Kernel = container
-    member b.Config(configurator : IWindsorContainer -> unit) =
-        b.DefaultConfigurator(container)
-        configurator(container)
+    member b.Config(?configurator : IKernel -> IKernel) =
+        container <- b.DefaultConfigurator(container)
+        match configurator with
+        | Some configurator -> container <- configurator(container)
+        | _ -> ()
     abstract Boot : string -> unit
 
-type ApplicationBooter<'t when 't :> HttpApplication>(container) =
-    inherit Booter(container)
-    override b.DefaultConfigurator(container) =
-        ()
-    override b.Boot(uri : string) =
-        let parameters : obj[] = [| container; new Router() |]
-        let app = Activator.CreateInstance(typedefof<'t>, parameters) :?> HttpApplication
-        app.Run(uri)
-        ()
+type ApplicationBooter<'t when 't : not struct and 't :> HttpApplication>(kernel) =
+    inherit Booter(kernel)
+    override b.DefaultConfigurator(kernel) =
+        kernel
+            .Register<IRouter, Router>()
+            .Register<'t>()
+    override b.Boot(uri : string) = b.Kernel.Resolve<'t>().Run(uri)

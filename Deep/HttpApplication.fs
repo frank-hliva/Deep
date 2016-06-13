@@ -5,12 +5,19 @@ open Deep.Routing
 open System
 open System.Net
 open System.IO
-open Castle.Windsor
-open Castle.MicroKernel.Registration
 
-type [<AbstractClass>] HttpApplication(applicationContainer : IWindsorContainer, router : IRouter) =
+type [<AbstractClass>] HttpApplication(applicationContainer : IKernel, router : IRouter) =
 
     let routes = []
+
+    let registerDefaultObjects (context : HttpListenerContext) (matchResult : RouteMatchResult) (requestContainer : IKernel) =
+        [
+            context |> box
+            new Request(context.Request, matchResult.Parameters) |> box
+            new Response(context.Response) |> box
+        ] |> Seq.fold
+            (fun (requestContainer : IKernel) (instance : obj) ->
+                requestContainer.RegisterInstance(instance)) requestContainer
 
     abstract RegisterRoutes : routes -> routes
 
@@ -19,15 +26,10 @@ type [<AbstractClass>] HttpApplication(applicationContainer : IWindsorContainer,
     member a.ProccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
         match matchResult with
         | Some result ->
-            use requestContainer = new WindsorContainer() :> IWindsorContainer
-            applicationContainer.AddChildContainer(requestContainer)
-            requestContainer
-                .Register(Component.For<HttpListenerContext>().Instance(context).LifestylePerThread())
-                .Register(Component.For<Request>().Instance(new Request(context.Request, result.Parameters)).LifestylePerThread())
-                .Register(Component.For<Response>().Instance(new Response(context.Response)).LifestylePerThread())
-                |> ignore
+            let requestContainer =
+                new Kernel(applicationContainer) :> IKernel
+                |> registerDefaultObjects context result
             result.Handler.InvokeAction(requestContainer)
-            applicationContainer.RemoveChildContainer(requestContainer)
         | _ -> ()
 
     member a.Listener(context : HttpListenerContext) =

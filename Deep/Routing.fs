@@ -3,21 +3,20 @@
 open Deep
 open System
 open System.Net
-open Castle.Windsor
 
 type IRouteHandler =
-    abstract InvokeAction : container : IWindsorContainer -> unit
+    abstract InvokeAction : container : IKernel -> unit
 
 type FunctionRouteHandler(func : obj) =
     interface IRouteHandler with
-        member h.InvokeAction(container : IWindsorContainer) =
+        member h.InvokeAction(container : IKernel) =
             func |> Function.invoke container |> ignore
 
 type MvcDefaults = { Controller : string; Action : string; Id : string }
 
 type MvcRouteHandler(defaults : MvcDefaults) =
     interface IRouteHandler with
-        member h.InvokeAction(container : IWindsorContainer) =
+        member h.InvokeAction(container : IKernel) =
             ()
 
 type RouteParams = Map<string, string>
