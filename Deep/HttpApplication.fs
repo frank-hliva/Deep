@@ -6,7 +6,7 @@ open System
 open System.Net
 open System.IO
 
-type [<AbstractClass>] HttpApplication(applicationContainer : IKernel, router : IRouter) =
+type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRouter) =
 
     let routes = []
 
@@ -21,15 +21,14 @@ type [<AbstractClass>] HttpApplication(applicationContainer : IKernel, router : 
 
     abstract RegisterRoutes : routes -> routes
 
-    member a.Container = applicationContainer
+    member a.Container = applicationKernel
 
     member a.ProccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
         match matchResult with
         | Some result ->
-            let requestContainer =
-                new Kernel(applicationContainer) :> IKernel
-                |> registerDefaultObjects context result
-            result.Handler.InvokeAction(requestContainer)
+            new Kernel(applicationKernel) :> IKernel
+            |> registerDefaultObjects context result
+            |> result.Handler.InvokeAction
         | _ -> ()
 
     member a.Listener(context : HttpListenerContext) =

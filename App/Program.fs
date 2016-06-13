@@ -21,7 +21,7 @@ type App(kernel, router) =
 [<EntryPoint>]
 let main argv =
     let container = new WindsorContainer()
-    let kernel = new Kernel(new WindsorResolver(container))
+    let kernel = new WindsorKernel(container)
     let booter = new ApplicationBooter<App>(kernel)
     booter.Config()
     booter.Boot("http://127.0.0.1:3000/")
