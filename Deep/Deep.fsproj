@@ -64,7 +64,6 @@
     <Compile Include="Server.fs" />
     <Compile Include="HttpApplication.fs" />
     <Compile Include="Boot.fs" />
-    <None Include="Test.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
