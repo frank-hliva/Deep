@@ -23,11 +23,7 @@ type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRo
             (fun (requestContainer : IKernel) (instance : obj) ->
                 requestContainer.RegisterInstance(instance)) requestContainer
 
-    abstract RegisterRoutes : routes -> routes
-
-    member a.Container = applicationKernel
-
-    member a.ProccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
+    let proccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
         match matchResult with
         | Some result ->
             new Kernel(applicationKernel) :> IKernel
@@ -39,11 +35,15 @@ type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRo
             |> result.Handler.InvokeAction
         | _ -> ()
 
+    abstract RegisterRoutes : routes -> routes
+
+    member a.Container = applicationKernel
+
     member a.Listener(context : HttpListenerContext) =
         let req = context.Request
         a.RegisterRoutes(routes)
         |> router.Match req.HttpMethod req.RawUrl
-        |> a.ProccessResult context
+        |> proccessResult context
 
     interface IApplication with
         override a.Run(uri : string) = Server.listen uri a.Listener

@@ -61,9 +61,11 @@
     <Compile Include="Routing.RouteFinder.fs" />
     <Compile Include="Routing.Router.fs" />
     <Compile Include="Http.fs" />
+    <Compile Include="Controller.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
+    <None Include="Controller.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
