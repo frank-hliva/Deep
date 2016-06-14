@@ -8,8 +8,10 @@ type [<AbstractClass>] Booter(kernel : IKernel) =
     let mutable container = kernel.RegisterInstance<IKernel>(kernel)
     abstract DefaultConfigurator : IKernel -> IKernel
     member b.Kernel = container
-    member b.Config(configurator : IKernel -> IKernel) =
+    member b.Config() =
         container <- b.DefaultConfigurator(container)
+    member b.Config(configurator : IKernel -> IKernel) =
+        b.Config()
         container <- configurator(container)
     abstract Boot : string -> unit
 
