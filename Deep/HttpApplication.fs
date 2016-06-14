@@ -6,7 +6,11 @@ open System
 open System.Net
 open System.IO
 
-type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRouter) =
+[<AllowNullLiteral>]
+type RequestKernelConfigurator(config : IKernel -> IKernel) =
+    member c.Config = config
+
+type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
 
     let routes = []
 
@@ -28,6 +32,10 @@ type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRo
         | Some result ->
             new Kernel(applicationKernel) :> IKernel
             |> registerDefaultObjects context result
+            |> fun kernel -> 
+                match requestConfigurator with
+                | null -> kernel
+                | _ -> requestConfigurator.Config(kernel)
             |> result.Handler.InvokeAction
         | _ -> ()
 
@@ -37,5 +45,7 @@ type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRo
         |> router.Match req.HttpMethod req.RawUrl
         |> a.ProccessResult context
 
-    member a.Run(uri : string) =
-        Server.listen uri a.Listener
+    interface IApplication with
+        override a.Run(uri : string) = Server.listen uri a.Listener
+
+    new(applicationKernel, router) = HttpApplication(applicationKernel, router, null)

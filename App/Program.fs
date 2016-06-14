@@ -20,10 +20,8 @@ type App(kernel, router) =
 
 [<EntryPoint>]
 let main argv =
-    let container = new WindsorContainer()
-    let kernel = new WindsorKernel(container)
-    let booter = new ApplicationBooter<App>(kernel)
-    booter.Config()
+    let booter = new ApplicationBooter<App>(new WindsorContainer())
+    booter.Config(config)
     booter.Boot("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")
     Console.ReadKey() |> ignore

@@ -2,6 +2,9 @@
 
 open System
 
+type IApplication =
+    abstract Run : string -> unit
+
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
 type RouteAttribute(httpMethod : string, routePattern : string, priority : int) =
     inherit Attribute()

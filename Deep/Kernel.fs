@@ -33,7 +33,7 @@ type private KernelItem =
         Abstraction : Type
         ImplementedBy : Type option
         LifeTime : LifeTime
-        mutable Instance : obj option
+        mutable Instance : obj option ref
     }
 
 type private KernelMap = Map<Guid, KernelItem>
@@ -77,10 +77,11 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
     and resolve (t : Type) =
         match types |> find t with
         | External o -> o
-        | Internal i when i.Instance.IsSome -> i.Instance.Value
+        | Internal i when (!i.Instance).IsSome -> (!i.Instance).Value
         | Internal i ->
             let implementation = i.ImplementedBy.Value
             implementation.GetConstructors()
+            |> Seq.sortByDescending(fun p -> p.GetParameters().Length)
             |> Seq.tryPick(chooseParams)
             |> function
             | Some parameterInfos ->
@@ -88,7 +89,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 match i.LifeTime with
                 | LifeTime.PerResolve -> instance
                 | LifeTime.Singleton ->
-                    i.Instance <- Some instance
+                    lock i.Instance (fun () -> i.Instance := Some instance)
                     instance
                 | _ -> failwith "Invalid lifetime"
             | _ -> failwith "Constructor parameter mismatch"
@@ -100,7 +101,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = abstraction
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
-                Instance = None
+                Instance = ref None
             }, externalResolver) :> IKernel
 
         member k.Register(implementedBy : Type, ?lifeTime : LifeTime) =
@@ -108,7 +109,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = implementedBy
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
-                Instance = None
+                Instance = ref None
             }, externalResolver) :> IKernel
 
         member k.Register<'t1, 't2>(?lifeTime : LifeTime) =
@@ -118,7 +119,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = abstraction
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
-                Instance = None
+                Instance = ref None
             }, externalResolver) :> IKernel
 
         member k.Register<'t>(?lifeTime : LifeTime) =
@@ -127,7 +128,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = implementedBy
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
-                Instance = None
+                Instance = ref None
             }, externalResolver) :> IKernel
 
         member k.RegisterInstance(abstraction : Type, instance : obj) =
@@ -135,7 +136,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
-                Instance = Some instance
+                Instance = ref <| Some instance
             }, externalResolver) :> IKernel
 
         member k.RegisterInstance<'t>(instance : obj) =
@@ -144,7 +145,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
-                Instance = Some instance
+                Instance = ref <| Some instance
             }, externalResolver) :> IKernel
 
         member k.RegisterInstance(instance : obj) =
@@ -153,7 +154,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
-                Instance = Some instance
+                Instance = ref <| Some instance
             }, externalResolver) :> IKernel
 
         member k.Resolve(t : Type) = t |> resolve
