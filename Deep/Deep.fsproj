@@ -52,11 +52,13 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Deep.fs" />
+    <Compile Include="Config.fs" />
     <Compile Include="Kernel.fs" />
     <Compile Include="Url.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
+    <Compile Include="Routing.Mvc.fs" />
     <Compile Include="Routing.Routes.fs" />
     <Compile Include="Routing.RouteFinder.fs" />
     <Compile Include="Routing.Router.fs" />
@@ -65,11 +67,15 @@
     <Compile Include="Server.fs" />
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
-    <None Include="Controller.fsx" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />

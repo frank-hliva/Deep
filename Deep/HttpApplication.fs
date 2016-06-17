@@ -10,9 +10,7 @@ open System.IO
 type RequestKernelConfigurator(config : IKernel -> IKernel) =
     member c.Config = config
 
-type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
-
-    let routes = []
+type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, routeBuilder : IRouteBuilder, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
 
     let registerDefaultObjects (context : HttpListenerContext) (matchResult : RouteMatchResult) (requestContainer : IKernel) =
         [
@@ -35,17 +33,16 @@ type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, router : IRo
             |> result.Handler.InvokeAction
         | _ -> ()
 
-    abstract RegisterRoutes : routes -> routes
-
     member a.Container = applicationKernel
 
     member a.Listener(context : HttpListenerContext) =
-        let req = context.Request
-        a.RegisterRoutes(routes)
-        |> router.Match req.HttpMethod req.RawUrl
+        let request = context.Request
+        routeBuilder.Routes
+        |> router.Match request.HttpMethod request.RawUrl
         |> proccessResult context
 
     interface IApplication with
         override a.Run(uri : string) = Server.listen uri a.Listener
 
-    new(applicationKernel, router) = HttpApplication(applicationKernel, router, null)
+    new(applicationKernel, routeBuilder, router) =
+        HttpApplication(applicationKernel, routeBuilder, router, null)

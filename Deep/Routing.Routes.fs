@@ -1,7 +1,9 @@
 ﻿namespace Deep.Routing
 
 open Deep
-open FSharp.Reflection
+open System
+open System.Net
+open Microsoft.FSharp.Reflection
 
 type Routes() =
 

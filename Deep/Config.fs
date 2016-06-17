@@ -1,0 +1,50 @@
+﻿namespace Deep
+
+open System
+open System.IO
+open System.Text
+open Newtonsoft.Json
+open Newtonsoft.Json.Linq
+open System.Reflection
+
+type IConfigSource =
+    abstract ToJObject : unit -> JObject
+
+type ConfigTextSource(text : string) =
+    let jObject = text |> JObject.Parse
+    interface IConfigSource with
+        override s.ToJObject() = jObject
+
+type ConfigFileSource(path : string) =
+    let jObject =
+        File.ReadAllText(path, Encoding.UTF8)
+        |> JObject.Parse
+    interface IConfigSource with
+        override s.ToJObject() = jObject
+
+type Config(source : IConfigSource) =
+    member c.Config = source.ToJObject()
+    member c.SelectAs<'t>(path : string) =
+        JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
+
+
+type IAssemblyConfig =
+    abstract GetAssemblies: unit -> Assembly[]
+
+[<AbstractClass>]
+type AssemblyConfig() =
+
+    abstract GetAssemblyConfig : unit -> string[]
+
+    member c.GetAsseblyNameSet() = c.GetAssemblyConfig() |> Set.ofArray
+
+    interface IAssemblyConfig with
+        override c.GetAssemblies() =
+            let set = c.GetAsseblyNameSet()
+            AppDomain.CurrentDomain.GetAssemblies()
+            |> Array.filter(fun a -> a.FullName |> set.Contains)
+
+type ControllerConfig(config : Config) =
+    inherit AssemblyConfig()
+    override c.GetAssemblyConfig() =
+        config.SelectAs<string[]>("Controllers.Assemblies")

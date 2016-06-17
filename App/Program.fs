@@ -1,4 +1,4 @@
-﻿module Application
+﻿module App.Application
 
 open System
 open Deep
@@ -12,11 +12,8 @@ let hello1 (req : Request) (res : Response) =
     use writer = res.Writer
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
-type App(kernel, router) =
-    inherit HttpApplication(kernel, router)
-
-    override a.RegisterRoutes(routes) =
-        routes |> Routes.AddMarkedActions [System.Reflection.Assembly.GetExecutingAssembly()]
+type App(kernel, routeBuilder, router) =
+    inherit HttpApplication(kernel, routeBuilder, router)
 
 [<EntryPoint>]
 let main argv =

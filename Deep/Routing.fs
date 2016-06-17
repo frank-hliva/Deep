@@ -12,13 +12,6 @@ type FunctionRouteHandler(func : obj) =
         member h.InvokeAction(container : IKernel) =
             func |> Function.invoke container |> ignore
 
-type MvcDefaults = { Controller : string; Action : string; Id : string }
-
-type MvcRouteHandler(defaults : MvcDefaults) =
-    interface IRouteHandler with
-        member h.InvokeAction(container : IKernel) =
-            ()
-
 type RouteParams = Map<string, string>
 type RouteParamFilter = RouteParams -> RouteParams
 
@@ -38,6 +31,14 @@ type RouteMatchResult =
         Handler: IRouteHandler
         Parameters: RouteParams
     }
+
+type IRouteBuilder =
+    abstract Routes : routes
+
+type RouteBuilder(builder : routes -> routes) =
+    let routes = [] |> builder
+    interface IRouteBuilder with
+        override b.Routes = routes
 
 type IRouter =
     abstract Match : string -> string -> routes -> RouteMatchResult option

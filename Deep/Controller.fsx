@@ -29,7 +29,6 @@ type Controller() =
     member c.Request = controllerContext.Request
     member c.Response = controllerContext.Response
     
-
 type Controller1() =
     inherit Controller()
     let controllerContext : string = "xxx"
@@ -41,3 +40,24 @@ let setControllerContext (context : ControllerContext) controller =
     typedefof<Controller>
        .GetField("controllerContext", BindingFlags.Instance ||| BindingFlags.NonPublic)
        .SetValue(controller, context)
+
+#r @"c:\Projekty\Deep\Deep\bin\Release\Newtonsoft.Json.dll"
+open System
+open System.IO
+open System.Text
+open Newtonsoft.Json
+open Newtonsoft.Json.Linq
+
+type Config(str : string) =
+    let config = str |> JObject.Parse
+    member c.Config = config
+    member c.SelectAs<'t>(path : string) =
+        JsonConvert.DeserializeObject<'t>(config.SelectToken(path).ToString())
+    static member Load(path : string) =
+        File.ReadAllText(path, Encoding.UTF8) |> Config
+
+let config = Config.Load(@"c:\Projekty\Deep\App\Config.json")
+
+
+AppDomain.CurrentDomain.GetAssemblies().[0].FullName
+           //SingleOrDefault(assembly => assembly.GetName().Name == name)

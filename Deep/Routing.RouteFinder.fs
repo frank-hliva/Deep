@@ -1,22 +1,40 @@
-﻿[<AutoOpen>]
-module Deep.Routing.RouteFinder
+﻿namespace Deep.Routing
 
 open Deep
-open System.Reflection
 
-type Routes with
+[<AutoOpen>]
+module RouteFinder =
 
-    static member AddMarkedActions (assemblies : Assembly seq) (routes : routes) =
-        assemblies
-        |> Function.findByAttribute<RouteAttribute>
-        |> Seq.map
-            (fun mi ->
-                let attr = mi |> Function.getAttribute<RouteAttribute>
-                {
-                    HttpMethod = attr.HttpMethod
-                    Pattern = attr.RoutePattern
-                    Handler = new FunctionRouteHandler(mi) :> IRouteHandler
-                    Filter = None
-                    Priority = attr.Priority
-                })
-        |> fun r -> routes |> Seq.append r |> List.ofSeq
+    open Deep
+    open System.Reflection
+
+    type Routes with
+
+        static member AddMarkedActions (assemblies : Assembly seq) (routes : routes) =
+            assemblies
+            |> Function.findByAttribute<RouteAttribute>
+            |> Seq.map
+                (fun mi ->
+                    let attr = mi |> Function.getAttribute<RouteAttribute>
+                    {
+                        HttpMethod = attr.HttpMethod
+                        Pattern = attr.RoutePattern
+                        Handler = new FunctionRouteHandler(mi) :> IRouteHandler
+                        Filter = None
+                        Priority = attr.Priority
+                    })
+            |> fun r -> routes |> Seq.append r |> List.ofSeq
+
+type AttributeRouteBuilderConfig(config : Config) =
+    inherit AssemblyConfig()
+    override c.GetAssemblyConfig() =
+        config.SelectAs<string[]>("RouteFinder.Assemblies")
+
+type AttributeRouteBuilder(builder : routes -> routes, config : AttributeRouteBuilderConfig) =
+    let config = config :> IAssemblyConfig
+    let routes = [] |> Routes.AddMarkedActions (config.GetAssemblies()) |> builder
+
+    interface IRouteBuilder with
+        override b.Routes = routes
+
+    new(config : AttributeRouteBuilderConfig) = AttributeRouteBuilder(id, config)
