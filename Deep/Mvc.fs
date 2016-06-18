@@ -3,24 +3,9 @@
 open Deep
 open System.Net
 open System.Reflection
-
-[<AllowNullLiteral>]
-type internal ControllerContext(httpListenerContext : HttpListenerContext, request : Request, response : Response) =
-    member c.HttpListenerContext = httpListenerContext
-    member c.Request = request
-    member c.Response = request
     
-type Controller() =
-    let controllerContext : ControllerContext = null
-    member internal c.ControllerContext = controllerContext
-    member c.Request = controllerContext.Request
-    member c.Response = controllerContext.Response
-
-module internal ControllerModule =
-    let setControllerContext (context : ControllerContext) (controller : Controller) =
-        typedefof<Controller>
-           .GetField("controllerContext", BindingFlags.Instance ||| BindingFlags.NonPublic)
-           .SetValue(controller, context)
+type Controller() = class
+    end
 
 module Controllers =
     
@@ -29,7 +14,7 @@ module Controllers =
         |> Seq.collect(fun a -> a.GetTypes())
         |> Seq.filter(fun t -> t.IsSubclassOf(typedefof<Controller>))
 
-    let findByName (name : string) assemblies =
+    let tryFindByName (name : string) assemblies =
         assemblies
         |> findAll
         |> Seq.tryFind (fun c -> c.Name = name)
@@ -58,19 +43,34 @@ type MvcRouteHandler(defaults : MvcDefaults) =
                 | _ -> name, name |> defaultVal)
         |> Map
 
+    let tryRegisterIntId (id : string) (container : IKernel) =
+        match id.TryConvertToInt() with
+        | Some i -> container.RegisterInstance<Int32>(i)
+        | _ -> container
+
+    let tryRegisterDecimalId (id : string) (container : IKernel) =
+        match id.TryConvertToDecimal() with
+        | Some i -> container.RegisterInstance<Decimal>(i)
+        | _ -> container
+
+    let registerId (id : string) (container : IKernel) =
+        container.RegisterInstance<string>(id)
+        |> tryRegisterIntId id
+        |> tryRegisterDecimalId id
+
     interface IRouteHandler with
 
         member h.InvokeAction(container : IKernel) =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> getRouteParams |> Map.map(fun _ v -> v |> Url.toPascalCase)
-            let mvcConfig = container.Resolve<MvcConfig>() :> IAssemblyConfig
-            let controllerType =
-                mvcConfig.GetAssemblies()
-                |> Controllers.findByName (parameters.["Controller"] + "Controller")
-            match controllerType with
+            (container.Resolve<MvcConfig>() :> IAssemblyConfig).GetAssemblies()
+            |> Controllers.tryFindByName (parameters.["Controller"] + "Controller")
+            |> function
             | Some controllerType ->
                 let controller = container.Register(controllerType).Resolve(controllerType)
-                controllerType.GetMethod(parameters.["Action"])
-                |> Function.invokeOn controller (container.RegisterInstance<string>(parameters.["Id"]))
-                |> ignore
+                match controllerType.GetMethod(parameters.["Action"]) with
+                | null -> ()
+                | action ->
+                    let container = container |> registerId parameters.["Id"]
+                    action |> Function.invokeOn controller container |> ignore
             | _ -> ()

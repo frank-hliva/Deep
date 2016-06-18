@@ -13,9 +13,9 @@ type HomeController() =
         use writer = response.Writer
         writer |> Writer.wprintf "Test %s" "Test"
 
-    member c.IndexFero(response : Response) =
+    member c.IndexFero(id : int, response : Response) =
         use writer = response.Writer
-        writer |> Writer.wprintf "Fero"
+        writer |> Writer.wprintf "Fero %d" id
 
 (*[<Get("/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =

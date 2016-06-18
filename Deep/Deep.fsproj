@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Deep.fs" />
+    <Compile Include="String.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Kernel.fs" />
     <Compile Include="Url.fs" />
