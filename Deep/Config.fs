@@ -26,6 +26,7 @@ type Config(source : IConfigSource) =
     member c.Config = source.ToJObject()
     member c.SelectAs<'t>(path : string) =
         JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
+    new(path : string) = Config(path |> ConfigFileSource)
 
 
 type IAssemblyConfig =
@@ -44,7 +45,7 @@ type AssemblyConfig() =
             AppDomain.CurrentDomain.GetAssemblies()
             |> Array.filter(fun a -> a.FullName |> set.Contains)
 
-type ControllerConfig(config : Config) =
+type MvcConfig(config : Config) =
     inherit AssemblyConfig()
     override c.GetAssemblyConfig() =
         config.SelectAs<string[]>("Controllers.Assemblies")

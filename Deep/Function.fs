@@ -33,7 +33,7 @@ module private Creator =
     let invoke creator =
         (creator |> getMethodInfo |> fst).Invoke(creator, [| null |])
 
-let invoke (kernel : IKernel) func =
+let invokeOn targetType (kernel : IKernel) func =
     let methodInfo, parameterInfos = 
         match box func with
         | :? MethodInfo as methodInfo ->
@@ -41,4 +41,7 @@ let invoke (kernel : IKernel) func =
         | _ -> func |> getMethodInfo
     let toParam (paramInfo : ParameterInfo) =
         kernel.Resolve(paramInfo.ParameterType)
-    methodInfo.Invoke(func, parameterInfos |> Array.map toParam)
+    methodInfo.Invoke(targetType, parameterInfos |> Array.map toParam)
+
+let invoke (kernel : IKernel) func =
+    func |> invokeOn func kernel

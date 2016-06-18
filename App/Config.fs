@@ -6,11 +6,20 @@ open Castle.Windsor
 open Castle.MicroKernel.Registration
 open Deep.Routing
 
+let registerRoutes (routes : routes) =
+    Routes.Any(
+        routes,
+        "/?Controller/?Action/?Id",
+        { Controller = "Home"; Action = "Index"; Id = "" }
+    )
+
+type RouteBuilder(config : RouteBuilderConfig) =
+    inherit Deep.Routing.RouteBuilder(registerRoutes, config)
+
 let config (container : IWindsorContainer) =
     container
-        .Register(Component.For<IConfigSource>().Instance(new ConfigFileSource(@"c:\Projekty\Deep\App\Config.json")).LifeStyle.Singleton)
-        .Register(Component.For<Config>().LifeStyle.Singleton)
-        .Register(Component.For<AttributeRouteBuilderConfig>().LifeStyle.Singleton)
-        .Register(Component.For<IRouteBuilder>().ImplementedBy<AttributeRouteBuilder>().LifeStyle.Singleton)
-        .Register(Component.For<ControllerConfig>().LifeStyle.Singleton)
+        .Register(Component.For<Config>().Instance(new Config(@"c:\Projekty\Deep\App\Config.json")).LifeStyle.Singleton)
+        .Register(Component.For<RouteBuilderConfig>().LifeStyle.Singleton)
+        .Register(Component.For<IRouteBuilder>().ImplementedBy<RouteBuilder>().LifeStyle.Singleton)
+        .Register(Component.For<MvcConfig>().LifeStyle.Singleton)
         .Register(Component.For<IRouter>().ImplementedBy<Router>().LifeStyle.Singleton)

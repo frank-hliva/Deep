@@ -25,16 +25,16 @@ module RouteFinder =
                     })
             |> fun r -> routes |> Seq.append r |> List.ofSeq
 
-type AttributeRouteBuilderConfig(config : Config) =
+type RouteBuilderConfig(config : Config) =
     inherit AssemblyConfig()
     override c.GetAssemblyConfig() =
         config.SelectAs<string[]>("RouteFinder.Assemblies")
 
-type AttributeRouteBuilder(builder : routes -> routes, config : AttributeRouteBuilderConfig) =
+type RouteBuilder(builder : routes -> routes, config : RouteBuilderConfig) =
     let config = config :> IAssemblyConfig
     let routes = [] |> Routes.AddMarkedActions (config.GetAssemblies()) |> builder
 
     interface IRouteBuilder with
         override b.Routes = routes
 
-    new(config : AttributeRouteBuilderConfig) = AttributeRouteBuilder(id, config)
+    new(config : RouteBuilderConfig) = RouteBuilder(id, config)

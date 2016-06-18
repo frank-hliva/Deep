@@ -35,7 +35,7 @@ type RouteMatchResult =
 type IRouteBuilder =
     abstract Routes : routes
 
-type RouteBuilder(builder : routes -> routes) =
+type SimpleRouteBuilder(builder : routes -> routes) =
     let routes = [] |> builder
     interface IRouteBuilder with
         override b.Routes = routes

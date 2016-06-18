@@ -5,12 +5,23 @@ open Deep
 open Deep.Routing
 open Castle.Windsor
 open Deep.Windsor
+open Deep.Mvc
 
-[<Get("/?param1/?param2")>]
+type HomeController() =
+    inherit Controller()
+    member c.Index(response : Response) =
+        use writer = response.Writer
+        writer |> Writer.wprintf "Test %s" "Test"
+
+    member c.IndexFero(response : Response) =
+        use writer = response.Writer
+        writer |> Writer.wprintf "Fero"
+
+(*[<Get("/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
+    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]*)
 
 type App(kernel, routeBuilder, router) =
     inherit HttpApplication(kernel, routeBuilder, router)
