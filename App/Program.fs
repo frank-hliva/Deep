@@ -1,34 +1,30 @@
 ﻿module App.Application
 
-open System
 open Deep
 open Deep.Routing
-open Castle.Windsor
 open Deep.Windsor
-open Deep.Mvc
+open Castle.Windsor
+open System
 
-type HomeController() =
-    inherit Controller()
-    member c.Index(response : Response) =
+type HomeController(response : Response) =
+
+    member c.Index() =
         use writer = response.Writer
         writer |> Writer.wprintf "Test %s" "Test"
 
-    member c.IndexFero(id : int, response : Response) =
+    member c.IndexFero(id : string) =
         use writer = response.Writer
-        writer |> Writer.wprintf "Fero %d" id
+        writer |> Writer.wprintf "Fero %s" id
 
-(*[<Get("/?param1/?param2")>]
+[<Get("/test/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
     res.ContentType <- "text/html"
     use writer = res.Writer
-    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]*)
-
-type App(kernel, routeBuilder, router) =
-    inherit HttpApplication(kernel, routeBuilder, router)
+    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 [<EntryPoint>]
 let main argv =
-    let booter = new ApplicationBooter<App>(new WindsorContainer())
+    let booter = new ApplicationBooter<HttpApplication>(new WindsorContainer())
     booter.Config(config)
     booter.Boot("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")

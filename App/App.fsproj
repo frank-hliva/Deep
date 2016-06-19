@@ -57,9 +57,10 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Program.fs" />
-    <None Include="App.config" />
     <Content Include="packages.config" />
-    <None Include="Config.json" />
+    <None Include="App.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">

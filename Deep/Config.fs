@@ -27,6 +27,7 @@ type Config(source : IConfigSource) =
     member c.SelectAs<'t>(path : string) =
         JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
     new(path : string) = Config(path |> ConfigFileSource)
+    new() = Config(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App.json"))
 
 
 type IAssemblyConfig =

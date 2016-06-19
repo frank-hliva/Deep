@@ -3,16 +3,15 @@
 open Deep
 open System.Net
 open System.Reflection
-    
-type Controller() = class
-    end
 
 module Controllers =
+
+    let internal suffix = "Controller"
     
     let findAll (assemblies : Assembly[]) =
         assemblies
         |> Seq.collect(fun a -> a.GetTypes())
-        |> Seq.filter(fun t -> t.IsSubclassOf(typedefof<Controller>))
+        |> Seq.filter(fun t -> t.Name.EndsWith suffix)
 
     let tryFindByName (name : string) assemblies =
         assemblies
@@ -64,7 +63,7 @@ type MvcRouteHandler(defaults : MvcDefaults) =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> getRouteParams |> Map.map(fun _ v -> v |> Url.toPascalCase)
             (container.Resolve<MvcConfig>() :> IAssemblyConfig).GetAssemblies()
-            |> Controllers.tryFindByName (parameters.["Controller"] + "Controller")
+            |> Controllers.tryFindByName (sprintf "%s%s" parameters.["Controller"] Controllers.suffix)
             |> function
             | Some controllerType ->
                 let controller = container.Register(controllerType).Resolve(controllerType)

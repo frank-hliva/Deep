@@ -10,7 +10,7 @@ open System.IO
 type RequestKernelConfigurator(config : IKernel -> IKernel) =
     member c.Config = config
 
-type [<AbstractClass>] HttpApplication(applicationKernel : IKernel, routeBuilder : IRouteBuilder, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
+type HttpApplication(applicationKernel : IKernel, routeBuilder : IRouteBuilder, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
 
     let registerDefaultObjects (context : HttpListenerContext) (matchResult : RouteMatchResult) (requestContainer : IKernel) =
         [
