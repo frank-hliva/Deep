@@ -1,16 +1,10 @@
 ﻿{
-    "RouteFinder": 
+    "RouteBuilder": 
     {
-        "Assemblies": 
-        [
-            "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-        ]
+        "Assemblies": [ "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
     },
     "Controllers": 
     {
-        "Assemblies": 
-        [
-            "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
-        ]
+        "Assemblies": [ "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
     }
 }

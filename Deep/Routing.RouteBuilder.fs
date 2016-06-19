@@ -28,7 +28,7 @@ module RouteFinder =
 type RouteBuilderConfig(config : Config) =
     inherit AssemblyConfig()
     override c.GetAssemblyConfig() =
-        config.SelectAs<string[]>("RouteFinder.Assemblies")
+        config.SelectAs<string[]>("RouteBuilder.Assemblies")
 
 type RouteBuilder(builder : routes -> routes, config : RouteBuilderConfig) =
     let config = config :> IAssemblyConfig
