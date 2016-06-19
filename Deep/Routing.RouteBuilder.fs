@@ -32,7 +32,12 @@ type RouteBuilderConfig(config : Config) =
 
 type RouteBuilder(builder : routes -> routes, config : RouteBuilderConfig) =
     let config = config :> IAssemblyConfig
-    let routes = [] |> Routes.AddMarkedActions (config.GetAssemblies()) |> builder
+    let assemblies = config.GetAssemblies()
+    let routes = 
+        match assemblies.Length with
+        | 0 -> []
+        | _ -> [] |> Routes.AddMarkedActions assemblies
+        |> builder
 
     interface IRouteBuilder with
         override b.Routes = routes

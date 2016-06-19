@@ -41,4 +41,4 @@ type SimpleRouteBuilder(builder : routes -> routes) =
         override b.Routes = routes
 
 type IRouter =
-    abstract Match : string -> string -> routes -> RouteMatchResult option
+    abstract Match : string -> string -> RouteMatchResult option

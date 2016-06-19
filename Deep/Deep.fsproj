@@ -59,16 +59,15 @@
     <Compile Include="Writer.fs" />
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
-    <Compile Include="Routing.Router.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Mvc.fs" />
     <Compile Include="Routing.Routes.fs" />
     <Compile Include="Routing.RouteBuilder.fs" />
+    <Compile Include="Routing.Router.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
     <Content Include="packages.config" />
-    <None Include="Script1.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

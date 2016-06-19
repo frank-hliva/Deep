@@ -2,7 +2,7 @@
 
 open Deep
 
-type Router() =
+type Router(routeBuilder : IRouteBuilder) =
 
     let delimiter = '/'
     let paramPrefix = ":"
@@ -48,8 +48,8 @@ type Router() =
 
     interface IRouter with
 
-        member r.Match (httpMethod : string) (url : string) (items : routes) =
+        member r.Match (httpMethod : string) (url : string) =
             let urlItems = (url |> Url.removeQueryString).Split [| delimiter |]
-            items
+            routeBuilder.Routes
             |> List.sortByDescending (fun i -> i.Priority)
             |> List.tryPick (matchChooser urlItems httpMethod)

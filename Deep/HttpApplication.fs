@@ -10,22 +10,25 @@ open System.IO
 type RequestKernelConfigurator(config : IKernel -> IKernel) =
     member c.Config = config
 
-type HttpApplication(applicationKernel : IKernel, routeBuilder : IRouteBuilder, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
+type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
 
-    let registerDefaultObjects (context : HttpListenerContext) (matchResult : RouteMatchResult) (requestContainer : IKernel) =
+    let registerRequestObjects (context : HttpListenerContext) (matchResult : RouteMatchResult) (requestContainer : IKernel) =
         [
             context |> box
             new Request(context.Request, matchResult.Parameters) |> box
             new Response(context.Response) |> box
         ] |> Seq.fold
             (fun (requestContainer : IKernel) (instance : obj) ->
-                requestContainer.RegisterInstance(instance)) requestContainer
+                instance |> requestContainer.RegisterInstance) requestContainer
 
-    let proccessResult (context : HttpListenerContext) (matchResult : RouteMatchResult option) =
-        match matchResult with
+    member a.Container = applicationKernel
+
+    member a.Listener(context : HttpListenerContext) =
+        let request = context.Request
+        match router.Match request.HttpMethod request.RawUrl with
         | Some result ->
             new Kernel(applicationKernel) :> IKernel
-            |> registerDefaultObjects context result
+            |> registerRequestObjects context result
             |> fun kernel -> 
                 match requestConfigurator with
                 | null -> kernel
@@ -33,16 +36,7 @@ type HttpApplication(applicationKernel : IKernel, routeBuilder : IRouteBuilder, 
             |> result.Handler.InvokeAction
         | _ -> ()
 
-    member a.Container = applicationKernel
-
-    member a.Listener(context : HttpListenerContext) =
-        let request = context.Request
-        routeBuilder.Routes
-        |> router.Match request.HttpMethod request.RawUrl
-        |> proccessResult context
-
     interface IApplication with
         override a.Run(uri : string) = Server.listen uri a.Listener
 
-    new(applicationKernel, routeBuilder, router) =
-        HttpApplication(applicationKernel, routeBuilder, router, null)
+    new(applicationKernel, router) = HttpApplication(applicationKernel, router, null)
