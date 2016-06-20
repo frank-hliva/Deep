@@ -2,15 +2,79 @@
 module Deep.StringModule
 
 open System
+open System.Text
+open System.Text.RegularExpressions
+open System.Globalization
+open System.Runtime.CompilerServices
 
-type String with
+[<Extension>]
+type StringExtensions () =
+    
+    [<Extension>]
+    static member inline Turncate(str : string, maxLength : int, suffix : string) =
+        if String.IsNullOrEmpty(str) || str.Length <= maxLength then str
+        else str.[0..maxLength - 1] + suffix
 
-    member s.TryConvertToInt() =
-        let isNumeric, n = Int32.TryParse(s)
+    [<Extension>]
+    static member inline Turncate(str : string, maxLength : int) =
+        StringExtensions.Turncate(str, maxLength, "")
+
+    [<Extension>]
+    static member inline StripHtml input =
+        Regex.Replace(input, "<.*?>", "")
+
+    [<Extension>]
+    static member inline RemoveDiacritics (input : string) =
+        input
+        |> (Encoding.GetEncoding 1251).GetBytes
+        |> Encoding.ASCII.GetString
+
+    [<Extension>]
+    static member inline RemoveNonAlphaNum (input : string) =
+        Regex.Replace(input, @"[^A-Za-z0-9]+", "")
+
+    [<Extension>]
+    static member inline TryConvertToInt (input : string) =
+        let isNumeric, n = Int32.TryParse(input)
         if isNumeric then Some n
         else None
 
-    member s.TryConvertToDecimal() =
-        let isNumeric, n = Decimal.TryParse(s)
+    [<Extension>]
+    static member inline TryConvertToDecimal (input : string) =
+        let isNumeric, n = Decimal.TryParse(input)
         if isNumeric then Some n
         else None
+
+    [<Extension>]
+    static member inline Webalize(input : string) =
+        let rec link acc = function
+        | ' ' :: t | '-' :: t -> t |> link ('-' :: acc)
+        | h :: t when Char.IsLetter h || Char.IsDigit h ->
+            t |> link (Char.ToLower h :: acc)
+        | _ :: t -> t |> link acc
+        | [] -> acc
+        input
+        |> StringExtensions.RemoveDiacritics
+        |> List.ofSeq |> link [] |> List.rev |> String.Concat
+
+    static member inline OfCharSeq (chars : char seq) =
+        let builder = new StringBuilder()
+        for c in chars do builder.Append(c) |> ignore
+        builder.ToString()
+
+    [<Extension>]
+    static member inline Capitalize(input : string) =
+        if String.IsNullOrEmpty input then input
+        else input.[0..0].ToUpper() + input.[1..]
+
+    [<Extension>]
+    static member inline ToLines(input : string) =
+        Regex.Split(input, "\r\n|\r|\n")
+
+    [<Extension>]
+    static member inline IsNumber(input : string) =
+        input |> Decimal.TryParse |> fst
+
+    [<Extension>]
+    static member inline IsIntNumber(input : string) =
+        input |> Int64.TryParse |> fst

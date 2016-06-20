@@ -13,7 +13,7 @@ type HomeController(response : Response) =
         writer |> Writer.wprintf "Test %s" "Test"
 
     member c.Page(id : int) =
-        use writer = response.Writer
+        let writer = response.Writer
         writer |> Writer.wprintf "Fero %d" id
 
 [<Get("/test/?param1/?param2")>]
