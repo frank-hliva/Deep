@@ -34,7 +34,7 @@ type StringExtensions () =
         Regex.Replace(input, @"[^A-Za-z0-9]+", "")
 
     [<Extension>]
-    static member inline TryConvertToInt (input : string) =
+    static member inline TryConvertToInt32 (input : string) =
         let isNumeric, n = Int32.TryParse(input)
         if isNumeric then Some n
         else None

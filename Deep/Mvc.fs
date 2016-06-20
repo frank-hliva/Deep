@@ -5,9 +5,8 @@ open System.Net
 open System.Reflection
 
 module Controllers =
-
     let internal suffix = "Controller"
-    
+
     let findAll (assemblies : Assembly[]) =
         assemblies
         |> Seq.collect(fun a -> a.GetTypes())
@@ -29,12 +28,16 @@ type MvcDefaults = { Controller : string; Action : string; Id : string }
 
 type MvcRouteHandler(defaults : MvcDefaults) =
 
+    let controllerKey = "Controller"
+    let actionKey = "Action"
+    let IdKey = "Id"
+
     let defaultVal (name : string) =
         let value = defaults.GetType().GetProperty(name).GetValue(defaults).ToString()
         value
 
     let getRouteParams (parameters : RouteParams) =
-        ["Controller"; "Action"; "Id"]
+        [controllerKey; actionKey; IdKey]
         |> List.map
             (fun name ->
                 match parameters |> Map.tryFind name with
@@ -42,8 +45,8 @@ type MvcRouteHandler(defaults : MvcDefaults) =
                 | _ -> name, name |> defaultVal)
         |> Map
 
-    let tryRegisterIntId (id : string) (container : IKernel) =
-        match id.TryConvertToInt() with
+    let tryRegisterInt32Id (id : string) (container : IKernel) =
+        match id.TryConvertToInt32() with
         | Some i -> container.RegisterInstance<Int32>(i)
         | _ -> container
 
@@ -54,7 +57,7 @@ type MvcRouteHandler(defaults : MvcDefaults) =
 
     let registerId (id : string) (container : IKernel) =
         container.RegisterInstance<string>(id)
-        |> tryRegisterIntId id
+        |> tryRegisterInt32Id id
         |> tryRegisterDecimalId id
 
     interface IRouteHandler with
@@ -63,13 +66,13 @@ type MvcRouteHandler(defaults : MvcDefaults) =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> getRouteParams |> Map.map(fun _ v -> v |> Url.toPascalCase)
             (container.Resolve<MvcConfig>() :> IAssemblyConfig).GetAssemblies()
-            |> Controllers.tryFindByName (sprintf "%s%s" parameters.["Controller"] Controllers.suffix)
+            |> Controllers.tryFindByName (sprintf "%s%s" parameters.[controllerKey] Controllers.suffix)
             |> function
             | Some controllerType ->
                 let controller = container.Register(controllerType).Resolve(controllerType)
-                match controllerType.GetMethod(parameters.["Action"]) with
+                match controllerType.GetMethod(parameters.[actionKey]) with
                 | null -> ()
                 | action ->
-                    let container = container |> registerId parameters.["Id"]
+                    let container = container |> registerId parameters.[IdKey]
                     action |> Function.invokeOn controller container |> ignore
             | _ -> ()
