@@ -17,9 +17,11 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
             context |> box
             new Request(context.Request, matchResult.Parameters) |> box
             new Response(context.Response) |> box
-        ] |> Seq.fold
+        ]
+        |> Seq.fold
             (fun (requestContainer : IKernel) (instance : obj) ->
                 instance |> requestContainer.RegisterInstance) requestContainer
+        |> fun requestContainer -> requestContainer.Register<Reply>()
 
     member a.Container = applicationKernel
 

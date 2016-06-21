@@ -4,6 +4,11 @@ open Deep
 open System.Net
 open System.Reflection
 
+type ControllerConfig(config : Config) =
+    inherit AssemblyConfig()
+    override c.GetAssemblyNames() =
+        config.SelectAs<string[]>("Controllers.Assemblies")
+
 module Controllers =
     let internal suffix = "Controller"
 
@@ -65,7 +70,7 @@ type MvcRouteHandler(defaults : MvcDefaults) =
         member h.InvokeAction(container : IKernel) =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> getRouteParams |> Map.map(fun _ v -> v |> Url.toPascalCase)
-            (container.Resolve<MvcConfig>() :> IAssemblyConfig).GetAssemblies()
+            (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
             |> Controllers.tryFindByName (sprintf "%s%s" parameters.[controllerKey] Controllers.suffix)
             |> function
             | Some controllerType ->

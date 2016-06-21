@@ -5,11 +5,13 @@ open System
 open System.Net
 
 type IRouteHandler =
+    abstract Defaults : Map<string, string>
     abstract InvokeAction : container : IKernel -> unit
 
-type FunctionRouteHandler(func : obj) =
+type FunctionRouteHandler(func : obj, defaults : Map<string, string>) =
     interface IRouteHandler with
-        member h.InvokeAction(container : IKernel) =
+        override h.Defaults = defaults
+        override h.InvokeAction(container : IKernel) =
             func |> Function.invoke container |> ignore
 
 type RouteParams = Map<string, string>

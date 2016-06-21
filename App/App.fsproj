@@ -82,6 +82,11 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <ProjectReference Include="..\Deep.View.DotLiquid\Deep.View.DotLiquid.fsproj">
+      <Name>Deep.View.DotLiquid</Name>
+      <Project>{699e4a0a-2317-4377-810c-b464c883304d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <ProjectReference Include="..\Deep.Windsor\Deep.Windsor.fsproj">
       <Name>Deep.Windsor</Name>
       <Project>{a8a00952-8baa-4e9e-a3ba-2684274cc62c}</Project>

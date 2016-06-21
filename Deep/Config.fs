@@ -36,17 +36,12 @@ type IAssemblyConfig =
 [<AbstractClass>]
 type AssemblyConfig() =
 
-    abstract GetAssemblyConfig : unit -> string[]
+    abstract GetAssemblyNames : unit -> string[]
 
-    member c.GetAsseblyNameSet() = c.GetAssemblyConfig() |> Set.ofArray
+    member c.GetAsseblyNameSet() = c.GetAssemblyNames() |> Set.ofArray
 
     interface IAssemblyConfig with
         override c.GetAssemblies() =
             let set = c.GetAsseblyNameSet()
             AppDomain.CurrentDomain.GetAssemblies()
             |> Array.filter(fun a -> a.FullName |> set.Contains)
-
-type MvcConfig(config : Config) =
-    inherit AssemblyConfig()
-    override c.GetAssemblyConfig() =
-        config.SelectAs<string[]>("Controllers.Assemblies")

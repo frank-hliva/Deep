@@ -60,6 +60,8 @@
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
     <Compile Include="Http.fs" />
+    <Compile Include="View.fs" />
+    <Compile Include="Reply.fs" />
     <Compile Include="Mvc.fs" />
     <Compile Include="Routing.Routes.fs" />
     <Compile Include="Routing.RouteBuilder.fs" />
@@ -68,6 +70,7 @@
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
     <Content Include="packages.config" />
+    <None Include="Script1.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />

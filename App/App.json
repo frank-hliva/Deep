@@ -1,10 +1,12 @@
 ﻿{
-    "RouteBuilder": 
-    {
+    "RouteBuilder": {
         "Assemblies": [ "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
     },
-    "Controllers": 
-    {
+    "Controllers": {
         "Assemblies": [ "App, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
+    },
+    "View": {
+        "Extension": ".html",
+        "RootDirectory": "~/View"
     }
 }
