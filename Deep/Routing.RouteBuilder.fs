@@ -22,6 +22,7 @@ module RouteFinder =
                         Handler = new FunctionRouteHandler(mi) :> IRouteHandler
                         Filter = None
                         Priority = attr.Priority
+                        Defaults = Map.empty
                     })
             |> fun r -> routes |> Seq.append r |> List.ofSeq
 

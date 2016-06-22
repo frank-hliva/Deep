@@ -53,3 +53,10 @@ let req = new Request()
 
 let finder = new ViewPathFinder(@"c:\aaa\View", "html")
 finder.TryFind(req.Params, "Index1")
+
+let x = 1
+let y = 2
+
+let x = (=>)
+
+if x >= y then "xxx" else "yyy"

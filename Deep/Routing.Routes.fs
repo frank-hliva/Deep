@@ -10,8 +10,17 @@ type Routes() =
     static let objToHandler : obj -> _ = function
     | :? IRouteHandler as h -> h
     | h when FSharpType.IsFunction <| h.GetType() -> FunctionRouteHandler(h) :> IRouteHandler
-    | :? MvcDefaults as h -> MvcRouteHandler(h) :> IRouteHandler
+    | :? MvcDefaults -> MvcRouteHandler() :> IRouteHandler
     | _ -> failwith "Invalid route handler"
+
+    static let objToDefaults : obj -> _ = function
+    | :? MvcDefaults as d ->
+        Map [
+            MvcKeys.Controller, d.Controller
+            MvcKeys.Action, d.Action
+            MvcKeys.Id, d.Id
+        ]
+    | _ -> Map.empty
 
     static member AddRoute (route : route) (routes : routes) =
         routes @ [route]
@@ -25,6 +34,7 @@ type Routes() =
                 Handler = handler |> objToHandler
                 Priority = defaultArg priority 0
                 Filter = filter
+                Defaults = handler |> objToDefaults
             }
 
     static member Add(routes, httpMethod, pattern, handler, ?priority, ?filter) =

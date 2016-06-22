@@ -5,16 +5,15 @@ open System
 open System.Net
 
 type IRouteHandler =
-    abstract Defaults : Map<string, string>
     abstract InvokeAction : container : IKernel -> unit
 
-type FunctionRouteHandler(func : obj, defaults : Map<string, string>) =
+type FunctionRouteHandler(func : obj) =
     interface IRouteHandler with
-        override h.Defaults = defaults
         override h.InvokeAction(container : IKernel) =
             func |> Function.invoke container |> ignore
 
 type RouteParams = Map<string, string>
+type RouteDefaults = Map<string, string>
 type RouteParamFilter = RouteParams -> RouteParams
 
 type route =
@@ -24,6 +23,7 @@ type route =
         Handler : IRouteHandler
         Priority : int
         Filter : RouteParamFilter option
+        Defaults : RouteDefaults
     }
 
 type routes = route list

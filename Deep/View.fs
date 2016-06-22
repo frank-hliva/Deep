@@ -4,7 +4,7 @@ open System
 open System.IO
 open Deep.Routing
 
-type ViewData = Map<string, string>
+type ViewData = Map<string, obj>
 
 [<AllowNullLiteral>]
 type IView =
@@ -15,8 +15,8 @@ type ViewOptions = { Extension : string; RootDirectory : string }
 type ViewConfig(config : Config) =
     member c.GetViewOptions() =
         let options = config.SelectAs<ViewOptions>("View")
-        let baseDir = AppDomain.CurrentDomain.BaseDirectory
-        { options with RootDirectory = options.RootDirectory.Replace("~/", baseDir) }
+        let baseDir = Environment.CurrentDirectory
+        { options with RootDirectory = options.RootDirectory.Replace("~/", sprintf "%s/" baseDir) }
 
 type ViewPathFinder(viewOptions : ViewOptions) =
 

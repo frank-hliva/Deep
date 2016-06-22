@@ -31,24 +31,13 @@ open Deep.Mvc
 
 type MvcDefaults = { Controller : string; Action : string; Id : string }
 
-type MvcRouteHandler(defaults : MvcDefaults) =
+[<RequireQualifiedAccess>]
+module internal MvcKeys =
+    let Controller = "Controller"
+    let Action = "Action"
+    let Id = "Id"
 
-    let controllerKey = "Controller"
-    let actionKey = "Action"
-    let IdKey = "Id"
-
-    let defaultVal (name : string) =
-        let value = defaults.GetType().GetProperty(name).GetValue(defaults).ToString()
-        value
-
-    let getRouteParams (parameters : RouteParams) =
-        [controllerKey; actionKey; IdKey]
-        |> List.map
-            (fun name ->
-                match parameters |> Map.tryFind name with
-                | Some value when value |> String.IsNullOrEmpty |> not -> name, value
-                | _ -> name, name |> defaultVal)
-        |> Map
+type MvcRouteHandler() =
 
     let tryRegisterInt32Id (id : string) (container : IKernel) =
         match id.TryConvertToInt32() with
@@ -67,17 +56,17 @@ type MvcRouteHandler(defaults : MvcDefaults) =
 
     interface IRouteHandler with
 
-        member h.InvokeAction(container : IKernel) =
+        override h.InvokeAction(container : IKernel) =
             let request = container.Resolve<Request>()
-            let parameters = request.Params |> getRouteParams |> Map.map(fun _ v -> v |> Url.toPascalCase)
+            let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
             (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
-            |> Controllers.tryFindByName (sprintf "%s%s" parameters.[controllerKey] Controllers.suffix)
+            |> Controllers.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controllers.suffix)
             |> function
             | Some controllerType ->
                 let controller = container.Register(controllerType).Resolve(controllerType)
-                match controllerType.GetMethod(parameters.[actionKey]) with
+                match controllerType.GetMethod(parameters.[MvcKeys.Action]) with
                 | null -> ()
                 | action ->
-                    let container = container |> registerId parameters.[IdKey]
+                    let container = container |> registerId parameters.[MvcKeys.Id]
                     action |> Function.invokeOn controller container |> ignore
             | _ -> ()

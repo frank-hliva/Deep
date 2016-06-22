@@ -1,6 +1,7 @@
 ﻿namespace Deep.Routing
 
 open Deep
+open System
 
 type Router(routeBuilder : IRouteBuilder) =
 
@@ -34,6 +35,15 @@ type Router(routeBuilder : IRouteBuilder) =
         if urlItems.Length > patternItems.Length then None
         else patternItems |> List.ofSeq |> parseItems 0 Map.empty urlItems
 
+    let addDefaults (defaults : RouteDefaults) (parameters : RouteParams) =
+        defaults
+        |> Map.fold
+            (fun (acc : Map<string, string>) k v ->
+                match acc.TryFind k with
+                | Some value when String.IsNullOrEmpty value -> acc.Add(k, v)
+                | None -> acc.Add(k, v)
+                | _ -> acc) parameters
+
     let matchChooser urlItems httpMethod' (route : route) =
         match route.Pattern.Split [| delimiter |] |> matchRoute urlItems with
         | Some parameters when route.HttpMethod = HttpMethods.Any || route.HttpMethod = httpMethod' ->
@@ -42,7 +52,7 @@ type Router(routeBuilder : IRouteBuilder) =
                 Parameters =
                     match route.Filter with
                     | Some filter -> filter(parameters)
-                    | _ -> parameters
+                    | _ -> parameters |> addDefaults route.Defaults
             } |> Some
         | _ -> None
 

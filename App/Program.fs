@@ -6,10 +6,13 @@ open Deep.Windsor
 open Castle.Windsor
 open System
 
+let (=>) a b = a, box b
+
 type HomeController(response : Response, reply : Reply) =
 
     member c.Index() =
-        reply.View()
+        reply.View ["xxx" => "yyy"]
+
 
     member c.Page(id : int) =
         let writer = response.Writer
