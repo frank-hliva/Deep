@@ -6,8 +6,6 @@ open Deep.Windsor
 open Castle.Windsor
 open System
 
-let (=>) a b = a, box b
-
 type HomeController(reply : Reply) =
 
     member c.Index() =
