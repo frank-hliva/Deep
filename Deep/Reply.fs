@@ -20,16 +20,16 @@ type Reply(request : Request, response : Response, view : IView) =
     let toViewData = function
     | Some (viewData : (string * obj) list) -> viewData |> Map |> Some
     | _ -> None
-    let addEncoding (headers : WebHeaderCollection) =
+    let addCharset (headers : WebHeaderCollection) =
         headers.Add(
             "Content-Type",
             sprintf "%s; charset=%s" response.ContentType response.ContentEncoding.HeaderName
         )
-    member val AddEncodingToHeader = true with get, set
+    member val AddCharsetToHeader = true with get, set
     member val internal IsDisposed = false with get, set
     interface IDisposable with
         member r.Dispose() =
-            if r.AddEncodingToHeader then response.Headers |> addEncoding
+            if r.AddCharsetToHeader then response.Headers |> addCharset
             writer.Dispose()
             r.IsDisposed <- true
     member r.Response = response
