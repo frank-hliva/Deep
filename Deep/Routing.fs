@@ -5,12 +5,20 @@ open System
 open System.Net
 
 type IRouteHandler =
-    abstract InvokeAction : container : IKernel -> unit
+    abstract InvokeAction : container : IKernel -> Async<unit>
+
+module internal RouteHandlerResult =
+
+    let toAsync : obj -> _ = function
+    | :? Async<unit> as asyncResult -> asyncResult
+    | _ -> async { () }
 
 type FunctionRouteHandler(func : obj) =
     interface IRouteHandler with
         override h.InvokeAction(container : IKernel) =
-            func |> Function.invoke container |> ignore
+            func
+            |> Function.invoke container
+            |> RouteHandlerResult.toAsync
 
 type RouteParams = Map<string, string>
 type RouteDefaults = Map<string, string>

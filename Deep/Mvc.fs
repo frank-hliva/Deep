@@ -65,8 +65,8 @@ type MvcRouteHandler() =
             | Some controllerType ->
                 let controller = container.Register(controllerType).Resolve(controllerType)
                 match controllerType.GetMethod(parameters.[MvcKeys.Action]) with
-                | null -> ()
+                | null -> () |> RouteHandlerResult.toAsync
                 | action ->
                     let container = container |> registerId parameters.[MvcKeys.Id]
-                    action |> Function.invokeOn controller container |> ignore
-            | _ -> ()
+                    action |> Function.invokeOn controller container |> RouteHandlerResult.toAsync
+            | _ -> () |> RouteHandlerResult.toAsync

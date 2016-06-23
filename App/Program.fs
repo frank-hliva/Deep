@@ -6,10 +6,15 @@ open Deep.Windsor
 open Castle.Windsor
 open System
 
+let (=>) a b = a, box b
+
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.Content("<h1>Nadpis</h1><br><strong>Test</strong>", ContentTypes.html)
+        reply.Response.SendChunked <- true
+        reply.Writer |> Writer.wprintf "Fero %d<br>ďťňľ" 2
+        reply.View ["xxx" => "yyy"]
+        reply.Writer |> Writer.wprintf "<br>Fero %d" 2
 
     member c.Page(id : int) =
         use writer = reply.Writer
