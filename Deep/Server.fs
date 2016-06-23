@@ -9,7 +9,7 @@ let listen url action =
     let asyncContext = Async.FromBeginEnd(listener.BeginGetContext, listener.EndGetContext)
     let rec loop () = async {
         let! context = asyncContext
-        async { action context } |> Async.Start
+        action context |> Async.Start
         do! loop ()
     }
     listener.Start()

@@ -25,7 +25,7 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
 
     member a.Container = applicationKernel
 
-    member a.Listener(context : HttpListenerContext) =
+    member a.Listener(context : HttpListenerContext) = async {
         let request = context.Request
         match router.Match request.HttpMethod request.RawUrl with
         | Some result ->
@@ -42,7 +42,7 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
                     let reply = reply :?> Reply
                     if not reply.IsDisposed then (reply :> IDisposable).Dispose()
                 | _ -> ()
-        | _ -> ()
+        | _ -> () }
 
     interface IApplication with
         override a.Run(uri : string) = Server.listen uri a.Listener
