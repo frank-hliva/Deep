@@ -20,6 +20,13 @@ module HttpMethods =
     let Put = "PUT"
     let Delete = "DELETE"
 
+[<RequireQualifiedAccess>]
+module ContentTypes =
+    let html = "text/html"
+    let plainText = "text/plain"
+    let xml = "application/xml"
+    let json = "application/json"
+
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
 type AnyAttribute(routePattern : string, priority : int) =
     inherit RouteAttribute(HttpMethods.Any, routePattern, priority)

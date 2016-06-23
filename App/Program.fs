@@ -9,10 +9,11 @@ open System
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.Redirect("/home/page/1")
+        reply.Content("<h1>Nadpis</h1><br><strong>Test</strong>", ContentTypes.html)
 
     member c.Page(id : int) =
-        reply.Writer |> Writer.wprintf "Fero %d" id
+        use writer = reply.Writer
+        writer |> Writer.wprintf "Fero %d" id
 
 [<Get("/test/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
