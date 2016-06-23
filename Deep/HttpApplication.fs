@@ -21,7 +21,7 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
         |> Seq.fold
             (fun (requestContainer : IKernel) (instance : obj) ->
                 instance |> requestContainer.RegisterInstance) requestContainer
-        |> fun requestContainer -> requestContainer.Register<Reply>()
+        |> fun requestContainer -> requestContainer.Register<Reply>(LifeTime.Singleton)
 
     member a.Container = applicationKernel
 
@@ -35,7 +35,13 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
                 match requestConfigurator with
                 | null -> kernel
                 | _ -> requestConfigurator.Config(kernel)
-            |> result.Handler.InvokeAction
+            |> fun kernel ->
+                kernel |> result.Handler.InvokeAction
+                match kernel.TryFindInstance(typedefof<Reply>) with
+                | Some reply ->
+                    let reply = reply :?> Reply
+                    if not reply.IsDisposed then (reply :> IDisposable).Dispose()
+                | _ -> ()
         | _ -> ()
 
     interface IApplication with

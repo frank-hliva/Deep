@@ -22,6 +22,7 @@ type IKernel =
     abstract Resolve : Type -> obj
     abstract Resolve<'t> : unit -> 't
     abstract Contains : Type -> bool
+    abstract TryFindInstance : Type -> obj option
 
 type ExternalResolver(container : IKernel) =
     interface IExternalResolver with
@@ -163,6 +164,12 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
             (k :> IKernel).Resolve(typedefof<'t>) :?> 't
 
         member k.Contains(t) = t |> containsType
+
+        member k.TryFindInstance(t : Type) =
+            match types |> Map.tryFind t.GUID with
+            | Some kernelItem when kernelItem.Instance.Value.IsSome ->
+                Some kernelItem.Instance.Value.Value
+            | _ -> None
 
     new(?resolver) = Kernel(Map.empty, resolver)
     new(resolver : IKernel) = Kernel(new ExternalResolver(resolver))

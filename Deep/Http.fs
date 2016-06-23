@@ -44,7 +44,7 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     member this.RemoteEndPoint with get() : IPEndPoint = httpListenerRequest.RemoteEndPoint
     member this.LocalEndPoint with get() : IPEndPoint = httpListenerRequest.LocalEndPoint
 
-    member this.Reader with get() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
+    member this.GetReader() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
     member this.Params = parameters
 
 type Response internal (httpListenerResponse : HttpListenerResponse) =
@@ -70,4 +70,4 @@ type Response internal (httpListenerResponse : HttpListenerResponse) =
     member this.ContentLength64 with get() : Int64 = httpListenerResponse.ContentLength64 and set(value : Int64) = httpListenerResponse.ContentLength64 <- value
     member this.ProtocolVersion with get() : Version = httpListenerResponse.ProtocolVersion and set(value : Version) = httpListenerResponse.ProtocolVersion <- value
     
-    member this.Writer with get() : StreamWriter = new StreamWriter(httpListenerResponse.OutputStream)
+    member this.GetWriter() : StreamWriter = new StreamWriter(httpListenerResponse.OutputStream)

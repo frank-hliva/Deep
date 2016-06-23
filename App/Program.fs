@@ -6,22 +6,18 @@ open Deep.Windsor
 open Castle.Windsor
 open System
 
-let (=>) a b = a, box b
-
-type HomeController(response : Response, reply : Reply) =
+type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.View ["xxx" => "yyy"]
-
+        reply.Redirect("/home/page/1")
 
     member c.Page(id : int) =
-        let writer = response.Writer
-        writer |> Writer.wprintf "Fero %d" id
+        reply.Writer |> Writer.wprintf "Fero %d" id
 
 [<Get("/test/?param1/?param2")>]
 let hello1 (req : Request) (res : Response) =
     res.ContentType <- "text/html"
-    use writer = res.Writer
+    use writer = res.GetWriter()
     writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 [<EntryPoint>]

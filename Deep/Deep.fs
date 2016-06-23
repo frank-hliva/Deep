@@ -49,3 +49,7 @@ type DeleteAttribute(routePattern : string, priority : int) =
     inherit RouteAttribute(HttpMethods.Delete, routePattern, priority)
     new(routePattern) = DeleteAttribute(routePattern, 0)
     new() = DeleteAttribute("")
+
+[<AutoOpen>]
+module Operators =
+    let (=>) a b = a, box b
