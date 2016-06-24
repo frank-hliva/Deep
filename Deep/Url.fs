@@ -7,7 +7,6 @@ let removeQueryString (url : string) =
     | -1 -> url
     | pos -> url.[0..pos - 1]
 
-
 let toPascalCase (uri : string) =
     let len = uri.Length
     let rec loop upper i (acc : char list) = 

@@ -9,20 +9,16 @@ open System
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.Response.SendChunked <- true
-        reply.Writer |> Writer.wprintf "Fero %d<br>ďťňľ" 2
-        reply.View ["xxx" => "yyy"]
-        reply.Writer |> Writer.wprintf "<br>Fero %d" 2
+        reply.Html("<img src='/10731624_729780623819194_2144142704_n.jpg'>")
+
 
     member c.Page(id : int) =
         use writer = reply.Writer
         writer |> Writer.wprintf "Fero %d" id
 
 [<Get("/test/?param1/?param2")>]
-let hello1 (req : Request) (res : Response) =
-    res.ContentType <- "text/html"
-    use writer = res.GetWriter()
-    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
+let hello1 (req : Request) (reply : Reply) =
+    reply |> Reply.printf "Hello <strong>World!</strong> %s" req.Params.["param1"]
 
 [<EntryPoint>]
 let main argv =

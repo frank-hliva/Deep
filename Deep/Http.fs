@@ -46,6 +46,7 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
 
     member this.GetReader() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
     member this.Params = parameters
+    new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)
 
 type Response internal (httpListenerResponse : HttpListenerResponse) =
     member this.CopyFrom(templateResponse : HttpListenerResponse) : unit = httpListenerResponse.CopyFrom(templateResponse)
