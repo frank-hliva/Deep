@@ -49,6 +49,7 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)
 
 type Response internal (httpListenerResponse : HttpListenerResponse) =
+    do httpListenerResponse.Headers.Add("X-Powered-By", "Deep")
     member this.CopyFrom(templateResponse : HttpListenerResponse) : unit = httpListenerResponse.CopyFrom(templateResponse)
     member this.AddHeader(name : String, value : String) : unit = httpListenerResponse.AddHeader(name, value)
     member this.AppendHeader(name : String, value : String) : unit = httpListenerResponse.AppendHeader(name, value)

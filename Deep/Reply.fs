@@ -8,8 +8,10 @@ open System.Web
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open Deep.IO
+open System.IO.Compression
 
 type Reply(request : Request, response : Response, staticContentOptions : StaticContentOptions, view : IView) =
+    let writer = response.GetWriter()
     static let printToReply (value : string) (reply : Reply) =
         reply.Writer.Write(value)
         reply
@@ -18,7 +20,6 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
         reply
     do response.ContentType <- ContentTypes.html
     do response.ContentEncoding <- Encoding.UTF8
-    let writer = response.GetWriter()
     let toViewData = function
     | Some (viewData : (string * obj) list) -> viewData |> Map |> Some
     | _ -> None
@@ -32,7 +33,6 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
     interface IDisposable with
         member r.Dispose() =
             if r.AddCharsetToHeader then response.Headers |> addCharset
-            response.Headers.Add("Server", "Deep")
             writer.Dispose()
             r.IsDisposed <- true
     member r.Response = response
