@@ -1,0 +1,126 @@
+#gall-editor {
+  border: 1px solid #e4e8f1;
+  background: #f4f4f4;
+  border: 5px dashed #e4e8f1;
+  padding: 10px 0 0 10px;
+}
+#gall-editor.dragover {
+  border-color: #999;
+}
+#gall-editor .item {
+  float: left;
+  margin: 0 10px 10px 0;
+  position: relative;
+}
+#gall-editor .item img {
+  border: 1px solid #ccc;
+  display: block;
+}
+#gall-editor .album img {
+  border: 1px solid #8ca6c6;
+}
+#gall-editor a {
+  width: 16px;
+  height: 16px;
+  display: block;
+  position: absolute;
+  z-index: 1;
+  cursor: pointer;
+}
+#gall-editor .ico {
+  top: 10px;
+  left: 10px;
+}
+#gall-editor .album .ico {
+  background: url("../../../img/icons/images.png") no-repeat;
+}
+#gall-editor .image .ico {
+  background: url("../../../img/icons/view-img.png") no-repeat;
+}
+#gall-editor .del {
+  background: url("../../../img/icons/del.png") no-repeat;
+  top: 10px;
+  right: 10px;
+}
+#gall-editor .edit {
+  background: url("../../../img/icons/edit.png") no-repeat;
+  top: 10px;
+  left: 35px;
+}
+#gall-editor .item h1 {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 10px;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  background: #444;
+  opacity: 0.7;
+  margin: 0;
+  font-size: 15px;
+  font-weight: normal;
+}
+#item-editor {
+  padding: 5px;
+  background: #eee;
+  border: 1px solid #aaa;
+  position: absolute;
+  display: none;
+  width: 405px;
+  box-shadow: 1px 1px 4px #888;
+  z-index: 3;
+}
+#gall-editor-nav {
+  margin-bottom: 15px;
+}
+#gall-editor-nav a {
+  border: 1px solid #e4e8f1;
+  background: #f4f4f4;
+  padding: 5px;
+  width: 32px;
+  height: 32px;
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center center;
+  opacity: 0.35;
+  cursor: default;
+  float: left;
+  margin-right: 10px;
+}
+#gall-editor-nav a.enabled {
+  cursor: pointer;
+  opacity: 1;
+}
+#gall-editor-nav .back {
+  background-image: url("../../../img/icons/back.png");
+}
+#gall-editor-nav .save {
+  background-image: url("../../../img/icons/save2.png");
+}
+#progress-container {
+  border: 1px solid #e4e8f1;
+  background: #f4f4f4;
+  min-height: 40px;
+  padding: 5px 5px 0 5px;
+  margin-top: 20px;
+}
+.progress-bar {
+  height: 40px;
+  background: #444;
+  margin-bottom: 5px;
+}
+.progress-bar .pos {
+  width: 0;
+  height: 40px;
+  background: #9e0152;
+}
+.progress-bar .perc {
+  width: 100%;
+  line-height: 40px;
+  height: 40px;
+  text-align: center;
+  margin-top: -40px;
+  font-weight: bold;
+  color: #fff;
+}

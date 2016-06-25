@@ -1,0 +1,124 @@
+.PostContainer
+    position relative
+    width auto
+    height auto
+    padding 0
+    margin 0 0 30px
+    overflow hidden
+    -webkit-box-shadow 0 0 1px 1px #ddd
+    -moz-box-shadow 0 0 1px 1px #ddd
+    -ms-box-shadow 0 0 1px 1px #ddd
+    -o-box-shadow 0 0 1px 1px #ddd
+    box-shadow 0 0 1px 1px #ddd
+    &:hover
+        & > .post-option
+            opacity 1
+            -webkit-transition all .3s ease-in-out
+            -moz-transition all .3s ease-in-out
+            -ms-transition all .3s ease-in-out
+            -o-transition all .3s ease-in-out
+            transition all .3s ease-in-out
+            -webkit-transform translateY(0)
+            -moz-transform translateY(0)
+            -ms-transform translateY(0)
+            -o-transform translateY(0)
+            transform translateY(0)
+
+.post-option
+    position absolute
+    left 0
+    top 0
+    width 100%
+    padding 15px
+    margin-bottom 2px
+    background-color rgba(255,255,255,.95)
+    -webkit-border-radius 2px 2px 0 0
+    -moz-border-radius 2px 2px 0 0
+    -ms-border-radius 2px 2px 0 0
+    -o-border-radius 2px 2px 0 0
+    border-radius 2px 2px 0 0
+    -webkit-transform translateY(-100px)
+    -moz-transform translateY(-100px)
+    -ms-transform translateY(-100px)
+    -o-transform translateY(-100px)
+    transform translateY(-100px)
+    opacity 0
+    -webkit-transition all .3s ease-in-out
+    -moz-transition all .3s ease-in-out
+    -ms-transition all .3s ease-in-out
+    -o-transition all .3s ease-in-out
+    transition all .3s ease-in-out
+    .list-options
+        width 100%
+        display table
+        list-style-type none
+        margin 0
+        padding 0
+        & > li
+            display table-cell
+            width 25%
+            & > a
+                display block
+                text-align center
+                font-size 18px
+                line-height 26px
+                color #434a54
+                &:hover
+                    color #4a89dc
+                    text-decoration none
+                span
+                    display block
+                    padding 3px 0
+                    text-align center
+                    font-size 9px
+                    line-height 9px
+                    font-weight 400
+                    text-transform uppercase
+
+.post-image
+    background-color #fff
+    padding 15px
+    img
+        &:focus
+            outline 0
+
+.post-meta
+    padding 15px
+    background-color #fff
+
+.post-meta .list-meta,.post-meta .list-meta>li
+    font-size 12px
+    line-height 14px
+
+.post-desc
+    border-top 1px solid #ddd
+    padding 15px
+    background-color #fff
+    font-size 14px
+    h2
+        margin 0 0 20px
+        font-size 18px
+        line-height 26px
+        color #666
+
+.post-content
+    background-color #fff
+    padding 15px
+    img
+        display block
+        margin-left auto
+        margin-right auto
+    .tab-content
+        padding 20px
+        background-color #f3f3f3
+        border 1px solid #ddd
+        border-top none
+        
+.post-content .nav-tabs > .active > a,
+.post-content .nav-tabs > .active > a:active,
+.post-content .nav-tabs > .active > a:focus,
+.post-content .nav-tabs > .active > a:hover,
+.post-content .nav-tabs > li  >a:active,
+.post-content .nav-tabs > li > a:focus,
+.post-content .nav-tabs > li > a:hover
+    background-color #f3f3f3

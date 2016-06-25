@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>10553a39-e7a5-4329-ac07-fb68416b72e1</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>Deep</RootNamespace>
-    <AssemblyName>Deep</AssemblyName>
+    <ProjectGuid>62c68988-dc58-433e-8d09-a97ef47c1a2d</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>CelebAgency</RootNamespace>
+    <AssemblyName>CelebAgency</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>Deep</Name>
+    <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
+    <Name>CelebAgency</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,9 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Deep.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Debug\CelebAgency.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,7 +33,9 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Deep.XML</DocumentationFile>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DocumentationFile>bin\Release\CelebAgency.XML</DocumentationFile>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
@@ -50,32 +54,26 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Controller\HomeController.fs" />
+    <Content Include="View\Home\Index.html" />
+    <Content Include="View\Layout.html" />
+    <Content Include="View\AdminLayout.html" />
     <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Deep.fs" />
-    <Compile Include="String.fs" />
-    <Compile Include="Collections.fs" />
-    <Compile Include="Kernel.fs" />
-    <Compile Include="Function.fs" />
-    <Compile Include="Routing.fs" />
-    <Compile Include="Http.fs" />
-    <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
-    <Compile Include="Url.fs" />
-    <Compile Include="Writer.fs" />
-    <Compile Include="View.fs" />
-    <Compile Include="Listeners.fs" />
-    <Compile Include="StaticContent.fs" />
-    <Compile Include="Reply.fs" />
-    <Compile Include="Mvc.fs" />
-    <Compile Include="Routing.Routes.fs" />
-    <Compile Include="Routing.RouteBuilder.fs" />
-    <Compile Include="Routing.Router.fs" />
-    <Compile Include="Server.fs" />
-    <Compile Include="Boot.fs" />
-    <Compile Include="HttpApplication.fs" />
+    <Compile Include="Program.fs" />
+    <None Include="App.config" />
     <Content Include="packages.config" />
+    <None Include="App.json" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Castle.Windsor">
+      <HintPath>..\packages\Castle.Windsor.3.3.0\lib\net45\Castle.Windsor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <Private>True</Private>
@@ -87,7 +85,26 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
-    <Reference Include="System.Web" />
+    <ProjectReference Include="..\Deep.View.DotLiquid\Deep.View.DotLiquid.fsproj">
+      <Name>Deep.View.DotLiquid</Name>
+      <Project>{699e4a0a-2317-4377-810c-b464c883304d}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Deep.Windsor\Deep.Windsor.fsproj">
+      <Name>Deep.Windsor</Name>
+      <Project>{a8a00952-8baa-4e9e-a3ba-2684274cc62c}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Deep\Deep.fsproj">
+      <Name>Deep</Name>
+      <Project>{10553a39-e7a5-4329-ac07-fb68416b72e1}</Project>
+      <Private>True</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DotLiquid\DotLiquid\DotLiquid.csproj">
+      <Name>DotLiquid</Name>
+      <Project>{cb9372cd-9c1d-47ab-92d8-702d4d68324f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="System.Xml" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

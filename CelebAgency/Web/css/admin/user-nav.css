@@ -1,0 +1,42 @@
+#user-navigation
+{
+	position: absolute;
+	top: 139px;
+	right: 0;
+}
+
+#user-navigation
+{
+	font-size: 15px;
+	margin-bottom: 15px;
+}
+
+#user-navigation li
+{
+	list-style: none;
+	float: left;
+	margin-right: 40px;
+}
+
+#user-navigation ul
+{
+	height: 27px;
+}
+
+#user-navigation a
+{
+	color: #595959;
+	text-decoration: none;
+}
+
+#user-navigation strong
+{
+	color: #9e0152;
+	font-weight: normal;
+	display: block;
+	border-bottom: 5px solid #9e0152;
+	padding-bottom: 5px;
+	margin-top: -7px;
+	position: relative;
+	top: 5px;
+}

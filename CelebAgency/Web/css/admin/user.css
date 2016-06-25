@@ -1,0 +1,42 @@
+#address-form
+{
+	background: white;
+	border: 0px none;
+	padding: 0;
+	width: 500px;
+}
+
+#user-management
+{
+	margin: 25px 0;
+	width: 480px;
+	position: relative;
+}
+
+#address-type-select-bar
+{
+	margin: 25px 0;
+	position: relative;
+	background: #F4F4F4;
+}
+
+#address-type-select-bar div
+{
+	margin: 10px;
+}
+
+#address-type-select-bar .label
+{
+	cursor: pointer;
+	margin-left: 10px;
+}
+
+#address-type-select-bar .sheet-icon
+{
+	width: 48px;
+	height: 48px;
+	position: absolute;
+	top: 15px;
+	right: 10px;
+	background: url(../../img/sheet.png) no-repeat;
+}

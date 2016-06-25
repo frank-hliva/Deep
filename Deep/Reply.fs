@@ -5,13 +5,17 @@ open System.IO
 open System.Text
 open System.Net
 open System.Web
+open System.Collections.Generic
 open Newtonsoft.Json
-open Newtonsoft.Json.Linq
 open Deep.IO
-open System.IO.Compression
+open Deep.Collections
 
 type Reply(request : Request, response : Response, staticContentOptions : StaticContentOptions, view : IView) =
     let writer = response.GetWriter()
+    let viewData = new Dictionary<string, obj>()
+    let combineViewData (viewData : ViewData option) (replyViewData : IDictionary<string, obj>) =
+        (defaultArg viewData Map.empty)
+        |> Map.addMap (replyViewData |> Map.ofDict)
     static let printToReply (value : string) (reply : Reply) =
         reply.Writer.Write(value)
         reply
@@ -37,10 +41,13 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
             r.IsDisposed <- true
     member r.Response = response
     member r.Writer : StreamWriter = writer
+    member r.ViewData with get() = viewData
     member private r.View(path : string option, viewData : ViewData option) =
         match view with
         | null -> failwith "View engine not found"
-        | _ -> view.Render(request.Params, path, viewData) |> writer.Write
+        | _ ->
+            let viewData = r.ViewData |> combineViewData viewData
+            view.Render(request.Params, path, Some viewData) |> writer.Write
     member r.View(path : string, ?viewData : ViewData) = r.View(Some path, viewData)
     member r.View(?viewData : ViewData) = r.View(None, viewData)
     member r.View(path : string, ?viewData : (string * obj) list) =

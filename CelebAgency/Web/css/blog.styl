@@ -1,0 +1,164 @@
+.blog-container
+    margin-bottom 20px
+    -webkit-box-shadow 0 0 1px 1px #ddd
+    -moz-box-shadow 0 0 1px 1px #ddd
+    -ms-box-shadow 0 0 1px 1px #ddd
+    -o-box-shadow 0 0 1px 1px #ddd
+    box-shadow 0 0 1px 1px #ddd
+    background-color #fff
+    .blog-img
+        img
+            display block
+            width auto
+            margin-left auto
+            margin-right auto
+            max-width 100%
+            opacity .75
+            -webkit-transition opacity .3s ease-in-out
+            -moz-transition opacity .3s ease-in-out
+            -ms-transition opacity .3s ease-in-out
+            -o-transition opacity .3s ease-in-out
+            transition opacity .3s ease-in-out
+    &:hover
+        & > .blog-img
+            img
+                opacity 1
+                -webkit-transition opacity .3s ease-in-out
+                -moz-transition opacity .3s ease-in-out
+                -ms-transition opacity .3s ease-in-out
+                -o-transition opacity .3s ease-in-out
+                transition opacity .3s ease-in-out
+    .blog-description
+        display table
+        padding 20px
+        h2
+            display table-cell
+            margin 0
+            vertical-align top
+            font-size 20px
+            line-height 24px
+            font-weight 700
+            text-transform uppercase
+            width 75%
+            a
+                color #6b6e80
+                &:hover
+                    color #428bca
+                    text-decoration none
+            small
+                display block
+                margin 10px 0
+                font-size 13px
+                color #999
+                line-height 18px
+                text-transform none
+                font-weight 400
+        h3
+            display table-cell
+            margin 0
+            width 25%
+            vertical-align top
+            font-size 16px
+            line-height 16px
+            font-weight 700
+            span
+                padding 5px 10px
+                display block
+                text-align center
+
+.blog-title
+    position relative
+    padding-left 90px
+    padding-bottom 40px
+    h2
+        font-weight 900
+        font-size 34px
+        line-height 38px
+        a
+            color #6b6e80
+            text-decoration none
+            &:hover
+                color #428bca
+                text-decoration none
+    small
+        font-size 13px
+    .meta-date
+        background #428bca
+        width 75px
+        height 45px
+        display inline-block
+        position absolute
+        left 0
+        top 10px
+        color #fff
+        text-align center
+        font-size 12px
+        &:before
+            content ""
+            position absolute
+            left 0
+            top -18px
+            border 40px
+            border-top 0 solid transparent
+            border-right 38px solid transparent
+            border-bottom 18px solid #428bca
+            border-left 38px solid transparent
+        &:after
+            content ""
+            position absolute
+            right 0
+            bottom -18px
+            border 40px
+            border-top 18px solid #428bca
+            border-right 38px solid transparent
+            border-bottom 0 solid transparent
+            border-left 38px solid transparent
+        .meta-date-day
+            font-size 26px
+            line-height 24px
+            font-weight 900
+            display block
+            margin-top -5px
+            position relative
+            z-index 2
+        .meta-date-month
+            font-size 13px
+            line-height 14px
+            font-weight 300
+            display block
+            text-transform uppercase
+            position relative
+            z-index 2
+        .meta-date-year
+            font-size 14px
+            line-height 14px
+            font-weight 900
+            display block
+            position relative
+            z-index 2
+
+.blog-container-related
+    display block
+    margin-bottom 20px
+    img
+        display block
+        max-width 100%
+        height auto
+        margin-left auto
+        margin-right auto
+        margin-bottom 20px
+        -webkit-border-radius 2px
+        -moz-border-radius 2px
+        -ms-border-radius 2px
+        -o-border-radius 2px
+        border-radius 2px
+    h4
+        margin 0
+        font-size 16px
+        line-height 28px
+        font-weight 600
+        a
+            color #6b6e80
+            &:hover
+                color #428bca
+                text-decoration none

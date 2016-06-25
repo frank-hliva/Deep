@@ -1,0 +1,93 @@
+*
+{
+	margin: 0;
+	padding: 0;
+}
+
+html
+{
+	background: white;
+}
+
+#layout
+{
+	width: 1280px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.cleaner
+{
+	clear: both;
+	font-size: 0;
+	line-height: 0;
+	height: 0;
+}
+
+.col
+{
+	float: left;
+}
+
+.box,
+.container,
+.flash
+{
+	background: #f6f7f9;
+}
+
+#side-bar .box
+{
+	background: white;
+}
+
+#side-bar h1
+{
+	background: white;
+	font-size: 17px;
+	margin: 20px 0 5px 0;
+}
+
+.container,
+.alert-danger,
+form,
+.flash
+{
+    padding: 10px;
+    margin: 15px 0;
+    border: 1px solid #e4e8f1;
+}
+
+.alert-danger
+{
+    border: 1px solid #ffe8f1;
+	background: #fff7f9;
+	color: #b96b7e;
+}
+
+.path
+{
+	color: #9E0152;
+}
+
+ul, ol
+{
+	margin-left: 18px;
+}
+
+ol div
+{
+	margin-bottom: 16px;
+}
+
+.delim
+{
+	background: #F4F4F4;
+	margin: 4px 0 25px 0;
+	height: 3px;
+}
+
+a img, img
+{
+	border: 0;
+}

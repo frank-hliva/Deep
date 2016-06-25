@@ -1,0 +1,215 @@
+.portfolio-container
+    position relative
+    display block
+    margin-bottom 20px
+    padding 5px
+    background-color #fff
+    -webkit-box-shadow 0 0 1px 1px #ddd
+    -moz-box-shadow 0 0 1px 1px #ddd
+    -ms-box-shadow 0 0 1px 1px #ddd
+    -o-box-shadow 0 0 1px 1px #ddd
+    box-shadow 0 0 1px 1px #ddd
+    overflow hidden
+    .portfolio-img
+        position relative
+        width auto
+        height auto
+        overflow hidden
+        img
+            -webkit-transition all .3s ease-in-out
+            -moz-transition all .3s ease-in-out
+            -ms-transition all .3s ease-in-out
+            -o-transition all .3s ease-in-out
+            transition all .3s ease-in-out
+            -webkit-transform translate3d(0,0,0)
+            -moz-transform translate3d(0,0,0)
+            -ms-transform translate3d(0,0,0)
+            -o-transform translate3d(0,0,0)
+            transform translate3d(0,0,0)
+        a
+            position absolute
+            left 50%
+            top 50%
+            z-index 3
+            width 50px
+            height 50px
+            margin-left -25px
+            margin-top -25px
+            -webkit-border-radius 100%
+            -moz-border-radius 100%
+            -ms-border-radius 100%
+            -o-border-radius 100%
+            border-radius 100%
+            background-color rgba(255,255,255,.8)
+            text-align center
+            -webkit-transform translate3d(-30px,0,0)
+            -moz-transform translate3d(-30px,0,0)
+            -ms-transform translate3d(-30px,0,0)
+            -o-transform translate3d(-30px,0,0)
+            transform translate3d(-30px,0,0)
+            opacity 0
+            -webkit-transition all .3s ease-in-out
+            -moz-transition all .3s ease-in-out
+            -ms-transition all .3s ease-in-out
+            -o-transition all .3s ease-in-out
+            transition all .3s ease-in-out
+    &:hover
+        .portfolio-img
+            img
+                opacity .75
+                -webkit-transform translate3d(0,-30px,0)
+                -moz-transform translate3d(0,-30px,0)
+                -ms-transform translate3d(0,-30px,0)
+                -o-transform translate3d(0,-30px,0)
+                transform translate3d(0,-30px,0)
+                -ms-transition-delay .15s
+                -webkit-transition all .3s ease-in-out
+                -moz-transition all .3s ease-in-out
+                -ms-transition all .3s ease-in-out
+                -o-transition all .3s ease-in-out
+                transition all .3s ease-in-out
+            a
+                opacity 1
+                -webkit-transform translate3d(0,0,0)
+                -moz-transform translate3d(0,0,0)
+                -ms-transform translate3d(0,0,0)
+                -o-transform translate3d(0,0,0)
+                transform translate3d(0,0,0)
+                -webkit-transition all .3s ease-in-out
+                -moz-transition all .3s ease-in-out
+                -ms-transition all .3s ease-in-out
+                -o-transition all .3s ease-in-out
+                transition all .3s ease-in-out
+        & > h3
+            position absolute
+            top 20px
+            opacity 1
+            -webkit-transition all .35s ease-in-out
+            -moz-transition all .35s ease-in-out
+            -ms-transition all .35s ease-in-out
+            -o-transition all .35s ease-in-out
+            transition all .35s ease-in-out
+        .portfolio-desc
+            position absolute
+            left 0
+            bottom 0
+            width 100%
+            height auto
+            background-color #fff
+            -webkit-transition bottom .35s ease-in-out
+            -moz-transition bottom .35s ease-in-out
+            -ms-transition bottom .35s ease-in-out
+            -o-transition bottom .35s ease-in-out
+            transition bottom .35s ease-in-out
+    h3
+        position absolute
+        top 50px
+        right 20px
+        width 80%
+        margin 0
+        padding-right 10px
+        border-right 2px solid #fff
+        text-align right
+        font-weight 700
+        font-size 14px
+        line-height 18px
+        text-transform uppercase
+        color #fff
+        opacity 0
+        -webkit-transition all .35s ease-in-out
+        -moz-transition all .35s ease-in-out
+        -ms-transition all .35s ease-in-out
+        -o-transition all .35s ease-in-out
+        transition all .35s ease-in-out
+        a
+            color #fff
+            &:hover
+                color #434a54
+                text-decoration none
+    .portfolio-desc
+        position absolute
+        left 0
+        bottom -48px
+        width 100%
+        height auto
+        padding 12px 5px 5px
+        background-color #fff
+        -webkit-transition bottom .35s ease-in-out
+        -moz-transition bottom .35s ease-in-out
+        -ms-transition bottom .35s ease-in-out
+        -o-transition bottom .35s ease-in-out
+        transition bottom .35s ease-in-out
+        .list-meta
+            font-size 13px
+            text-align center
+
+.portfolio-container .portfolio-img a .fa,.portfolio-container .portfolio-img a .glyphicon
+    width 50px
+    height 50px
+    text-align center
+    font-size 18px
+    line-height 50px
+
+.portfolio-container .portfolio-img a:active,.portfolio-container .portfolio-img a:focus,.portfolio-container .portfolio-img a:hover
+    outline 0
+    
+#portfolio-content
+    .col-md-3
+        margin-right -1px
+
+.portfolio-title
+    display block
+    position relative
+    margin-bottom 40px
+    padding-bottom 20px
+    border-bottom 1px solid #eee
+    h2
+        font-weight 900
+        font-size 34px
+        line-height 38px
+        a
+            color #6b6e80
+            text-decoration none
+            &:hover
+                color #428bca
+                text-decoration none
+    small
+        font-size 13px
+
+#single-portfolio-slider
+    .carousel-control
+        width 40px
+        top 40%
+        color rgba(255,255,255,.8)
+        text-shadow none
+        opacity .8
+        margin-left 40px
+        margin-right 40px
+        -webkit-transition opacity .2s ease-in-out
+        -moz-transition opacity .2s ease-in-out
+        -ms-transition opacity .2s ease-in-out
+        -o-transition opacity .2s ease-in-out
+        transition opacity .2s ease-in-out
+        &.left
+            border-top-right-radius 5px
+            border-bottom-right-radius 5px
+            margin-left 0
+        &.right
+            border-top-left-radius 5px
+            border-bottom-left-radius 5px
+            margin-right 0
+
+#single-portfolio-slider .carousel-control:focus,#single-portfolio-slider .carousel-control:hover
+    color #fff
+    text-decoration none
+    opacity 1
+
+#single-portfolio-slider .carousel-control.left,#single-portfolio-slider .carousel-control.right
+    background rgba(0,0,0,.5)
+    height 60px
+    width 50px
+    margin-top -25px
+    margin-left 0
+    margin-right 0
+    font-size 20px
+    line-height 60px

@@ -1,0 +1,15 @@
+﻿{
+    "RouteBuilder": {
+        "Assemblies": [ "CelebAgency, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
+    },
+    "Controllers": {
+        "Assemblies": [ "CelebAgency, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
+    },
+    "View": {
+        "Extension": ".html",
+        "Directory": "~/../../View"
+    },
+    "StaticContent": {
+        "Directory": "~/../../Web"
+    }
+}

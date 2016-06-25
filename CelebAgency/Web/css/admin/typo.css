@@ -1,0 +1,69 @@
+body,
+table
+{
+	color: #595959;
+	font: 15px sans-serif;
+	line-height: 1.5em;
+}
+
+table.framed td div
+{
+	line-height: 11px;
+}
+
+p
+{
+	margin: 15px 0;
+}
+
+a
+{
+	text-decoration: none;
+	color: #9e0152;
+}
+
+a:hover
+{
+	color: black;
+}
+
+.site-title
+{
+	width: 292px;
+	height: 34px;
+	margin: 40px 0 35px 0;
+}
+
+.site-title h1
+{
+	display: none;
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	color: #9e0152;
+}
+
+h1
+{
+	font-size: 22px;
+	margin: 20px 0;
+}
+
+h3
+{
+	margin: 15px 0;
+	font-size: 17px;
+}
+
+h4
+{
+	font-weight: normal;
+	font-size: 16px;
+}
+
+.item .title
+{
+	margin: 25px 0 20px 0;
+	font-size: 25px;
+}
