@@ -9,8 +9,7 @@ open System
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.Html("<img src='/10731624_729780623819194_2144142704_n.jpg'>")
-
+        reply.Html("<img src='/img/silicone33.jpg'><img src='/img/tumblr_nqkjoc8Bvc1tm1n9jo1_500.jpg'>")
 
     member c.Page(id : int) =
         use writer = reply.Writer

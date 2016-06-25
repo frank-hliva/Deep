@@ -1,10 +1,7 @@
 ﻿open System
 open System.Reflection
+open System.IO
 
-let foo () = async { () }
 
-let bar () = ()
 
-System.Text.Encoding.UTF8.HeaderName
-
-foo().GetType() |> isAsync
+let path = Path.join(["~/../../"; "/aaa"; "sss/aaa.jpg"])

@@ -53,6 +53,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Deep.fs" />
     <Compile Include="String.fs" />
+    <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Kernel.fs" />
     <Compile Include="Url.fs" />
@@ -63,8 +64,10 @@
     <Compile Include="View.fs" />
     <Compile Include="Reply.fs" />
     <Compile Include="Mvc.fs" />
+    <Compile Include="Listeners.fs" />
     <Compile Include="Routing.Routes.fs" />
     <Compile Include="Routing.RouteBuilder.fs" />
+    <Compile Include="StaticContent.fs" />
     <Compile Include="Routing.Router.fs" />
     <Compile Include="Server.fs" />
     <Compile Include="Boot.fs" />
@@ -83,6 +86,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

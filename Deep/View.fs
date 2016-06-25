@@ -3,6 +3,7 @@
 open System
 open System.IO
 open Deep.Routing
+open Deep.IO
 
 type ViewData = Map<string, obj>
 
@@ -10,26 +11,25 @@ type ViewData = Map<string, obj>
 type IView =
     abstract Render : routeParams : RouteParams * path : string option * viewData : ViewData option -> string
 
-type ViewOptions = { Extension : string; RootDirectory : string }
+type ViewOptions = { Extension : string; Directory : string }
 
 type ViewConfig(config : Config) =
-    member c.GetViewOptions() =
+    member c.GetOptions() =
         let options = config.SelectAs<ViewOptions>("View")
-        let baseDir = Environment.CurrentDirectory
-        { options with RootDirectory = options.RootDirectory.Replace("~/", sprintf "%s/" baseDir) }
+        { options with Directory = options.Directory |> Path.map }
 
 type ViewPathFinder(viewOptions : ViewOptions) =
 
     member f.TryFind (parameters : Map<string, string>, path) =
         let fn = Path.ChangeExtension(path, viewOptions.Extension)
         [
-            Path.Combine(viewOptions.RootDirectory, parameters.["Controller"], fn)
-            Path.Combine(viewOptions.RootDirectory, fn)
-            Path.Combine(viewOptions.RootDirectory, "Shared", fn)
-            Path.Combine(fn)
+            Path.join([viewOptions.Directory; parameters.["Controller"]; fn])
+            Path.join([viewOptions.Directory; fn])
+            Path.join([viewOptions.Directory; "Shared"; fn])
+            fn
         ] |> List.tryFind(File.Exists)
 
     member f.TryFind (parameters : Map<string, string>) =
         f.TryFind(parameters, parameters.["Action"])
 
-    new(viewConfig : ViewConfig) = ViewPathFinder(viewConfig.GetViewOptions())
+    new(viewConfig : ViewConfig) = ViewPathFinder(viewConfig.GetOptions())

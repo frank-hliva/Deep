@@ -20,9 +20,17 @@ type RouteBuilder(config : RouteBuilderConfig) =
 let config (container : IWindsorContainer) =
     container
         .Register(Component.For<Config>().LifeStyle.Singleton)
-        .Register(Component.For<RouteBuilderConfig>().LifeStyle.Singleton)
-        .Register(Component.For<IRouteBuilder>().ImplementedBy<RouteBuilder>().LifeStyle.Singleton)
         .Register(Component.For<ControllerConfig>().LifeStyle.Singleton)
         .Register(Component.For<ViewConfig>().LifeStyle.Singleton)
         .Register(Component.For<IView>().ImplementedBy<Deep.View.DotLiquid.View>().LifeStyle.Singleton)
-        .Register(Component.For<IRouter>().ImplementedBy<Router>().LifeStyle.Singleton)
+        .Register(Component.For<RouteBuilderConfig>().LifeStyle.Singleton)
+        .Register(Component.For<IRouteBuilder>().ImplementedBy<RouteBuilder>().LifeStyle.Singleton)
+        .Register(Component.For<Router>().LifeStyle.Singleton)
+        .Register(Component.For<StaticContentConfig>().LifeStyle.Singleton)
+        .Register(Component.For<StaticContent>().LifeStyle.Singleton)
+        |> ignore
+    let listenerContainer =
+        ListenerContainer()
+            .Use(container.Resolve<StaticContent>())
+            .Use(container.Resolve<Router>())
+    container.Register(Component.For<ListenerContainer>().Instance(listenerContainer).LifeStyle.Singleton)

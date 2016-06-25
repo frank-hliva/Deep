@@ -7,6 +7,9 @@
     },
     "View": {
         "Extension": ".html",
-        "RootDirectory": "~/../../View"
+        "Directory": "~/../../View"
+    },
+    "StaticContent": {
+        "Directory": "~/../../Web"
     }
 }

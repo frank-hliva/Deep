@@ -49,6 +49,3 @@ type SimpleRouteBuilder(builder : routes -> routes) =
     let routes = [] |> builder
     interface IRouteBuilder with
         override b.Routes = routes
-
-type IRouter =
-    abstract Match : string -> string -> RouteMatchResult option

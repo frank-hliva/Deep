@@ -10,13 +10,13 @@ open System.IO
 type RequestKernelConfigurator(config : IKernel -> IKernel) =
     member c.Config = config
 
-type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfigurator : RequestKernelConfigurator) =
+type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerContainer, requestConfigurator : RequestKernelConfigurator) =
 
     abstract RegisterRequestObjects : HttpListenerContext -> IKernel -> IKernel
     default a.RegisterRequestObjects (context : HttpListenerContext) (requestContainer : IKernel) =
         [
             context |> box
-            Request(context.Request) |> box
+            new Request(context.Request) |> box
             new Response(context.Response) |> box
         ]
         |> Seq.fold
@@ -28,24 +28,11 @@ type HttpApplication(applicationKernel : IKernel, router : IRouter, requestConfi
             | null -> kernel
             | _ -> requestConfigurator.Config(kernel)
 
-    member internal a.AutoDisposeObjects(kernel : IKernel) =
-        match kernel.TryFindInstance(typedefof<Reply>) with
-        | Some reply ->
-            let reply = reply :?> Reply
-            if not reply.IsDisposed then (reply :> IDisposable).Dispose()
-        | _ -> ()
-
     member a.Container = applicationKernel
 
-    member a.Listener(context : HttpListenerContext) = async {
-        let request = context.Request
+    member a.Listener(context : HttpListenerContext) =
         let kernel = new Kernel(applicationKernel) :> IKernel |> a.RegisterRequestObjects context
-        match router.Match request.HttpMethod request.RawUrl with
-        | Some result ->
-            let kernel = kernel.RegisterInstance(new Request(context.Request, result.Parameters))
-            do! result.Handler.InvokeAction kernel
-            kernel |> a.AutoDisposeObjects
-        | _ -> () }
+        listenerContainer.Apply(kernel)
 
     interface IApplication with
         override a.Run(uri : string) = Server.listen uri a.Listener
