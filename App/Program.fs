@@ -9,10 +9,10 @@ open System
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.View([ "name" => "Frank Hliva" ])
+        reply.View [ "name" => "Test" ]
 
     member c.Page(id : int) =
-        reply |> Reply.printf "Fero %d" id
+        reply |> Reply.printf "Test %d" id
 
     member c.Download() =
         reply.SendFile(@"img/1397648551.jpg", "xxx.jpeg")
