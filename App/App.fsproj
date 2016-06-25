@@ -57,9 +57,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Program.fs" />
-    <None Include="App.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="App.json" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

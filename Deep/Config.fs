@@ -2,6 +2,7 @@
 
 open System
 open System.IO
+open Deep.IO
 open System.Text
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
@@ -27,8 +28,7 @@ type Config(source : IConfigSource) =
     member c.SelectAs<'t>(path : string) =
         JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
     new(path : string) = Config(path |> ConfigFileSource)
-    new() = Config(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "App.json"))
-
+    new() = Config(Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"]))
 
 type IAssemblyConfig =
     abstract GetAssemblies: unit -> Assembly[]

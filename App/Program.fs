@@ -9,11 +9,13 @@ open System
 type HomeController(reply : Reply) =
 
     member c.Index() =
-        reply.Html("<img src='/img/silicone33.jpg'><img src='/img/tumblr_nqkjoc8Bvc1tm1n9jo1_500.jpg'>")
+        reply.View([ "name" => "Frank Hliva" ])
 
     member c.Page(id : int) =
-        use writer = reply.Writer
-        writer |> Writer.wprintf "Fero %d" id
+        reply |> Reply.printf "Fero %d" id
+
+    member c.Download() =
+        reply.SendFile(@"img/1397648551.jpg", "xxx.jpeg")
 
 [<Get("/test/?param1/?param2")>]
 let hello1 (req : Request) (reply : Reply) =

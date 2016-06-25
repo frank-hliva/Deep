@@ -1,6 +1,9 @@
 ﻿namespace Deep.IO
 
 open System
+open System.IO
+open System.Web
+open Deep
 
 module Path =
 
@@ -24,3 +27,35 @@ module Path =
                 | _ -> path
                 |> fun path -> System.IO.Path.Combine(acc, path)) ""
         |> map
+
+type SendFileOptions = { BufferSize : int; ContentType : string } 
+
+type File() =
+
+    static let defaultSendOptions (fileName : string) (options : SendFileOptions option) =
+        let defaultBufferSize = 256 * 1024
+        let options =
+            match options with
+            | Some options -> options
+            | _ -> { BufferSize = defaultBufferSize; ContentType = null }
+        let options =
+            if String.IsNullOrEmpty(options.ContentType)
+            then { options with ContentType = MimeMapping.GetMimeMapping(fileName) }
+            else options
+        match options.BufferSize with
+        | 0 -> { options with BufferSize = defaultBufferSize }
+        | _ -> options
+
+    static member send (path : string, response : Response, ?options: SendFileOptions) = async {
+        let options = options |> defaultSendOptions (Path.GetFileName path)
+        use fileStream = File.OpenRead(path)
+        response.ContentLength64 <- fileStream.Length
+        response.SendChunked <- false
+        response.ContentType <- options.ContentType
+        let buffer = Array.create(options.BufferSize) 0uy
+        let rec loop () = async {
+            let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
+            if read > 0 then
+                do! response.OutputStream.AsyncWrite(buffer, 0, read)
+                do! loop() }
+        do! loop() }

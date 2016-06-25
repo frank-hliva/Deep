@@ -4,10 +4,12 @@ open System
 open System.IO
 open System.Text
 open System.Net
+open System.Web
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
+open Deep.IO
 
-type Reply(request : Request, response : Response, view : IView) =
+type Reply(request : Request, response : Response, staticContentOptions : StaticContentOptions, view : IView) =
     static let printToReply (value : string) (reply : Reply) =
         reply.Writer.Write(value)
         reply
@@ -30,6 +32,7 @@ type Reply(request : Request, response : Response, view : IView) =
     interface IDisposable with
         member r.Dispose() =
             if r.AddCharsetToHeader then response.Headers |> addCharset
+            response.Headers.Add("Server", "Deep")
             writer.Dispose()
             r.IsDisposed <- true
     member r.Response = response
@@ -53,8 +56,22 @@ type Reply(request : Request, response : Response, view : IView) =
         | Some statusCode -> r.StatusCode <- statusCode
         | _ -> ()
         (r :> IDisposable).Dispose()
-    new(request : Request, response : Response) =
-        new Reply(request, response, null)
+    member r.SendFile(path : string, ?fileName : string, ?bufferSize : int) = async {
+        let path = 
+            [ Path.join([staticContentOptions.Directory; path]); path ]
+            |> List.find(File.Exists)
+        let fileName = defaultArg fileName (Path.GetFileName path)
+        [
+            "Content-Disposition", (sprintf "attachment; filename=\"%s\"" fileName)
+            "Content-Transfer-Encoding", "binary"
+            "Expires", "0"
+            "Cache-Control", "must-revalidate, post-check=0, pre-check=0"
+            "Pragma", "public"
+        ] |> List.iter(fun (k, v) -> r.Response.Headers.Add(k, v))
+        do! File.send(path, r.Response, {
+            ContentType = "application/octet-stream"
+            BufferSize = defaultArg bufferSize staticContentOptions.BufferSize
+        }) }
     member r.Content(html : string, contentType : string) =
         r.ContentType <- contentType
         r.Writer.Write(html)
@@ -72,5 +89,11 @@ type Reply(request : Request, response : Response, view : IView) =
         r.Writer.Write(json)
     member r.AsJson(o : obj) =
         o |> JsonConvert.SerializeObject |> r.Json
+    new(request : Request, response : Response, staticContentOptions : StaticContentOptions) =
+        new Reply(request, response, staticContentOptions, null)
+    new(request : Request, response : Response, staticContentConfig : StaticContentConfig, view : IView) =
+        new Reply(request, response, staticContentConfig.GetOptions(), view)
+    new(request : Request, response : Response, staticContentConfig : StaticContentConfig) =
+        new Reply(request, response, staticContentConfig.GetOptions(), null)
     static member printf format = Printf.ksprintf printToReply format
     static member printfn format = Printf.ksprintf printToReplyLineEnd format

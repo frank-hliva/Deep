@@ -4,7 +4,7 @@ open System.IO
 open System.Web
 open Deep.IO
 
-type StaticContentOptions = { Directory : string }
+type StaticContentOptions = { Directory : string; BufferSize : int }
 
 type StaticContentConfig(config : Config) =
     member c.GetOptions() =
@@ -13,21 +13,6 @@ type StaticContentConfig(config : Config) =
 
 type StaticContent(staticContentOptions : StaticContentOptions) =
 
-    let sendFile (response : Response) (path : string) = async {
-            use fileStream = File.OpenRead(path)
-            let fileName = Path.GetFileName(path)
-            response.ContentLength64 <- fileStream.Length
-            response.SendChunked <- false
-            response.ContentType <- MimeMapping.GetMimeMapping(fileName)
-            let buffer = Array.create(64 * 1024) 0uy
-            let rec loop () = async {
-                let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
-                if read > 0 then
-                    do! response.OutputStream.AsyncWrite(buffer, 0, read)
-                    do! loop() }
-            do! loop()
-        }
-
     interface IListener with
 
         member l.Listen (request : Request) (response : Response) (kernel : IKernel) (state : ListenerState) = async {
@@ -35,7 +20,10 @@ type StaticContent(staticContentOptions : StaticContentOptions) =
             else
                 let path = Path.join([staticContentOptions.Directory; request.RawUrl])
                 if File.Exists(path) then
-                    do! path |> sendFile response
+                    do! File.send(path, response, {
+                        BufferSize = staticContentOptions.BufferSize
+                        ContentType = null
+                    })
                     return ListenerResult.End
                 else return ListenerResult.Next }
 
