@@ -9,8 +9,8 @@ type ControllerConfig(config : Config) =
     override c.GetAssemblyNames() =
         config.SelectAs<string[]>("Controllers.Assemblies")
 
-module Controllers =
-    let internal suffix = "Controller"
+module Controller =
+    let suffix = "Controller"
 
     let findAll (assemblies : Assembly[]) =
         assemblies
@@ -37,6 +37,10 @@ module internal MvcKeys =
     let Action = "Action"
     let Id = "Id"
 
+type ControllerMethodType =
+| Required = 0
+| Optional = 1
+
 type MvcRouteHandler() =
 
     let tryRegisterInt32Id (id : string) (container : IKernel) =
@@ -60,13 +64,49 @@ type MvcRouteHandler() =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
             (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
-            |> Controllers.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controllers.suffix)
+            |> Controller.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controller.suffix)
             |> function
-            | Some controllerType ->
+            | Some controllerType -> async {
                 let controller = container.Register(controllerType).Resolve(controllerType)
-                match controllerType.GetMethod(parameters.[MvcKeys.Action]) with
-                | null -> () |> RouteHandlerResult.toAsync
-                | action ->
-                    let container = container |> registerId parameters.[MvcKeys.Id]
-                    action |> Function.invokeOn controller container |> RouteHandlerResult.toAsync
+                for (methodName, methodType) in 
+                    [
+                        ("Loaded", ControllerMethodType.Optional)
+                        ("BeforeAction", ControllerMethodType.Optional)
+                        (parameters.[MvcKeys.Action], ControllerMethodType.Required)
+                        ("AfterAction", ControllerMethodType.Optional)
+                    ] do
+                    match controllerType.GetMethod(methodName) with
+                    | null -> if methodType = ControllerMethodType.Required then () else ()
+                    | action ->
+                        let container = container |> registerId parameters.[MvcKeys.Id]
+                        do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync) }
             | _ -> () |> RouteHandlerResult.toAsync
+
+namespace Deep.Mvc
+
+open Deep
+open Deep.Routing
+open System.Net
+
+[<CompilationRepresentationAttribute(CompilationRepresentationFlags.ModuleSuffix)>]
+module Controller =
+    
+    let executeAction (kernel : IKernel) (path : string) =
+        let items = path.Split [| '/' |]
+        let controller, action, id =
+            match items.Length with
+            | 3 -> items.[0], items.[1], items.[2]
+            | 2 -> items.[0], items.[1], ""
+            | _ -> failwith "invalid path"
+        let mvcRouteHandler = new MvcRouteHandler() :> IRouteHandler
+        let context = kernel.Resolve<HttpListenerContext>()
+        let routeParams =
+            Map [
+                MvcKeys.Controller, controller
+                MvcKeys.Action, action
+                MvcKeys.Id, id
+            ]
+        kernel
+            .RegisterInstance<Request>(new Request(context.Request, routeParams))
+            .Register<Reply>(LifeTime.Singleton)
+        |> mvcRouteHandler.InvokeAction

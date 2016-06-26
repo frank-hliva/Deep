@@ -1,0 +1,14 @@
+﻿{% extends '../layout.html' %}
+{% block content %}
+<article class="container">
+    <header>
+        <h1>403 - Access is denied</h1>
+    </header>
+    <div class="body">
+        <p>You don't have permission to access this location</p>
+        {% if msg != null %}
+        <p>{{msg}}</p>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

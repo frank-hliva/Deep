@@ -13,6 +13,10 @@ open Deep.Collections
 type Reply(request : Request, response : Response, staticContentOptions : StaticContentOptions, view : IView) =
     let writer = response.GetWriter()
     let viewData = new Dictionary<string, obj>()
+    do
+        viewData.Add("Request", request)
+        viewData.Add("Url", request.RawUrl)
+        viewData.Add("StaticContentOptions", staticContentOptions)
     let combineViewData (viewData : ViewData option) (replyViewData : IDictionary<string, obj>) =
         (defaultArg viewData Map.empty)
         |> Map.addMap (replyViewData |> Map.ofDict)
@@ -24,9 +28,7 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
         reply
     do response.ContentType <- ContentTypes.html
     do response.ContentEncoding <- Encoding.UTF8
-    let toViewData = function
-    | Some (viewData : (string * obj) list) -> viewData |> Map |> Some
-    | _ -> None
+    let toViewData = Map >> Some
     let addCharset (headers : WebHeaderCollection) =
         headers.Add(
             "Content-Type",
@@ -50,9 +52,9 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
             view.Render(request.Params, path, Some viewData) |> writer.Write
     member r.View(path : string, ?viewData : ViewData) = r.View(Some path, viewData)
     member r.View(?viewData : ViewData) = r.View(None, viewData)
-    member r.View(path : string, ?viewData : (string * obj) list) =
+    member r.View(path : string, viewData : (string * obj) list) =
         r.View(Some path, viewData |> toViewData)
-    member r.View(?viewData : (string * obj) list) =
+    member r.View(viewData : (string * obj) list) =
         r.View(None, viewData |> toViewData)
     member this.StatusCode with get() = response.StatusCode and set(value) = response.StatusCode <- value
     member this.ContentEncoding with get() = response.ContentEncoding and set(value) = response.ContentEncoding <- value

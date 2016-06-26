@@ -3,10 +3,12 @@
 open Deep
 
 type HomeController(reply : Reply) =
+    inherit FrontendController()
 
     member c.Index() =
-        reply.ViewData.["xxx"] <- "yyy"
-        reply.View [ "name" => "Test" ]
+        reply.ViewData.["zzz"] <- "3"
+        reply.View ["name" => "Fero"]
+        
 
     member c.Page(id : int) =
         reply |> Reply.printf "Test %d" id

@@ -1,0 +1,14 @@
+﻿{% extends '../layout.html' %}
+{% block content %}
+<article class="container">
+    <header>
+        <h1>500 - Interná serverová chyba</h1>
+    </header>
+    <div class="body">
+        {% if msg != null %}
+        <p>{{msg}}</p>
+        {% endif %}
+        <p>Prosím kontaktujte <a href="mailto:{{app.email}}">správcu</a>.</p>
+    </div>
+</article>
+{% endblock %}

@@ -54,7 +54,15 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Controller\Base\BaseController.fs" />
+    <Compile Include="Controller\Base\FrontendController.fs" />
+    <Compile Include="Controller\Base\BackendController.fs" />
+    <Compile Include="Controller\Error\ErrorController.fs" />
     <Compile Include="Controller\HomeController.fs" />
+    <Content Include="View\Error\Page403.html" />
+    <Content Include="View\Error\Page404.html" />
+    <Content Include="View\Error\Page500.html" />
+    <Content Include="View\Error\PageDefault.html" />
     <Content Include="View\Home\Index.html" />
     <Content Include="View\Layout.html" />
     <Content Include="View\AdminLayout.html" />
