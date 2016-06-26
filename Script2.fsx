@@ -1,9 +1,5 @@
-﻿namespace Deep
-
-open System
-
-type IApplication =
-    abstract Run : string -> unit
+﻿open System
+open System.Reflection
 
 [<AllowNullLiteral>]
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
@@ -27,9 +23,6 @@ module ContentTypes =
     let plainText = "text/plain"
     let xml = "application/xml"
     let json = "application/json"
-
-[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
-type IgnoreActionAttribute() = inherit Attribute()
 
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
 type AnyAttribute(routePattern : string, priority : int) =
@@ -61,6 +54,29 @@ type DeleteAttribute(routePattern : string, priority : int) =
     new(routePattern) = DeleteAttribute(routePattern, 0)
     new() = DeleteAttribute("")
 
-[<AutoOpen>]
-module Operators =
-    let (=>) a b = a, box b
+type Controller() =
+    member x.Test1() =
+        "Test1"
+
+    [<Put>]
+    member x.Test1(post : string) =
+        "Test1Post"
+
+let rec findMethod (methodName : string) (httpMethod : string) (controllerType : Type) =
+    let methods =
+        controllerType.GetMethods(BindingFlags.Public ||| BindingFlags.Instance ||| BindingFlags.DeclaredOnly)
+        |> Seq.filter(fun mi -> mi.Name = methodName)
+    match methods
+        |> Seq.tryFind
+            (fun mi ->
+                let routeAttr = mi.GetCustomAttribute<RouteAttribute>()
+                match httpMethod with
+                | "" -> routeAttr = null || routeAttr.HttpMethod = HttpMethods.Any
+                | _ -> routeAttr <> null && routeAttr.HttpMethod = httpMethod) with
+    | Some mi -> Some mi
+    | None when httpMethod <> "" -> controllerType |> findMethod methodName ""
+    | None -> None
+
+
+let controller = new Controller()
+controller.GetType() |> findMethod "Test1" "DELETE"

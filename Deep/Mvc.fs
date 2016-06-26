@@ -58,6 +58,22 @@ type MvcRouteHandler() =
         |> tryRegisterInt32Id id
         |> tryRegisterDecimalId id
 
+    let rec findMethod (methodName : string) (httpMethod : string) (controllerType : Type) =
+        let result =
+            controllerType.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
+            |> Seq.filter(fun mi -> mi.Name = methodName)
+            |> Seq.tryFind
+                (fun mi ->
+                    let routeAttr = mi.GetCustomAttribute<RouteAttribute>()
+                    match httpMethod with
+                    | "" -> routeAttr = null || routeAttr.HttpMethod = HttpMethods.Any
+                    | _ -> routeAttr <> null && routeAttr.HttpMethod = httpMethod)
+            |> function
+            | Some mi -> Some mi
+            | None when httpMethod <> "" -> controllerType |> findMethod methodName ""
+            | None -> None
+        result
+
     interface IRouteHandler with
 
         override h.InvokeAction(container : IKernel) =
@@ -75,11 +91,11 @@ type MvcRouteHandler() =
                         (parameters.[MvcKeys.Action], ControllerMethodType.Required)
                         ("AfterAction", ControllerMethodType.Optional)
                     ] do
-                    match controllerType.GetMethod(methodName) with
-                    | null -> if methodType = ControllerMethodType.Required then () else ()
-                    | action ->
+                    match controllerType |> findMethod methodName request.HttpMethod with
+                    | Some action ->
                         let container = container |> registerId parameters.[MvcKeys.Id]
-                        do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync) }
+                        do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync)
+                    | _ -> if methodType = ControllerMethodType.Required then () else () }
             | _ -> () |> RouteHandlerResult.toAsync
 
 namespace Deep.Mvc
