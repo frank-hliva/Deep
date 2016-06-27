@@ -22,7 +22,10 @@ type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerCo
         |> Seq.fold
             (fun (requestContainer : IKernel) (instance : obj) ->
                 instance |> requestContainer.RegisterInstance) requestContainer
-        |> fun requestContainer -> requestContainer.Register<Reply>(LifeTime.Singleton)
+        |> fun requestContainer ->
+            requestContainer
+                .Register<Reply>(LifeTime.Singleton)
+                .Register<ISessionManager, SessionManager>(LifeTime.Singleton)
         |> fun kernel -> 
             match requestConfigurator with
             | null -> kernel

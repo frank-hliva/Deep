@@ -58,6 +58,7 @@
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
     <Compile Include="Http.fs" />
+    <Compile Include="Sessions.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Url.fs" />

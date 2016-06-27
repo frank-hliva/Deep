@@ -5,13 +5,11 @@ open Deep
 type HomeController(reply : Reply) =
     inherit FrontendController()
 
-    member c.Index() =
-        reply.ViewData.["zzz"] <- "3"
-        reply.View ["name" => "Fero"]
-
-    [<Get>]
-    member c.Index(request : Request) =
-        reply.ViewData.["zzz"] <- "GET"
+    member c.Index(sessions : ISessionManager) =
+        let xxx = sessions.GetItemOrDefault<int>("key") + 1
+        sessions.SetItem("key", xxx)
+        let yyy = sessions.GetItem<int>("key")
+        reply.ViewData.["zzz"] <- yyy
         reply.View ["name" => "Fero"]
         
     [<Post>]
