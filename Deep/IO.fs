@@ -76,9 +76,6 @@ type File() =
         let rec loop () = async {
             let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
             if read > 0 then
-                let! choice = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
-                match choice with
-                | Choice1Of2 _ -> ()
-                | Choice2Of2 exn -> ()
+                let! _ = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
                 do! loop() }
         do! loop() }
