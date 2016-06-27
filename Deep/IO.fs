@@ -3,6 +3,7 @@
 open System
 open System.IO
 open System.Web
+open System.IO.Compression
 open Deep
 
 module Path =
@@ -30,6 +31,24 @@ module Path =
 
 type SendFileOptions = { BufferSize : int; ContentType : string } 
 
+module ResponseStream =
+
+    let private (|AcceptEncoding|_|) (input : string) =
+        if String.IsNullOrEmpty input then None
+        else ["deflate"; "gzip"] |> List.tryFind(fun e -> input.Contains e)
+
+    let get (acceptEncoding : string) (response : Response) =
+        match acceptEncoding with
+        | AcceptEncoding encoding ->
+            encoding,
+            match encoding with
+            | "deflate" -> new DeflateStream(response.OutputStream, CompressionMode.Compress, false) :> Stream
+            | _ -> new GZipStream(response.OutputStream, CompressionMode.Compress, false) :> Stream
+        | _ -> "none", response.OutputStream
+        |> fun (encoding, stream) ->
+            response.Headers.Add("Content-Encoding", encoding)
+            new StreamWriter(stream)
+
 type File() =
 
     static let defaultSendOptions (fileName : string) (options : SendFileOptions option) =
@@ -49,6 +68,7 @@ type File() =
     static member send (path : string, response : Response, ?options: SendFileOptions) = async {
         let options = options |> defaultSendOptions (Path.GetFileName path)
         use fileStream = File.OpenRead(path)
+        let outputStream = response.OutputStream
         response.ContentLength64 <- fileStream.Length
         response.SendChunked <- false
         response.ContentType <- options.ContentType
@@ -56,6 +76,9 @@ type File() =
         let rec loop () = async {
             let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
             if read > 0 then
-                do! response.OutputStream.AsyncWrite(buffer, 0, read)
+                let! choice = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
+                match choice with
+                | Choice1Of2 _ -> ()
+                | Choice2Of2 exn -> ()
                 do! loop() }
         do! loop() }

@@ -12,9 +12,8 @@ type HomeController(reply : Reply) =
         reply.ViewData.["zzz"] <- yyy
         reply.View ["name" => "Fero"]
         
-    [<Post>]
     member c.Page(id : int) =
-        reply |> Reply.printf "Test %d" id
+        reply.View()
 
     [<Any>]
     member c.Download() =

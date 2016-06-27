@@ -64,6 +64,7 @@
     <Content Include="View\Error\Page500.html" />
     <Content Include="View\Error\PageDefault.html" />
     <Content Include="View\Home\Index.html" />
+    <None Include="View\Home\Page.html" />
     <Content Include="View\Layout.html" />
     <Content Include="View\AdminLayout.html" />
     <Compile Include="AssemblyInfo.fs" />

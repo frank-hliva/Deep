@@ -76,8 +76,8 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
             "Expires", "0"
             "Cache-Control", "must-revalidate, post-check=0, pre-check=0"
             "Pragma", "public"
-        ] |> List.iter(fun (k, v) -> r.Response.Headers.Add(k, v))
-        do! File.send(path, r.Response, {
+        ] |> List.iter(fun (k, v) -> response.Headers.Add(k, v))
+        do! File.send(path, response, {
             ContentType = "application/octet-stream"
             BufferSize = defaultArg bufferSize staticContentOptions.BufferSize
         }) }
