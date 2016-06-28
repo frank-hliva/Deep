@@ -43,7 +43,10 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     member this.KeepAlive with get() : Boolean = httpListenerRequest.KeepAlive
     member this.RemoteEndPoint with get() : IPEndPoint = httpListenerRequest.RemoteEndPoint
     member this.LocalEndPoint with get() : IPEndPoint = httpListenerRequest.LocalEndPoint
-
+    
+    member this.Root = 
+        let url = this.Url
+        sprintf "%s%s%s" url.Scheme Uri.SchemeDelimiter url.Host
     member this.GetReader() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
     member this.Params = parameters
     new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)

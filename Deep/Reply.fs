@@ -14,9 +14,8 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
     let writer = response.GetWriter()
     let viewData = new Dictionary<string, obj>()
     do
-        viewData.Add("Request", request)
         viewData.Add("Url", request.RawUrl)
-        viewData.Add("StaticContentOptions", staticContentOptions)
+        viewData.Add("Root", request.Root)
     let combineViewData (viewData : ViewData option) (replyViewData : IDictionary<string, obj>) =
         (defaultArg viewData Map.empty)
         |> Map.addMap (replyViewData |> Map.ofDict)

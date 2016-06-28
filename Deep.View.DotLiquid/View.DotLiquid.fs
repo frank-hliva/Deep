@@ -6,16 +6,33 @@ open System.Text
 open DotLiquid
 open System.Collections.Generic
 open Deep.Routing
+open Deep.Collections
+open Microsoft.FSharp.Reflection
 
 type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
+
+    let rec toHash (values : obj) =
+        match values with
+        | :? IDictionary<string, obj> as dict ->
+            dict
+            |> Seq.map(fun kv -> kv.Key, kv.Value |> box |> toHash)
+            |> Map.ofSeq
+            :> IDictionary<string, obj>
+            |> Hash.FromDictionary
+            |> box
+        | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
+        | :? string -> values
+        | value when value.GetType().IsValueType -> values
+        | record when record.GetType().IsClass ->
+            Hash.FromAnonymousObject(record) |> box
+        | _ -> failwith "Invalid type"
 
     let toRenderParameters (viewData : ViewData option) =
         match viewData with
         | Some viewData -> viewData
         | _ -> Map.empty
-        |> Map.toSeq
-        |> dict
-        |> Hash.FromDictionary
+        |> Map.toDict
+        |> toHash :?> Hash
 
     let readFromFile (routeParams : RouteParams) (path : string option) =
         path

@@ -6,6 +6,7 @@ type HomeController(reply : Reply) =
     inherit FrontendController()
 
     member c.Index(sessions : ISessionManager) = async {
+        c.Title <- "Index"
         let! xxx = sessions.GetItemOrDefault<int>("key")
         do! sessions.SetItem("key", xxx + 1)
         let! yyy = sessions.GetItem<int>("key")
@@ -13,6 +14,7 @@ type HomeController(reply : Reply) =
         reply.View ["name" => "Fero"] }
         
     member c.Page(id : int) =
+        c.Title <- "Page"
         reply.View()
 
     [<Any>]

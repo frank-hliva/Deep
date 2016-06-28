@@ -3,11 +3,25 @@ namespace CelebAgency
 open System
 open Deep
 open Deep.Mvc
+open DotLiquid
+
+type App = { Name : string; mutable Title : string; mutable FullTitle : string }
 
 type BaseController() =
-    
+
+    let toFullTitle (app : App) = String.Join(" - ", seq [app.Title; app.Name])
+    let app = { Name = "CelebAgency"; Title = ""; FullTitle = "" }
+
+    member c.Title
+        with get() = app.Title
+        and set(value) =
+            app.Title <- value
+            app.FullTitle <- app |> toFullTitle
+
     member c.Loaded(reply : Reply) =
+        reply.ViewData.["App"] <- app
         reply.ViewData.["ActualYear"] <- DateTime.Now.Year
+        c.Title <- ""
 
     member c.Error403(kernel : IKernel) =
         "Error/Page403" |> Controller.executeAction kernel

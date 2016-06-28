@@ -1,4 +1,7 @@
 ﻿{
+    "App": {
+        "Name": "CelebAgency"
+    },
     "RouteBuilder": {
         "Assemblies": [ "CelebAgency, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
     },
