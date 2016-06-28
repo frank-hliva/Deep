@@ -82,9 +82,9 @@ type MemorySessionStore(options : MemorySessionOptions) as s =
                     |> replyChannel.Reply
                     return! loop map (expirations |> updateExpiration id)
                 | RemoveExpiredItems (replyChannel) ->
-                    let expirated, noExpirated = expirations |> Map.partition(fun k expires -> expires < DateTime.Now)
-                    let newMap = map |> Map.filter(fun k v -> expirated.ContainsKey k |> not)
-                    return! loop newMap noExpirated
+                    let expired, noExpired = expirations |> Map.partition(fun k expires -> expires < DateTime.Now)
+                    let newMap = map |> Map.filter(fun k v -> expired.ContainsKey k |> not)
+                    return! loop newMap noExpired
             }
             loop Map.empty Map.empty)
 
@@ -105,7 +105,7 @@ type MemorySessionStore(options : MemorySessionOptions) as s =
         member s.GetItems id = mbox.PostAndAsyncReply(fun replyChannel -> GetItems(id, replyChannel))
         member s.Expiration = options.Expiration
     member s.RemoveExpiredItems() = mbox.PostAndAsyncReply(fun replyChannel -> RemoveExpiredItems(replyChannel))
-    member s.AutoRemoveExpiredItems() =
+    member private s.AutoRemoveExpiredItems() =
         let timer = new Timer(5000.0)
         timer.Elapsed.Add(fun _ -> s.RemoveExpiredItems() |> Async.Start)
         timer.Start()
