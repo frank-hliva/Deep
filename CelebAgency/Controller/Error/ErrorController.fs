@@ -16,7 +16,3 @@ type ErrorController() =
     member c.Page500(reply : Reply) =
         reply.StatusCode <- 500
         reply.View()
-
-    member c.PageDefault(reply : Reply) =
-        reply.StatusCode <- 200
-        reply.View()

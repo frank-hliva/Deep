@@ -20,7 +20,7 @@ type ViewConfig(config : Config) =
 
 type ViewPathFinder(viewOptions : ViewOptions) =
 
-    member f.TryFind (parameters : Map<string, string>, path) =
+    member f.TryFind (parameters : RouteParams, path) =
         let fn = Path.ChangeExtension(path, viewOptions.Extension)
         [
             Path.join([viewOptions.Directory; parameters.["Controller"]; fn])
@@ -29,7 +29,7 @@ type ViewPathFinder(viewOptions : ViewOptions) =
             fn
         ] |> List.tryFind(File.Exists)
 
-    member f.TryFind (parameters : Map<string, string>) =
+    member f.TryFind (parameters : RouteParams) =
         f.TryFind(parameters, parameters.["Action"])
 
     new(viewConfig : ViewConfig) = ViewPathFinder(viewConfig.GetOptions())

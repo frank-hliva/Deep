@@ -48,7 +48,8 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
         | null -> failwith "View engine not found"
         | _ ->
             let viewData = r.ViewData |> combineViewData viewData
-            view.Render(request.Params, path, Some viewData) |> writer.Write
+            let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
+            view.Render(parameters, path, Some viewData) |> writer.Write
     member r.View(path : string, ?viewData : ViewData) = r.View(Some path, viewData)
     member r.View(?viewData : ViewData) = r.View(None, viewData)
     member r.View(path : string, viewData : (string * obj) list) =
