@@ -12,11 +12,3 @@ type HomeController(reply : Reply) =
         let! yyy = sessions.GetItem<int>("key")
         reply.ViewData.["zzz"] <- yyy
         reply.View ["name" => "Fero"] }
-        
-    member c.Page(id : int) =
-        c.Title <- "Page"
-        reply.View()
-
-    [<Any>]
-    member c.Download() =
-        reply.SendFile(@"img/1397648551.jpg", "xxx.jpeg")

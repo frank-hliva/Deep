@@ -76,7 +76,7 @@ type MvcRouteHandler() =
 
     interface IRouteHandler with
 
-        override h.InvokeAction(container : IKernel) =
+        override h.InvokeAction (container : IKernel) =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
             (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
@@ -95,7 +95,10 @@ type MvcRouteHandler() =
                     | Some action ->
                         let container = container |> registerId parameters.[MvcKeys.Id]
                         do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync)
-                    | _ -> if methodType = ControllerMethodType.Required then () else () }
+                    | _ ->
+                        if methodType = ControllerMethodType.Required
+                        then ()
+                        else () }
             | _ -> () |> RouteHandlerResult.toAsync
 
 namespace Deep.Mvc
