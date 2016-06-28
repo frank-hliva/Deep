@@ -59,9 +59,11 @@
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
     <Compile Include="Http.fs" />
-    <Compile Include="Sessions.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
+    <Compile Include="Sessions.fs" />
+    <Compile Include="Sessions.MemorySessionStore.fs" />
+    <Compile Include="Sessions.SessionManager.fs" />
     <Compile Include="Url.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="View.fs" />

@@ -11,5 +11,8 @@
     },
     "StaticContent": {
         "Directory": "~/../../Web"
+    },
+    "MemorySession": {
+        "Expiration": 432000
     }
 }

@@ -28,6 +28,7 @@ let config (container : IWindsorContainer) =
         .Register(Component.For<Router>().LifeStyle.Singleton)
         .Register(Component.For<StaticContentConfig>().LifeStyle.Singleton)
         .Register(Component.For<StaticContent>().LifeStyle.Singleton)
+        .Register(Component.For<MemorySessionConfig>().ImplementedBy<MemorySessionConfig>().LifeStyle.Singleton)
         .Register(Component.For<ISessionStore>().ImplementedBy<MemorySessionStore>().LifeStyle.Singleton)
         |> ignore
     let listenerContainer =
