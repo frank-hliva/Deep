@@ -30,6 +30,8 @@ type Config(source : IConfigSource) =
     new(path : string) = Config(path |> ConfigFileSource)
     new() = Config(Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"]))
 
+type IConfigSection = interface end
+
 type IAssemblyConfig =
     abstract GetAssemblies: unit -> Assembly[]
 
@@ -49,4 +51,5 @@ type AssemblyConfig() =
 type AppInfo = { Name : string; Email : string; InfoEmail : string; SupportEmail : string }
 
 type AppInfoConfig(config : Config) =
+    interface IConfigSection
     member c.GetAppInfo() = config.SelectAs<AppInfo>("AppInfo")

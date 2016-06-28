@@ -27,8 +27,8 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>My Profile </span><span class="caret"></span></a>
                                 <ul class="dropdown-menu" role="menu">
-                                    <li><a href="/profile/detail/{{user.Uri}}">View</a></li>
-                                    <li><a href="/profile/edit/{{user.Uri}}">Edit</a></li>
+                                    <li><a href="/profile/detail/{{User.Uri}}">View</a></li>
+                                    <li><a href="/profile/edit/{{User.Uri}}">Edit</a></li>
                                 </ul>
                             </li>
                             {% else %}
@@ -73,9 +73,9 @@
         <section id="content">
             {% if flashMessages %}
             <div class="flash-messages container">
-                {% for message in flashMessages %}
-                <div class="flash-message alert alert-{{message.type}}" role="alert">
-                    {{message.text}}
+                {% for Message in FlashMessages %}
+                <div class="flash-message alert alert-{{Message.Type}}" role="alert">
+                    {{Message.Text}}
                 </div>
                 {% endfor %}
             </div>

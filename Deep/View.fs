@@ -14,6 +14,7 @@ type IView =
 type ViewOptions = { Extension : string; Directory : string }
 
 type ViewConfig(config : Config) =
+    interface IConfigSection
     member c.GetOptions() =
         let options = config.SelectAs<ViewOptions>("View")
         { options with Directory = options.Directory |> Path.map }

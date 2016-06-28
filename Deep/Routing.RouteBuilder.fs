@@ -28,6 +28,7 @@ module RouteFinder =
 
 type RouteBuilderConfig(config : Config) =
     inherit AssemblyConfig()
+    interface IConfigSection
     override c.GetAssemblyNames() =
         config.SelectAs<string[]>("RouteBuilder.Assemblies")
 

@@ -6,6 +6,7 @@ open System.Reflection
 
 type ControllerConfig(config : Config) =
     inherit AssemblyConfig()
+    interface IConfigSection
     override c.GetAssemblyNames() =
         config.SelectAs<string[]>("Controllers.Assemblies")
 

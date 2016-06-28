@@ -7,6 +7,7 @@ open Deep.IO
 type StaticContentOptions = { Directory : string; BufferSize : int }
 
 type StaticContentConfig(config : Config) =
+    interface IConfigSection
     member c.GetOptions() =
         let options = config.SelectAs<StaticContentOptions>("StaticContent")
         { options with Directory = options.Directory |> Path.map }

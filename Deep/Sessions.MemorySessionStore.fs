@@ -20,6 +20,7 @@ type private SessionStoreMessage =
 type MemorySessionOptions = { Expiration : TimeSpan }
 
 type MemorySessionConfig(config : Config) =
+    interface IConfigSection
     member c.GetOptions() =
         let expiration = config.SelectAs<int>("MemorySession.Expiration")
         { Expiration = expiration |> float |> TimeSpan.FromSeconds }
