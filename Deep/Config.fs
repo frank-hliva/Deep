@@ -45,3 +45,8 @@ type AssemblyConfig() =
             let set = c.GetAsseblyNameSet()
             AppDomain.CurrentDomain.GetAssemblies()
             |> Array.filter(fun a -> a.FullName |> set.Contains)
+
+type AppInfo = { Name : string; Email : string; InfoEmail : string; SupportEmail : string }
+
+type AppInfoConfig(config : Config) =
+    member c.GetAppInfo() = config.SelectAs<AppInfo>("AppInfo")

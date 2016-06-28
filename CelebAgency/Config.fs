@@ -20,6 +20,7 @@ type RouteBuilder(config : RouteBuilderConfig) =
 let config (container : IWindsorContainer) =
     container
         .Register(Component.For<Config>().LifeStyle.Singleton)
+        .Register(Component.For<AppInfoConfig>().LifeStyle.Singleton)
         .Register(Component.For<ControllerConfig>().LifeStyle.Singleton)
         .Register(Component.For<ViewConfig>().LifeStyle.Singleton)
         .Register(Component.For<IView>().ImplementedBy<Deep.View.DotLiquid.View>().LifeStyle.Singleton)

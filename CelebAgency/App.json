@@ -1,6 +1,9 @@
 ﻿{
-    "App": {
-        "Name": "CelebAgency"
+    "AppInfo": {
+        "Name": "CelebAgency",
+        "Email": "celebagency@celebagency.sk",
+        "InfoEmail": "support@celebagency.sk",
+        "SupportEmail": "support@celebagency.sk"
     },
     "RouteBuilder": {
         "Assemblies": [ "CelebAgency, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
