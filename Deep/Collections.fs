@@ -2,6 +2,14 @@
 
 open System.Collections.Generic
 
+module ObjectType =
+    let isEnumerable (o : obj) =
+        o.GetType().GetInterfaces()
+        |> Array.exists
+            (fun i ->
+                i.IsGenericType &&
+                i.GetGenericTypeDefinition() = typedefof<IEnumerable<_>>)
+
 module Map =
     
     let ofDict dictionary = 

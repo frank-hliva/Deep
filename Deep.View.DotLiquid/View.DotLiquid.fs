@@ -8,11 +8,13 @@ open System.Collections.Generic
 open Deep.Routing
 open Deep.Collections
 open Microsoft.FSharp.Reflection
+open System.Reflection
 
 type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
 
     let rec toHash (values : obj) =
         match values with
+        | null -> null
         | :? IDictionary<string, obj> as dict ->
             dict
             |> Seq.map(fun kv -> kv.Key, kv.Value |> box |> toHash)
@@ -21,11 +23,26 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             |> Hash.FromDictionary
             |> box
         | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
+        | collection when collection |> ObjectType.isEnumerable ->
+            collection |> box
         | :? string -> values
         | value when value.GetType().IsValueType -> values
-        | record when record.GetType().IsClass ->
+        | record when FSharpType.IsRecord(record.GetType()) ->
             Hash.FromAnonymousObject(record) |> box
+        | c when c.GetType().IsClass ->
+            c |> objectToDict |> box |> toHash
         | _ -> failwith "Invalid type"
+
+    and objectToDict (o : obj) =
+        let props = o.GetType().GetProperties(BindingFlags.Public ||| BindingFlags.Instance)
+        props
+        |> Seq.choose
+            (fun p ->
+                if p.CanRead && p.GetIndexParameters().Length = 0
+                then
+                    if o.GetType() = p.PropertyType then None
+                    else Some(p.Name, p.GetValue(o) |> toHash)
+                else None) |> Map.ofSeq |> box
 
     let toRenderParameters (viewData : ViewData option) =
         match viewData with
