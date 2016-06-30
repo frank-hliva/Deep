@@ -43,8 +43,7 @@ type BaseController() =
         reply.ViewData.["ActualYear"] <- DateTime.Now.Year
         let! falshMessages = flashMessages.GetAll()
         reply.ViewData.["FlashMessages"] <- falshMessages
-        c.Title <- ""
-    }
+        c.Title <- "" }
 
     member c.Error403(kernel : IKernel) =
         "Error/Page403" |> Controller.executeAction kernel
