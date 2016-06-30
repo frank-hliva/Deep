@@ -20,7 +20,6 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             dict
             |> Seq.map(fun kv -> kv.Key, kv.Value |> box |> toHash)
             |> Map.ofSeq
-            :> IDictionary<string, obj>
             |> Hash.FromDictionary
             |> box
         | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
