@@ -26,6 +26,7 @@ type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerCo
             requestContainer
                 .Register<Reply>(LifeTime.Singleton)
                 .Register<ISessionManager, SessionManager>(LifeTime.PerResolve)
+                .Register<FlashMessages, FlashMessages>(LifeTime.PerResolve)
         |> fun kernel -> 
             match requestConfigurator with
             | null -> kernel

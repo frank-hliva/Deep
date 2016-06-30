@@ -74,7 +74,7 @@
             {% if flashMessages %}
             <div class="flash-messages container">
                 {% for Message in FlashMessages %}
-                <div class="flash-message alert alert-{{Message.Type}}" role="alert">
+                <div class="flash-message alert alert-{{Message.MessageType}}" role="alert">
                     {{Message.Text}}
                 </div>
                 {% endfor %}

@@ -7,10 +7,10 @@ open System.Linq
 type HomeController(reply : Reply) =
     inherit FrontendController()
 
-    member c.Index(sessions : ISessionManager) = async {
+    member c.Index(sessions : ISessionManager, flashMessages : FlashMessages) = async {
+        do! flashMessages.Send("test")
         use ctx = new Db()
         let article = ctx.Articles.Where(fun x -> x.Uri = "about").First()
-
         c.Title <- "Index"
         let! xxx = sessions.GetItemOrDefault<int>("key")
         do! sessions.SetItem("key", xxx + 1)

@@ -33,7 +33,7 @@ type BaseController() =
             app.Title <- value
             app.FullTitle <- app |> toFullTitle
 
-    member c.Loaded(reply : Reply, appInfoConfig : AppInfoConfig) =
+    member c.Loaded(reply : Reply, appInfoConfig : AppInfoConfig, flashMessages : FlashMessages) = async {
         let appInfo = appInfoConfig.GetAppInfo()
         app.Name <- appInfo.Name
         app.Email <- appInfo.Email
@@ -41,7 +41,10 @@ type BaseController() =
         app.SupportEmail <- appInfo.Email
         reply.ViewData.["App"] <- app
         reply.ViewData.["ActualYear"] <- DateTime.Now.Year
+        let! falshMessages = flashMessages.GetAll()
+        reply.ViewData.["FlashMessages"] <- falshMessages
         c.Title <- ""
+    }
 
     member c.Error403(kernel : IKernel) =
         "Error/Page403" |> Controller.executeAction kernel

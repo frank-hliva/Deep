@@ -64,6 +64,7 @@
     <Compile Include="Sessions.fs" />
     <Compile Include="Sessions.MemorySessionStore.fs" />
     <Compile Include="Sessions.SessionManager.fs" />
+    <Compile Include="FlashMessage.fs" />
     <Compile Include="Url.fs" />
     <Compile Include="Writer.fs" />
     <Compile Include="View.fs" />

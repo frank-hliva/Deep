@@ -24,7 +24,8 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             |> box
         | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
         | collection when collection |> ObjectType.isEnumerable ->
-            collection |> box
+            let collection = collection :?> System.Collections.IEnumerable
+            seq { for o in collection do yield (o |> toHash) } |> box
         | :? string -> values
         | value when value.GetType().IsValueType -> values
         | record when FSharpType.IsRecord(record.GetType()) ->
