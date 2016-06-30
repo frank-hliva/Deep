@@ -1,11 +1,12 @@
 ﻿[<AutoOpen>]
 module App.Config
 
-open Deep
-open Deep.Routing
 open Castle.Windsor
 open Castle.MicroKernel.Registration
+open Deep
+open Deep.Routing
 open Deep.Mvc
+open Deep.View.DotLiquid
 
 let registerRoutes (routes : routes) =
     Routes.Any(
@@ -15,20 +16,25 @@ let registerRoutes (routes : routes) =
     )
 
 type RouteBuilder(config : RouteBuilderConfig) =
-    inherit Deep.Routing.RouteBuilder(registerRoutes, config)
+    inherit Routing.RouteBuilder(registerRoutes, config)
 
 let config (container : IWindsorContainer) =
     container
         .Register(Component.For<Config>().LifeStyle.Singleton)
-        .Register(Component.For<ControllerConfig>().LifeStyle.Singleton)
-        .Register(Component.For<ViewConfig>().LifeStyle.Singleton)
-        .Register(Component.For<IView>().ImplementedBy<Deep.View.DotLiquid.View>().LifeStyle.Singleton)
-        .Register(Component.For<RouteBuilderConfig>().LifeStyle.Singleton)
-        .Register(Component.For<IRouteBuilder>().ImplementedBy<RouteBuilder>().LifeStyle.Singleton)
-        .Register(Component.For<Router>().LifeStyle.Singleton)
-        .Register(Component.For<StaticContentConfig>().LifeStyle.Singleton)
-        .Register(Component.For<StaticContent>().LifeStyle.Singleton)
-        |> ignore
+        .Register(
+            AllTypes
+                .FromAssemblyNamed("Deep")
+                .BasedOn<IConfigSection>()
+                .WithServiceSelf()
+                .LifestyleSingleton()
+        ) |> ignore
+    [
+        (typedefof<IView>, typedefof<View>)
+        (typedefof<IRouteBuilder>, typedefof<RouteBuilder>)
+        (typedefof<Router>, typedefof<Router>)
+        (typedefof<StaticContent>, typedefof<StaticContent>)
+        (typedefof<ISessionStore>, typedefof<MemorySessionStore>)
+    ] |> List.iter(fun (t1, t2) -> container.Register(Component.For(t1).ImplementedBy(t2).LifeStyle.Singleton) |> ignore)
     let listenerContainer =
         ListenerContainer()
             .Use(container.Resolve<StaticContent>())

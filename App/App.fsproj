@@ -54,13 +54,29 @@
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
   <ItemGroup>
+    <Compile Include="Controller\Base\BaseController.fs" />
+    <Compile Include="Controller\Base\FrontendController.fs" />
+    <Compile Include="Controller\Base\BackendController.fs" />
+    <Compile Include="Controller\Error\ErrorController.fs" />
+    <Compile Include="Controller\HomeController.fs" />
+    <Content Include="View\Error\Page403.html" />
+    <Content Include="View\Error\Page404.html" />
+    <Content Include="View\Error\Page500.html" />
+    <Content Include="View\Home\Index.html" />
+    <Content Include="View\Layout.html" />
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Program.fs" />
+    <None Include="App.config" />
     <None Include="App.json" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\DotLiquid\DotLiquid\DotLiquid.csproj">
+      <Name>DotLiquid</Name>
+      <Project>{cb9372cd-9c1d-47ab-92d8-702d4d68324f}</Project>
+      <Private>True</Private>
+    </ProjectReference>
     <Reference Include="Castle.Core">
       <HintPath>..\packages\Castle.Core.3.3.0\lib\net45\Castle.Core.dll</HintPath>
       <Private>True</Private>
