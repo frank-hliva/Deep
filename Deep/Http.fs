@@ -46,7 +46,8 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     
     member this.Root = 
         let url = this.Url
-        sprintf "%s%s%s" url.Scheme Uri.SchemeDelimiter url.Host
+        let port = if url.Port = 80 then "" else sprintf ":%d" url.Port
+        sprintf "%s%s%s%s" url.Scheme Uri.SchemeDelimiter url.Host port
     member this.GetReader() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
     member this.Params = parameters
     new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)

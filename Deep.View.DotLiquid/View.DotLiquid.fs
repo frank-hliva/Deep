@@ -29,8 +29,6 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             seq { for o in collection do yield (o |> toHash) } |> box
         | :? string -> values
         | value when value.GetType().IsValueType -> values
-        | record when FSharpType.IsRecord(record.GetType()) ->
-            Hash.FromAnonymousObject(record) |> box
         | c when c.GetType().IsClass ->
             c |> objectToDict |> box |> toHash
         | _ -> failwith "Invalid type"

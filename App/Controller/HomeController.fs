@@ -3,15 +3,21 @@
 open Deep
 open System.Linq
 
+type Test = { test : Test1 }
+and Test1 = { name : string }
+
 type HomeController(reply : Reply) =
     inherit FrontendController()
 
-    member c.Index(sessions : ISessionManager, flashMessages : FlashMessages) = async {
-        do! flashMessages.Send("Flash message")
+    member c.Index(flashMessages : FlashMessages) = async {
         c.Title <- "Index"
+        do! flashMessages.Send("Flash message")
+        reply.View ["Name" => "world"] }
+
+    member c.LearnMore(sessions : ISessionManager) = async {
+        c.Title <- "Learn more"
         let! counter = sessions.GetItemOrDefault<int>("counter")
         do! sessions.SetItem("counter", counter + 1)
         let! counter = sessions.GetItem<int>("counter")
         reply.ViewData.["counter"] <- counter
-        reply.View ["name" => "World"]
-    }
+        reply.View() }
