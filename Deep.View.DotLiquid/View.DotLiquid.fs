@@ -4,6 +4,7 @@ open Deep
 open System.IO
 open System.Text
 open DotLiquid
+open System.Collections
 open System.Collections.Generic
 open Deep.Routing
 open Deep.Collections
@@ -24,7 +25,7 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             |> box
         | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
         | collection when collection |> ObjectType.isEnumerable ->
-            let collection = collection :?> System.Collections.IEnumerable
+            let collection = collection :?> IEnumerable
             seq { for o in collection do yield (o |> toHash) } |> box
         | :? string -> values
         | value when value.GetType().IsValueType -> values
