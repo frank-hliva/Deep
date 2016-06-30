@@ -68,14 +68,16 @@ type File() =
     static member send (path : string, response : Response, ?options: SendFileOptions) = async {
         let options = options |> defaultSendOptions (Path.GetFileName path)
         use fileStream = File.OpenRead(path)
-        let outputStream = response.OutputStream
-        response.ContentLength64 <- fileStream.Length
-        response.SendChunked <- false
-        response.ContentType <- options.ContentType
-        let buffer = Array.create(options.BufferSize) 0uy
-        let rec loop () = async {
-            let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
-            if read > 0 then
-                let! _ = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
-                do! loop() }
-        do! loop() }
+        if fileStream.Length = 0L then response.Close()
+        else
+            let outputStream = response.OutputStream
+            response.ContentLength64 <- fileStream.Length
+            response.SendChunked <- false
+            response.ContentType <- options.ContentType
+            let buffer = Array.create(options.BufferSize) 0uy
+            let rec loop () = async {
+                let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
+                if read > 0 then
+                    let! _ = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
+                    do! loop() }
+            do! loop() }
