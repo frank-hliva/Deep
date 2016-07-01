@@ -70,7 +70,7 @@ type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
             let text = path |> readFromFile routeParams
             let o = new obj()
             lock o (fun () -> Template.FileSystem <- localFileSystem routeParams)
-            Template.Parse(text).Render(viewData |> toRenderParameters)
+            viewData |> toRenderParameters |> Template.Parse(text).Render
 
     new(viewConfig : ViewConfig) =
         View(viewConfig, new ViewPathFinder(viewConfig))
