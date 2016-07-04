@@ -57,13 +57,6 @@ type Router(routeBuilder : IRouteBuilder) =
             } |> Some
         | _ -> None
 
-    member internal r.AutoDisposeObjects(kernel : IKernel) =
-        match kernel.TryFindInstance(typedefof<Reply>) with
-        | Some reply ->
-            let reply = reply :?> Reply
-            if not reply.IsDisposed then (reply :> IDisposable).Dispose()
-        | _ -> ()
-
     member r.Match (httpMethod : string) (url : string) =
         let urlItems = (url |> Url.removeQueryString).Split [| delimiter |]
         routeBuilder.Routes
@@ -72,13 +65,17 @@ type Router(routeBuilder : IRouteBuilder) =
 
     interface IListener with
 
-        member r.Listen (request : Request) (response : Response) (kernel : IKernel) (state : ListenerState) = async {
+        member r.Listen (request : Request) (response : Response) (kernel : IKernel) (e : exn option) = async {
             let context = kernel.Resolve<HttpListenerContext>()
             match r.Match request.HttpMethod request.RawUrl with
             | Some result ->
                 let request = new Request(context.Request, result.Parameters)
                 let kernel = kernel.RegisterInstance(request)
-                do! result.Handler.InvokeAction kernel
-                kernel |> r.AutoDisposeObjects
-                return ListenerResult.End
+                let! result = result.Handler.InvokeAction kernel |> Async.Catch
+                match result with
+                | Choice1Of2 _ ->
+                    kernel |> AutoDisposer.disposeObjects
+                    return ListenerResult.End
+                | Choice2Of2 exn ->
+                    return ListenerResult.Error exn
             | _ -> return ListenerResult.Next }

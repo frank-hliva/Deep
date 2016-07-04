@@ -64,3 +64,5 @@ type DeleteAttribute(routePattern : string, priority : int) =
 [<AutoOpen>]
 module Operators =
     let (=>) a b = a, box b
+
+exception HttpException of int * string

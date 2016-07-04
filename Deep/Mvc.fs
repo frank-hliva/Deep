@@ -98,9 +98,9 @@ type MvcRouteHandler() =
                         do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync)
                     | _ ->
                         if methodType = ControllerMethodType.Required
-                        then ()
+                        then return raise(HttpException(404, ""))
                         else () }
-            | _ -> () |> RouteHandlerResult.toAsync
+            | _ -> async { return raise(HttpException(404, "")) }
 
 namespace Deep.Mvc
 

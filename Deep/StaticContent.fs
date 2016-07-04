@@ -16,7 +16,7 @@ type StaticContent(staticContentOptions : StaticContentOptions) =
 
     interface IListener with
 
-        member l.Listen (request : Request) (response : Response) (kernel : IKernel) (state : ListenerState) = async {
+        member l.Listen (request : Request) (response : Response) (kernel : IKernel) (e : exn option) = async {
             if request.RawUrl = "/" then return ListenerResult.Next
             else
                 let path = Path.join([staticContentOptions.Directory; request.RawUrl])

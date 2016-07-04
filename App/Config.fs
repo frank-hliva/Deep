@@ -39,4 +39,5 @@ let config (container : IWindsorContainer) =
         ListenerContainer()
             .Use(container.Resolve<StaticContent>())
             .Use(container.Resolve<Router>())
+            .Use(ErrorHandler())
     container.Register(Component.For<ListenerContainer>().Instance(listenerContainer).LifeStyle.Singleton)
