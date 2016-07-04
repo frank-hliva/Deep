@@ -96,14 +96,14 @@ type MvcRouteHandler() =
                         match controllerType |> findMethod methodName request.HttpMethod with
                         | Some action ->
                             let container = container |> registerId parameters.[MvcKeys.Id]
-                            let! exp =
+                            let! result =
                                 action
                                 |> Function.invokeOn controller (container.RegisterInstance<IKernel> container)
                                 |> RouteHandlerResult.toAsync
                                 |> Async.Catch
-                            match exp with
+                            match result with
                             | Choice.Choice1Of2 _ -> ()
-                            | Choice.Choice2Of2 exp -> return raise(exp)
+                            | Choice.Choice2Of2 exn -> return raise(exn)
                         | _ ->
                             if methodType = ControllerMethodType.Required
                             then return raise(HttpException(404, ""))
@@ -119,7 +119,7 @@ open System.Net
 [<CompilationRepresentationAttribute(CompilationRepresentationFlags.ModuleSuffix)>]
 module Controller =
     
-    let executeAction (kernel : IKernel) (path : string) =
+    let executeAction (kernel : IKernel) (path : string) = async {
         let items = path.Split [| '/' |]
         let controller, action, id =
             match items.Length with
@@ -134,7 +134,9 @@ module Controller =
                 MvcKeys.Action, action
                 MvcKeys.Id, id
             ]
-        kernel
-            .RegisterInstance<Request>(new Request(context.Request, routeParams))
-            .Register<Reply>(LifeTime.Singleton)
-        |> mvcRouteHandler.InvokeAction
+        let kernel = 
+            kernel
+                .RegisterInstance<Request>(new Request(context.Request, routeParams))
+                .Register<Reply>(LifeTime.Singleton)
+        do! kernel |> mvcRouteHandler.InvokeAction
+        kernel |> AutoDisposer.disposeObjects }

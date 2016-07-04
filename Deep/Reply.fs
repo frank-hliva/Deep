@@ -49,7 +49,7 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
         | _ ->
             let viewData = r.ViewData |> combineViewData viewData
             let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
-            view.Render(parameters, path, Some viewData) |> writer.Write
+            view.Render(parameters, path, Some viewData) |> r.Writer.Write
     member r.View(path : string, ?viewData : ViewData) = r.View(Some path, viewData)
     member r.View(?viewData : ViewData) = r.View(None, viewData)
     member r.View(path : string, viewData : (string * obj) list) =
