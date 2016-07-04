@@ -9,28 +9,22 @@ https://github.com/frank-hliva/Deep/blob/master/LICENSE.md
 ## Example:
 
 ```fs
-open System
 open Deep
 open Deep.Routing
-open Castle.Windsor
 open Deep.Windsor
+open Castle.Windsor
+open System
 
-[<Get("/?param1/?param2")>]
-let hello1 (req : Request) (res : Response) =
-    res.ContentType <- "text/html"
-    use writer = res.Writer
-    writer |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param1"]
-
-type App(kernel, router) =
-    inherit HttpApplication(kernel, router)
-
-    override a.RegisterRoutes(routes) =
-        routes |> Routes.AddMarkedActions [System.Reflection.Assembly.GetExecutingAssembly()]
+[<Get("/test/?param")>]
+let hello (req : Request) (reply : Reply) =
+    reply.Writer
+    |> wprintf "Hello <strong>World!</strong> %s" req.Params.["param"]
+    |> wprintf "________________________________"
 
 [<EntryPoint>]
 let main argv =
-    let booter = new ApplicationBooter<App>(new WindsorContainer())
-    booter.Config()
+    let booter = new ApplicationBooter<HttpApplication>(new WindsorContainer())
+    booter.Config(config)
     booter.Boot("http://127.0.0.1:3000/")
     Console.WriteLine("Server running on port 3000...")
     Console.ReadKey() |> ignore
