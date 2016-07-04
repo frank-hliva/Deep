@@ -91,15 +91,23 @@ type MvcRouteHandler() =
                         ("BeforeAction", ControllerMethodType.Optional)
                         (parameters.[MvcKeys.Action], ControllerMethodType.Required)
                         ("AfterAction", ControllerMethodType.Optional)
-                    ] do
-                    match controllerType |> findMethod methodName request.HttpMethod with
-                    | Some action ->
-                        let container = container |> registerId parameters.[MvcKeys.Id]
-                        do! (action |> Function.invokeOn controller (container.RegisterInstance<IKernel> container) |> RouteHandlerResult.toAsync)
-                    | _ ->
-                        if methodType = ControllerMethodType.Required
-                        then return raise(HttpException(404, ""))
-                        else () }
+                    ]
+                    do
+                        match controllerType |> findMethod methodName request.HttpMethod with
+                        | Some action ->
+                            let container = container |> registerId parameters.[MvcKeys.Id]
+                            let! exp =
+                                action
+                                |> Function.invokeOn controller (container.RegisterInstance<IKernel> container)
+                                |> RouteHandlerResult.toAsync
+                                |> Async.Catch
+                            match exp with
+                            | Choice.Choice1Of2 _ -> ()
+                            | Choice.Choice2Of2 exp -> return raise(exp)
+                        | _ ->
+                            if methodType = ControllerMethodType.Required
+                            then return raise(HttpException(404, ""))
+                            else () }
             | _ -> async { return raise(HttpException(404, "")) }
 
 namespace Deep.Mvc

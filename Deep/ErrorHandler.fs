@@ -18,7 +18,10 @@ type ErrorHandler() =
         member r.Listen (request : Request) (response : Response) (kernel : IKernel) (e : exn option) = async {
             match e with
             | Some e ->
-                response.Redirect(sprintf "error/page%d" (e |> toHttpStatusCode))
+                //response.Redirect(sprintf "/error/page%d" (e |> toHttpStatusCode))
+                let action = sprintf "Error/Page%d" (e |> toHttpStatusCode)
+                do! action |> Controller.executeAction kernel
+                kernel |> AutoDisposer.disposeObjects
                 response.Close()
                 return ListenerResult.End 
             | _ -> return ListenerResult.Next }
