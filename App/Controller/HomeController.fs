@@ -3,9 +3,6 @@
 open Deep
 open System.Linq
 
-type Test = { test : Test1 }
-and Test1 = { name : string }
-
 type HomeController(reply : Reply) =
     inherit FrontendController()
 
