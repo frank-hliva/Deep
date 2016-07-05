@@ -31,7 +31,7 @@ let main argv =
     0
 ```
 
-## Controller:
+## Controller example:
 
 ```fs
 type HomeController(reply : Reply) =
