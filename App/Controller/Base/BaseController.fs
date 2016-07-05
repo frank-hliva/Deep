@@ -43,15 +43,3 @@ type BaseController() =
         let! falshMessages = flashMessages.GetAll()
         reply.ViewData.["FlashMessages"] <- falshMessages
         c.Title <- "" }
-
-    member c.Error403(kernel : IKernel) =
-        "Error/Page403" |> Controller.executeAction kernel
-
-    member c.Error404(kernel : IKernel) =
-        "Error/Page404" |> Controller.executeAction kernel
-
-    member c.Error500(kernel : IKernel) =
-        "Error/Page500" |> Controller.executeAction kernel
-
-    member c.ErrorDefault(kernel : IKernel) =
-        "Error/PageDefault" |> Controller.executeAction kernel
