@@ -66,3 +66,7 @@ module Operators =
     let (=>) a b = a, box b
 
 exception HttpException of int * string
+
+type IAutoDisposable =
+    inherit IDisposable
+    abstract IsDisposed : bool with get

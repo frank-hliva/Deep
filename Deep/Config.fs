@@ -53,3 +53,9 @@ type AppInfo = { Name : string; Email : string; InfoEmail : string; SupportEmail
 type AppInfoConfig(config : Config) =
     interface IConfigSection
     member c.GetAppInfo() = config.SelectAs<AppInfo>("AppInfo")
+
+type ServerOptions = { UriPrefix : string }
+
+type ServerConfig(config : Config) =
+    interface IConfigSection
+    member c.GetServerOptions() = config.SelectAs<ServerOptions>("ServerOptions")

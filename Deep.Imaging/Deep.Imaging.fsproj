@@ -5,14 +5,14 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>10553a39-e7a5-4329-ac07-fb68416b72e1</ProjectGuid>
+    <ProjectGuid>bc4a39ec-9fb7-43e5-9b16-d55b5b919087</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>Deep</RootNamespace>
-    <AssemblyName>Deep</AssemblyName>
+    <RootNamespace>Deep.Imaging</RootNamespace>
+    <AssemblyName>Deep.Imaging</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.0.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <Name>Deep</Name>
+    <Name>Deep.Imaging</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -22,7 +22,7 @@
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\Deep.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\Deep.Imaging.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,8 +31,26 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\Deep.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\Deep.Imaging.XML</DocumentationFile>
   </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="mscorlib" />
+    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Imaging.Sizing.fs" />
+    <Compile Include="Imaging.fs" />
+  </ItemGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
@@ -49,62 +67,6 @@
     </Otherwise>
   </Choose>
   <Import Project="$(FSharpTargetsPath)" />
-  <ItemGroup>
-    <Compile Include="AssemblyInfo.fs" />
-    <Compile Include="Deep.fs" />
-    <Compile Include="String.fs" />
-    <Compile Include="Text.fs" />
-    <Compile Include="Collections.fs" />
-    <Compile Include="Kernel.fs" />
-    <Compile Include="Function.fs" />
-    <Compile Include="Routing.fs" />
-    <Compile Include="Http.fs" />
-    <Compile Include="IO.fs" />
-    <Compile Include="Config.fs" />
-    <Compile Include="Sessions.fs" />
-    <Compile Include="Sessions.MemorySessionStore.fs" />
-    <Compile Include="Sessions.SessionManager.fs" />
-    <Compile Include="FlashMessage.fs" />
-    <Compile Include="Url.fs" />
-    <Compile Include="Writer.fs" />
-    <Compile Include="View.fs" />
-    <Compile Include="Listeners.fs" />
-    <Compile Include="StaticContent.fs" />
-    <Compile Include="Upload.fs" />
-    <Compile Include="Reply.fs" />
-    <Compile Include="AutoDisposer.fs" />
-    <Compile Include="Mvc.fs" />
-    <Compile Include="Routing.Routes.fs" />
-    <Compile Include="Routing.RouteBuilder.fs" />
-    <Compile Include="Routing.Router.fs" />
-    <Compile Include="ErrorHandler.fs" />
-    <Compile Include="Server.fs" />
-    <Compile Include="Boot.fs" />
-    <Compile Include="HttpApplication.fs" />
-    <Content Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Reference Include="mscorlib" />
-    <Reference Include="FSharp.Core, Version=$(TargetFSharpCoreVersion), Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\AgencyDB\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HttpFormParser\HttpFormParser.csproj">
-      <Name>HttpFormParser</Name>
-      <Project>{f7895667-c9da-4526-a4d4-27b4eeb78e68}</Project>
-      <Private>True</Private>
-    </ProjectReference>
-  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

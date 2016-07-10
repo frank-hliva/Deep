@@ -12,6 +12,7 @@ open Deep.Collections
 
 type Reply(request : Request, response : Response, staticContentOptions : StaticContentOptions, view : IView) =
     let writer = response.GetWriter()
+    let mutable isDisposed = false
     let viewData = new Dictionary<string, obj>()
     do
         viewData.Add("Url", request.RawUrl)
@@ -33,13 +34,15 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
             "Content-Type",
             sprintf "%s; charset=%s" response.ContentType response.ContentEncoding.HeaderName
         )
-    member val AddCharsetToHeader = true with get, set
-    member val internal IsDisposed = false with get, set
-    interface IDisposable with
+
+    interface IAutoDisposable with
+        member r.IsDisposed with get() = isDisposed
         member r.Dispose() =
             if r.AddCharsetToHeader then response.Headers |> addCharset
             writer.Dispose()
-            r.IsDisposed <- true
+            isDisposed <- true
+
+    member val AddCharsetToHeader = true with get, set
     member r.Response = response
     member r.Writer : StreamWriter = writer
     member r.ViewData with get() = viewData
@@ -60,11 +63,13 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
     member this.ContentEncoding with get() = response.ContentEncoding and set(value) = response.ContentEncoding <- value
     member this.ContentType with get() = response.ContentType and set(value) = response.ContentType <- value
     member r.Redirect(url : string) = response.Redirect(url)
+    member r.Refresh() = response.Redirect(request.RawUrl)
+    member r.Back() = response.Redirect(request.UrlReferrer.ToString())
     member r.End(?statusCode : int) =
         match statusCode with
         | Some statusCode -> r.StatusCode <- statusCode
         | _ -> ()
-        (r :> IDisposable).Dispose()
+        (r :> IAutoDisposable).Dispose()
     member r.SendFile(path : string, ?fileName : string, ?bufferSize : int) = async {
         let path = 
             [ Path.join([staticContentOptions.Directory; path]); path ]

@@ -79,7 +79,7 @@ type MvcRouteHandler() =
 
         override h.InvokeAction (container : IKernel) =
             let request = container.Resolve<Request>()
-            let parameters = request.Params |> Map.map(fun _ v -> v |> Url.toPascalCase)
+            let parameters = request.Params |> Map.map(fun k v -> if k = MvcKeys.Controller || k = MvcKeys.Action then v |> Url.toPascalCase else v)
             (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
             |> Controller.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controller.suffix)
             |> function
@@ -108,7 +108,9 @@ type MvcRouteHandler() =
                             if methodType = ControllerMethodType.Required
                             then return raise(HttpException(404, ""))
                             else () }
-            | _ -> async { return raise(HttpException(404, "")) }
+            | _ -> 
+                let controllerName = parameters.[MvcKeys.Controller]
+                async { return raise(HttpException(404, controllerName)) }
 
 namespace Deep.Mvc
 
