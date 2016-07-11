@@ -13,42 +13,14 @@ open System.Reflection
 
 type View(viewConfig : ViewConfig, viewPathFinder : ViewPathFinder) =
 
-    let rec toHash (values : obj) =
-        match values with
-        | null -> null
-        | :? IDictionary<string, obj> as dict ->
-            dict
-            |> Seq.map(fun kv -> kv.Key, kv.Value |> box |> toHash)
-            |> Map.ofSeq
-            |> Hash.FromDictionary
-            |> box
-        | :? seq<string * obj> as s -> s |> Map.ofSeq |> toHash
-        | collection when collection |> ObjectType.isEnumerable ->
-            let collection = collection :?> IEnumerable
-            seq { for o in collection do yield (o |> toHash) } |> box
-        | :? string -> values
-        | value when value.GetType().IsValueType -> values
-        | c when c.GetType().IsClass ->
-            c |> objectToDict |> box |> toHash
-        | _ -> failwith "Invalid type"
-
-    and objectToDict (o : obj) =
-        let props = o.GetType().GetProperties(BindingFlags.Public ||| BindingFlags.Instance)
-        props
-        |> Seq.choose
-            (fun p ->
-                if p.CanRead && p.GetIndexParameters().Length = 0
-                then
-                    if o.GetType() = p.PropertyType then None
-                    else Some(p.Name, p.GetValue(o) |> toHash)
-                else None) |> Map.ofSeq |> box
+    let valueObjectConverter = ValueObjectConverter(Hash.FromDictionary >> box)
 
     let toRenderParameters (viewData : ViewData option) =
         match viewData with
         | Some viewData -> viewData
         | _ -> Map.empty
         |> Map.toDict
-        |> toHash :?> Hash
+        |> valueObjectConverter.ConvertToDict :?> Hash
 
     let readFromFile (routeParams : RouteParams) (path : string option) =
         path
