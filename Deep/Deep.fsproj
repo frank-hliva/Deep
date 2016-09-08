@@ -57,6 +57,7 @@
     <Compile Include="Collections.fs" />
     <Compile Include="Kernel.fs" />
     <Compile Include="ValueObjectConverter.fs" />
+    <Compile Include="JSON.fs" />
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />
     <Compile Include="Http.fs" />
@@ -71,7 +72,7 @@
     <Compile Include="View.fs" />
     <Compile Include="Listeners.fs" />
     <Compile Include="StaticContent.fs" />
-    <Compile Include="Upload.fs" />
+    <Compile Include="Input.fs" />
     <Compile Include="Reply.fs" />
     <Compile Include="AutoDisposer.fs" />
     <Compile Include="Mvc.fs" />

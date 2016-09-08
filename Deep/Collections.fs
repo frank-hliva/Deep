@@ -1,5 +1,7 @@
 ﻿namespace Deep.Collections
 
+open System
+open System.Reflection
 open System.Collections.Generic
 
 module ObjectType =
@@ -21,3 +23,32 @@ module Map =
 
     let addMap (map2 : Map<_, _>) (map1 : Map<_, _>) =
         map2 |> Seq.fold(fun acc kv -> acc |> Map.add kv.Key kv.Value) map1
+
+type MemberList =
+| WhiteList of string list
+| BlackList of string list
+| All
+
+type Dict() =
+
+    static let whiteListChooser (o : obj) (whiteList : Set<string>) (prop : PropertyInfo) =
+        if whiteList.Contains prop.Name then Some(prop.Name, prop.GetValue o)
+        else None
+
+    static let blackListChooser (o : obj) (blackList : Set<string>) (prop : PropertyInfo) =
+        if blackList.Contains prop.Name then None
+        else Some(prop.Name, prop.GetValue o)
+
+    static let allChooser (o : obj) (prop : PropertyInfo) = Some(prop.Name, prop.GetValue o)
+
+    static member From(o : obj, ?memberList : MemberList) =
+        match o with
+        | null -> null
+        | o ->
+            let chooser =
+                match defaultArg memberList All with
+                | WhiteList whitelist -> whiteListChooser o (Set whitelist)
+                | BlackList blacklist -> blackListChooser o (Set blacklist)
+                | All -> allChooser o 
+            o.GetType().GetProperties(BindingFlags.Public ||| BindingFlags.Instance)
+            |> Seq.choose(chooser) |> dict

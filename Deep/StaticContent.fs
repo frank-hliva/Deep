@@ -14,19 +14,27 @@ type StaticContentConfig(config : Config) =
 
 type StaticContent(staticContentOptions : StaticContentOptions) =
 
+    let rec tryExists (path : string) =
+        if File.Exists path then Some path
+        else
+            if path.Contains("?") then
+                path |> Url.removeQueryString |> tryExists
+            else None
+
     interface IListener with
 
         member l.Listen (request : Request) (response : Response) (kernel : IKernel) (e : exn option) = async {
             if request.RawUrl = "/" then return ListenerResult.Next
             else
                 let path = Path.join([staticContentOptions.Directory; request.RawUrl])
-                if File.Exists(path) then
+                match path |> tryExists with
+                | Some path ->
                     do! File.send(path, response, {
                         BufferSize = staticContentOptions.BufferSize
                         ContentType = null
                     })
                     return ListenerResult.End
-                else return ListenerResult.Next }
+                | _ -> return ListenerResult.Next }
 
     new(config : StaticContentConfig) =
         StaticContent(config.GetOptions())
