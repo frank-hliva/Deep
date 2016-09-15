@@ -1,6 +1,5 @@
 ﻿namespace Deep
 
-open HttpUtils
 open System.IO
 open System.Text
 open System.Web
@@ -23,6 +22,7 @@ type Post(request : Request) =
 type MultipartForm(request : Request) =
     let stream = request.InputStream
     let mutable isDisposed = false
+    let form = new Deep.Multipart.MultipartForm(stream)
 
     interface IAutoDisposable with
         member f.IsDisposed with get() = isDisposed
@@ -31,10 +31,7 @@ type MultipartForm(request : Request) =
             isDisposed <- true
 
     member f.Request = request
-    member f.GetFields(?filePartName : string) =
-        let filePartName = defaultArg filePartName ""
-        let parser = new HttpMultipartParser(stream, filePartName)
-        parser.Parameters
 
-    member f.Fields with get() = f.GetFields("")
-    member f.Item with get(name : string) = f.Fields.[name]
+    member f.Fields = form.Fields
+    member f.Item with get(index : int) = form.Item(index)
+    member f.Item with get(name : string) = form.Item(name)

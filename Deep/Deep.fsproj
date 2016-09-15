@@ -72,6 +72,10 @@
     <Compile Include="View.fs" />
     <Compile Include="Listeners.fs" />
     <Compile Include="StaticContent.fs" />
+    <Compile Include="Multipart.fs" />
+    <Compile Include="Multipart.ContentType.fs" />
+    <Compile Include="Multipart.ItemInfo.fs" />
+    <Compile Include="Multipart.MultipartForm.fs" />
     <Compile Include="Input.fs" />
     <Compile Include="Reply.fs" />
     <Compile Include="AutoDisposer.fs" />
@@ -99,16 +103,10 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\HttpFormParser\HttpFormParser.csproj">
-      <Name>HttpFormParser</Name>
-      <Project>{f7895667-c9da-4526-a4d4-27b4eeb78e68}</Project>
-      <Private>True</Private>
-    </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
