@@ -12,6 +12,7 @@ module Float =
     let toInt (n : float) = n |> Math.Round |> int
 
 module private Img =
+    open System.Windows.Controls
 
     let toBitmapSource (width : float, height : float) (visual : DrawingVisual) =
         let target = new RenderTargetBitmap(Float.toInt width, Float.toInt height, 96.0, 96.0, PixelFormats.Pbgra32)
@@ -56,14 +57,19 @@ type Image(source : BitmapSource) =
     static member Empty(width, height, background : Brush) =
         new Image(Img.newBackground (width, height) background None)
     static member From(uri : Uri) = new Image(new BitmapImage(uri))
-    static member From(path : string) = Image.From(new Uri(path))
+    static member From(path : string) =
+        use stream = File.OpenRead(path)
+        Image.From(stream)
     static member From(stream : Stream) =
         let bitmapImage = new BitmapImage()
         bitmapImage.BeginInit()
+        bitmapImage.CacheOption <- BitmapCacheOption.OnLoad
         bitmapImage.StreamSource <- stream
         bitmapImage.EndInit()
         new Image(bitmapImage)
     member i.Source = source
+    member i.Map(mapper : BitmapSource -> BitmapSource) =
+        new Image(i.Source |> mapper)
     member i.Resize(width, height, fit : Fit) =
         let size = Size(source.Width, source.Height)
         let ns = size.FitToArea(new Size(width, height), fit)

@@ -101,8 +101,8 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
     member r.Json(json : string) =
         r.ContentType <- ContentTypes.json
         r.Writer.Write(json)
-    member r.AsJson(o : obj, ?ignoreReferenceLoop : bool) = 
-        JSON.stringify(o, defaultArg ignoreReferenceLoop true) |> r.Json
+    member r.AsJson(o : obj) = 
+        JSON.stringify(o) |> r.Json
     new(request : Request, response : Response, staticContentOptions : StaticContentOptions) =
         new Reply(request, response, staticContentOptions, null)
     new(request : Request, response : Response, staticContentConfig : StaticContentConfig, view : IView) =

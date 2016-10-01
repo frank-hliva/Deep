@@ -11,6 +11,7 @@ type ValueObjectConverter(outputFilter : IDictionary<string, obj> -> obj) =
     let rec convert (values : obj) =
         match values with
         | null -> null
+        | :? string -> values
         | :? IDictionary<string, obj> as dict ->
             dict
             |> Seq.map(fun kv -> kv.Key, kv.Value |> box |> convert)
@@ -20,7 +21,6 @@ type ValueObjectConverter(outputFilter : IDictionary<string, obj> -> obj) =
         | collection when collection |> ObjectType.isEnumerable ->
             let collection = collection :?> IEnumerable
             seq { for o in collection do yield (o |> convert) } |> box
-        | :? string -> values
         | value when value.GetType().IsValueType -> values
         | c when c.GetType().IsClass ->
             c |> objectToDict |> box |> convert
@@ -34,7 +34,9 @@ type ValueObjectConverter(outputFilter : IDictionary<string, obj> -> obj) =
                 if p.CanRead && p.GetIndexParameters().Length = 0
                 then
                     if o.GetType() = p.PropertyType then None
-                    else Some(p.Name, p.GetValue(o) |> convert)
+                    else
+                        let value = try p.GetValue(o) with :? Exception as e -> null
+                        Some(p.Name, value |> convert)
                 else None) |> Map.ofSeq |> box
 
     member s.ConvertToDict(values : obj) = values |> convert

@@ -32,12 +32,16 @@ type MemberList =
 type Dict() =
 
     static let whiteListChooser (o : obj) (whiteList : Set<string>) (prop : PropertyInfo) =
-        if whiteList.Contains prop.Name then Some(prop.Name, prop.GetValue o)
+        if whiteList.Contains prop.Name then
+            let value = try prop.GetValue o with :? Exception -> null
+            Some(prop.Name, value)
         else None
 
     static let blackListChooser (o : obj) (blackList : Set<string>) (prop : PropertyInfo) =
         if blackList.Contains prop.Name then None
-        else Some(prop.Name, prop.GetValue o)
+        else 
+            let value = try prop.GetValue o with :? Exception -> null
+            Some(prop.Name, value)
 
     static let allChooser (o : obj) (prop : PropertyInfo) = Some(prop.Name, prop.GetValue o)
 

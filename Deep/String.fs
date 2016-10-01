@@ -57,11 +57,6 @@ type StringExtensions () =
         |> StringExtensions.RemoveDiacritics
         |> List.ofSeq |> link [] |> List.rev |> String.Concat
 
-    static member inline OfCharSeq (chars : char seq) =
-        let builder = new StringBuilder()
-        for c in chars do builder.Append(c) |> ignore
-        builder.ToString()
-
     [<Extension>]
     static member inline Capitalize(input : string) =
         if String.IsNullOrEmpty input then input

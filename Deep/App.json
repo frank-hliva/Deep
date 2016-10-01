@@ -1,0 +1,27 @@
+﻿{
+    "ServerOptions": {
+        "UriPrefix": "http://+:3000/"
+    },
+    "AppInfo": {
+        "Name": "AgencyDB",
+        "Email": "celebagency@celebagency.sk",
+        "InfoEmail": "info@celebagency.sk",
+        "SupportEmail": "support@celebagency.sk"
+    },
+    "RouteBuilder": {
+        "Assemblies": [ "AgencyDB, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
+    },
+    "Controllers": {
+        "Assemblies": [ "AgencyDB, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" ]
+    },
+    "View": {
+        "Extension": ".html",
+        "Directory": "~/../../View"
+    },
+    "StaticContent": {
+        "Directory": "~/../../Web"
+    },
+    "MemorySession": {
+        "Expiration": 432000
+    }
+}
