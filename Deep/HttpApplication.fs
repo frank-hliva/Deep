@@ -14,10 +14,12 @@ type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerCo
 
     abstract RegisterRequestObjects : HttpListenerContext -> IKernel -> IKernel
     default a.RegisterRequestObjects (context : HttpListenerContext) (requestContainer : IKernel) =
+        let output = new Output(context.Request, context.Response)
         [
             context |> box
+            output |> box
             new Request(context.Request) |> box
-            new Response(context.Response) |> box
+            new Response(context.Response, output) |> box
         ]
         |> Seq.fold
             (fun (requestContainer : IKernel) (instance : obj) ->

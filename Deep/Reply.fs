@@ -28,17 +28,21 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
         reply
     do response.ContentType <- ContentTypes.html
     do response.ContentEncoding <- Encoding.UTF8
+
     let toViewData = Map >> Some
-    let addCharset (headers : WebHeaderCollection) =
-        headers.Add(
-            "Content-Type",
-            sprintf "%s; charset=%s" response.ContentType response.ContentEncoding.HeaderName
-        )
 
     interface IAutoDisposable with
         member r.IsDisposed with get() = isDisposed
         member r.Dispose() =
-            if r.AddCharsetToHeader then response.Headers |> addCharset
+            let headers = response.Headers
+            [
+                "Cache-Control", "no-cache, no-store, must-revalidate"
+                "Pragma", "no-cache"
+                "Expires", "0"
+            ] |> List.iter(fun (k, v) -> if headers.[k] = null then headers.Add(k, v))
+            if r.AddCharsetToHeader then
+                response.Headers
+                |> Headers.addCharset response
             writer.Dispose()
             isDisposed <- true
 
@@ -82,7 +86,7 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
             "Cache-Control", "must-revalidate, post-check=0, pre-check=0"
             "Pragma", "public"
         ] |> List.iter(fun (k, v) -> response.Headers.Add(k, v))
-        do! File.send(path, response, {
+        do! File.sendBinary(path, response, {
             ContentType = "application/octet-stream"
             BufferSize = defaultArg bufferSize staticContentOptions.BufferSize
         }) }

@@ -52,8 +52,11 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     member this.Params = parameters
     new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)
 
-type Response internal (httpListenerResponse : HttpListenerResponse) =
-    do httpListenerResponse.Headers.Add("X-Powered-By", "Deep")
+type Response internal (httpListenerResponse : HttpListenerResponse, output : Output) =
+    do
+        let headers = httpListenerResponse.Headers
+        headers.Add("Server", "\r\n\r\n")
+        headers.Add("X-Powered-By", "Deep")
     member this.CopyFrom(templateResponse : HttpListenerResponse) : unit = httpListenerResponse.CopyFrom(templateResponse)
     member this.AddHeader(name : String, value : String) : unit = httpListenerResponse.AddHeader(name, value)
     member this.AppendHeader(name : String, value : String) : unit = httpListenerResponse.AppendHeader(name, value)
@@ -65,7 +68,8 @@ type Response internal (httpListenerResponse : HttpListenerResponse) =
     member this.Close() : unit = httpListenerResponse.Close()
     member this.ContentEncoding with get() : Encoding = httpListenerResponse.ContentEncoding and set(value : Encoding) = httpListenerResponse.ContentEncoding <- value
     member this.ContentType with get() : String = httpListenerResponse.ContentType and set(value : String) = httpListenerResponse.ContentType <- value
-    member this.OutputStream with get() : Stream = httpListenerResponse.OutputStream
+    member this.OutputStream with get() : Stream = output.OutputStream
+    member this.RawOutputStream with get() : Stream = httpListenerResponse.OutputStream
     member this.RedirectLocation with get() : String = httpListenerResponse.RedirectLocation and set(value : String) = httpListenerResponse.RedirectLocation <- value
     member this.StatusCode with get() : Int32 = httpListenerResponse.StatusCode and set(value : Int32) = httpListenerResponse.StatusCode <- value
     member this.StatusDescription with get() : String = httpListenerResponse.StatusDescription and set(value : String) = httpListenerResponse.StatusDescription <- value
@@ -75,5 +79,4 @@ type Response internal (httpListenerResponse : HttpListenerResponse) =
     member this.Headers with get() : WebHeaderCollection = httpListenerResponse.Headers and set(value : WebHeaderCollection) = httpListenerResponse.Headers <- value
     member this.ContentLength64 with get() : Int64 = httpListenerResponse.ContentLength64 and set(value : Int64) = httpListenerResponse.ContentLength64 <- value
     member this.ProtocolVersion with get() : Version = httpListenerResponse.ProtocolVersion and set(value : Version) = httpListenerResponse.ProtocolVersion <- value
-    
-    member this.GetWriter() : StreamWriter = new StreamWriter(httpListenerResponse.OutputStream)
+    member this.GetWriter() : StreamWriter = new StreamWriter(this.OutputStream)

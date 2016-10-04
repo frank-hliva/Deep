@@ -4,6 +4,7 @@ open System
 open System.IO
 open System.Web
 open System.IO.Compression
+open System.Text
 open Deep
 
 module Path =
@@ -31,24 +32,6 @@ module Path =
 
 type SendFileOptions = { BufferSize : int; ContentType : string } 
 
-module ResponseStream =
-
-    let private (|AcceptEncoding|_|) (input : string) =
-        if String.IsNullOrEmpty input then None
-        else ["deflate"; "gzip"] |> List.tryFind(fun e -> input.Contains e)
-
-    let get (acceptEncoding : string) (response : Response) =
-        match acceptEncoding with
-        | AcceptEncoding encoding ->
-            encoding,
-            match encoding with
-            | "deflate" -> new DeflateStream(response.OutputStream, CompressionMode.Compress, false) :> Stream
-            | _ -> new GZipStream(response.OutputStream, CompressionMode.Compress, false) :> Stream
-        | _ -> "none", response.OutputStream
-        |> fun (encoding, stream) ->
-            response.Headers.Add("Content-Encoding", encoding)
-            new StreamWriter(stream)
-
 type File() =
 
     static let defaultSendOptions (fileName : string) (options : SendFileOptions option) =
@@ -65,15 +48,17 @@ type File() =
         | 0 -> { options with BufferSize = defaultBufferSize }
         | _ -> options
 
-    static member send (path : string, response : Response, ?options: SendFileOptions) = async {
+    static member sendBinary (path : string, response : Response, ?options: SendFileOptions) = async {
         let options = options |> defaultSendOptions (Path.GetFileName path)
         use fileStream = File.OpenRead(path)
         if fileStream.Length = 0L then response.Close()
         else
-            let outputStream = response.OutputStream
+            let outputStream = response.RawOutputStream
             response.ContentLength64 <- fileStream.Length
             response.SendChunked <- false
             response.ContentType <- options.ContentType
+            if (response.Headers.["Cache-Control"] = null) then
+                response.Headers.Add("Cache-Control", "public, max-age=31536000")
             let buffer = Array.create(options.BufferSize) 0uy
             let rec loop () = async {
                 let! read = fileStream.AsyncRead(buffer, 0, buffer.Length)
@@ -81,3 +66,22 @@ type File() =
                     let! _ = outputStream.AsyncWrite(buffer, 0, read) |> Async.Catch
                     do! loop() }
             do! loop() }
+
+    static member sendText(path : string, response : Response, ?options: SendFileOptions) = async {
+        let options = options |> defaultSendOptions (Path.GetFileName path)
+        response.ContentType <- options.ContentType
+        response.ContentEncoding <- Encoding.UTF8
+        if (response.Headers.["Cache-Control"] = null) then
+            response.Headers.Add("Cache-Control", "public, max-age=31536000")
+        use writer = response.GetWriter()
+        writer.Write(File.ReadAllText(path))
+        response.Headers |> Headers.addCharset response }
+
+    static member send(path : string, response : Response, ?options: SendFileOptions) =
+        if path |> Text.isTextFile && FileInfo(path).Length < 5000000L
+        then
+            if options.IsSome then File.sendText(path, response, options.Value)
+            else File.sendText(path, response)
+        else
+            if options.IsSome then File.sendBinary(path, response, options.Value)
+            else File.sendBinary(path, response)
