@@ -34,7 +34,8 @@ type StaticContent(staticContentOptions : StaticContentOptions) =
                         ContentType = null
                     })
                     return ListenerResult.End
-                | _ -> return ListenerResult.Next }
+                | _ ->
+                    return ListenerResult.Next }
 
     new(config : StaticContentConfig) =
         StaticContent(config.GetOptions())
