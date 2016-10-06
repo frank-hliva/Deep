@@ -64,6 +64,7 @@
     <Compile Include="Output.fs" />
     <Compile Include="Http.fs" />
     <Compile Include="Headers.fs" />
+    <Compile Include="MimeMapping.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Sessions.fs" />

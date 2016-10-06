@@ -11,7 +11,12 @@ let listen uriPrefix action =
     listener.Start()
     let rec loop () = async {
         let! context = Async.FromBeginEnd(listener.BeginGetContext, listener.EndGetContext)
-        action context |> Async.Start
+        async { 
+            let! result = Async.Catch(action context)
+            match result with
+            | Choice.Choice1Of2 _ -> ()
+            | Choice.Choice2Of2 exn -> ()
+        } |> Async.Start
         do! loop ()
     }
     loop () |> Async.Start

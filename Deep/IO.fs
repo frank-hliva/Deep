@@ -2,7 +2,6 @@
 
 open System
 open System.IO
-open System.Web
 open System.IO.Compression
 open System.Text
 open Deep
@@ -42,7 +41,7 @@ type File() =
             | _ -> { BufferSize = defaultBufferSize; ContentType = null }
         let options =
             if String.IsNullOrEmpty(options.ContentType)
-            then { options with ContentType = MimeMapping.GetMimeMapping(fileName) }
+            then { options with ContentType = MimeMapping.getMimeMapping(fileName) }
             else options
         match options.BufferSize with
         | 0 -> { options with BufferSize = defaultBufferSize }
