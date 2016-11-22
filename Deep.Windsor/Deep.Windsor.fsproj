@@ -74,6 +74,8 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Deep\Deep.fsproj">
       <Name>Deep</Name>
       <Project>{10553a39-e7a5-4329-ac07-fb68416b72e1}</Project>

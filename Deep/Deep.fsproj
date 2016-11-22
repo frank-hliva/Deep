@@ -91,7 +91,6 @@
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
     <Content Include="packages.config" />
-    <None Include="App.json" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="FSharp.Data.TypeProviders" />

@@ -6,7 +6,8 @@ open System.Net.Mime
 let isTextContentType (contentType : ContentType) =
     match contentType.MediaType with
     | "text/plain" | "text/html" | "text/xml"
-    | "application/xml" | "application/json" -> true
+    | "application/xml" | "application/json"
+    | "text/csv" -> true
     | _ -> false
 
 let tryGetEncoding (contentType : ContentType) =

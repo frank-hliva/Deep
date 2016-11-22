@@ -37,7 +37,7 @@ type private KernelItem =
         mutable Instance : obj option ref
     }
 
-type private KernelMap = Map<Guid, KernelItem>
+type private KernelMap = Map<string, KernelItem>
 
 type private SearchResult =
 | Internal of KernelItem
@@ -46,7 +46,7 @@ type private SearchResult =
 type Kernel internal (types : KernelMap, externalResolver : IExternalResolver option) =
 
     let containsType (t : Type) =
-        if types.ContainsKey(t.GUID) then true
+        if types.ContainsKey(t.AssemblyQualifiedName) then true
         else
             match externalResolver with
             | Some resolver -> resolver.Contains(t)
@@ -56,12 +56,12 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
         p.ParameterType |> containsType
 
     let find (t : Type) (types : KernelMap) =
-        match types |> Map.tryFind t.GUID with
+        match types |> Map.tryFind t.AssemblyQualifiedName with
         | Some kernelItem -> Internal(kernelItem)
         | _ ->
             match externalResolver with
             | Some resolver -> External(resolver.Resolve(t))
-            | _ -> failwith "Type not registered"
+            | _ -> failwith (sprintf "Type %s not registered" t.Name)
 
     let chooseParams (c : ConstructorInfo) =
         let parameters = c.GetParameters()
@@ -71,7 +71,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
 
     let rec toParam (p : ParameterInfo) =
         let t = p.ParameterType
-        if types.ContainsKey(t.GUID)
+        if types.ContainsKey(t.AssemblyQualifiedName)
         then t |> resolve
         else externalResolver.Value.Resolve(t)
 
@@ -98,7 +98,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
     interface IKernel with
 
         member k.Register(abstraction : Type, implementedBy : Type, ?lifeTime : LifeTime) =
-            new Kernel(types |> Map.add abstraction.GUID {
+            new Kernel(types |> Map.add abstraction.AssemblyQualifiedName {
                 Abstraction = abstraction
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
@@ -106,7 +106,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
             }, externalResolver) :> IKernel
 
         member k.Register(implementedBy : Type, ?lifeTime : LifeTime) =
-            new Kernel(types |> Map.add implementedBy.GUID {
+            new Kernel(types |> Map.add implementedBy.AssemblyQualifiedName {
                 Abstraction = implementedBy
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
@@ -116,7 +116,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
         member k.Register<'t1, 't2>(?lifeTime : LifeTime) =
             let abstraction = typedefof<'t1>
             let implementedBy = typedefof<'t2>
-            new Kernel(types |> Map.add abstraction.GUID {
+            new Kernel(types |> Map.add abstraction.AssemblyQualifiedName {
                 Abstraction = abstraction
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
@@ -125,7 +125,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
 
         member k.Register<'t>(?lifeTime : LifeTime) =
             let implementedBy = typedefof<'t>
-            new Kernel(types |> Map.add implementedBy.GUID {
+            new Kernel(types |> Map.add implementedBy.AssemblyQualifiedName {
                 Abstraction = implementedBy
                 ImplementedBy = Some implementedBy
                 LifeTime = defaultArg lifeTime LifeTime.PerResolve
@@ -133,7 +133,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
             }, externalResolver) :> IKernel
 
         member k.RegisterInstance(abstraction : Type, instance : obj) =
-            new Kernel(types |> Map.add abstraction.GUID {
+            new Kernel(types |> Map.add abstraction.AssemblyQualifiedName {
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
@@ -142,7 +142,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
 
         member k.RegisterInstance<'t>(instance : obj) =
             let abstraction = typedefof<'t>
-            new Kernel(types |> Map.add abstraction.GUID {
+            new Kernel(types |> Map.add abstraction.AssemblyQualifiedName {
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
@@ -151,7 +151,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
 
         member k.RegisterInstance(instance : obj) =
             let abstraction = instance.GetType()
-            new Kernel(types |> Map.add abstraction.GUID {
+            new Kernel(types |> Map.add abstraction.AssemblyQualifiedName {
                 Abstraction = abstraction
                 ImplementedBy = None
                 LifeTime = LifeTime.Singleton
@@ -166,7 +166,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
         member k.Contains(t) = t |> containsType
 
         member k.TryFindInstance(t : Type) =
-            match types |> Map.tryFind t.GUID with
+            match types |> Map.tryFind t.AssemblyQualifiedName with
             | Some kernelItem when kernelItem.Instance.Value.IsSome ->
                 Some kernelItem.Instance.Value.Value
             | _ -> None

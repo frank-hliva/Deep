@@ -7,13 +7,13 @@ open Deep.Routing
 type [<AbstractClass>] Booter(kernel : IKernel) =
     let mutable container = kernel
     abstract DefaultConfigurator : IKernel -> IKernel
-    member b.Kernel = container
+    member b.Kernel with get() = container
     member b.Config() =
         container <- b.DefaultConfigurator(container)
         container <- container.RegisterInstance<IKernel>(container)
     member b.Config(configurator : IKernel -> IKernel) =
-        b.Config()
         container <- configurator(container)
+        b.Config()
     abstract Boot : unit -> unit
     abstract Boot : uriPrefix : string -> unit
 
@@ -22,6 +22,6 @@ type ApplicationBooter<'t when 't : not struct and 't :> IApplication>(kernel) =
     override b.DefaultConfigurator(kernel) =
         kernel.Register<'t>(LifeTime.Singleton)
     override b.Boot() =
-        b.Boot(kernel.Resolve<ServerConfig>().GetServerOptions().UriPrefix)
+        b.Boot(b.Kernel.Resolve<ServerConfig>().GetServerOptions().UriPrefix)
     override b.Boot(uriPrefix : string) =
         b.Kernel.Resolve<'t>().Run(uriPrefix)

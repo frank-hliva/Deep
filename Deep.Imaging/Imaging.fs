@@ -80,8 +80,8 @@ type Image(source : BitmapSource) =
         let h = if height > source.Height then height else source.Height
         new Image(Img.newBackground (w, h) background (i.Source :> ImageSource |> Some))
     member i.Crop(x, y, width, height) =
-        let x = if x = -1.0 && width < source.Width then (source.Width - width) / 2.0 else 0.0
-        let y = if y = -1.0 && height < source.Height then (source.Height - height) / 2.0 else 0.0
+        let x = if x = -1.0 && width < source.Width then (source.Width - width) / 2.0 else x
+        let y = if y = -1.0 && height < source.Height then (source.Height - height) / 2.0 else y
         new Image(new CroppedBitmap(source, new Int32Rect(Float.toInt x, Float.toInt y, Float.toInt width, Float.toInt height)))
     member i.Crop(width, height) = i.Crop(-1.0, 0.0, width, height)
     member i.HasSize(width, height) =

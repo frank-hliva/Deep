@@ -28,7 +28,9 @@ type Config(source : IConfigSource) =
     member c.SelectAs<'t>(path : string) =
         JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
     new(path : string) = Config(path |> ConfigFileSource)
-    new() = Config(Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"]))
+    new() =
+        let path = Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"])
+        Config(path)
 
 type IConfigSection = interface end
 
