@@ -110,7 +110,8 @@ type MvcRouteHandler() =
                             else () }
             | _ -> 
                 let controllerName = parameters.[MvcKeys.Controller]
-                async { return raise(HttpException(404, controllerName)) }
+                let actionName = parameters.[MvcKeys.Action]
+                async { return raise(HttpException(404, controllerName + "/" + actionName)) }
 
 namespace Deep.Mvc
 

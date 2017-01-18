@@ -8,6 +8,7 @@ open System.Collections.Specialized
 open System.Threading.Tasks
 open System.Security.Cryptography.X509Certificates
 open Deep.Routing
+open System.Web
 
 type Request internal (httpListenerRequest : HttpListenerRequest, parameters : RouteParams) =
     member this.GetClientCertificate() : X509Certificate2 = httpListenerRequest.GetClientCertificate()
@@ -26,7 +27,7 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     member this.IsLocal with get() : Boolean = httpListenerRequest.IsLocal
     member this.IsSecureConnection with get() : Boolean = httpListenerRequest.IsSecureConnection
     member this.IsWebSocketRequest with get() : Boolean = httpListenerRequest.IsWebSocketRequest
-    member this.QueryString with get() : NameValueCollection = httpListenerRequest.QueryString
+    member this.QueryString with get() : NameValueCollection = HttpUtility.ParseQueryString(httpListenerRequest.Url.Query)
     member this.RawUrl with get() : String = httpListenerRequest.RawUrl
     member this.ServiceName with get() : String = httpListenerRequest.ServiceName
     member this.Url with get() : Uri = httpListenerRequest.Url
