@@ -93,7 +93,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                     lock i.Instance (fun () -> i.Instance := Some instance)
                     instance
                 | _ -> failwith "Invalid lifetime"
-            | _ -> failwith "Constructor parameter mismatch"
+            | _ -> failwith (sprintf "Constructor parameter mismatch: %s" (implementation.ToString()))
 
     interface IKernel with
 

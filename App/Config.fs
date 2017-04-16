@@ -1,8 +1,6 @@
 ﻿[<AutoOpen>]
 module App.Config
 
-open Castle.Windsor
-open Castle.MicroKernel.Registration
 open Deep
 open Deep.Routing
 open Deep.Mvc
@@ -18,26 +16,30 @@ let registerRoutes (routes : routes) =
 type RouteBuilder(config : RouteBuilderConfig) =
     inherit Routing.RouteBuilder(registerRoutes, config)
 
-let config (container : IWindsorContainer) =
-    container
-        .Register(Component.For<Config>().LifeStyle.Singleton)
-        .Register(
-            AllTypes
-                .FromAssemblyNamed("Deep")
-                .BasedOn<IConfigSection>()
-                .WithServiceSelf()
-                .LifestyleSingleton()
-        ) |> ignore
-    [
-        (typedefof<IView>, typedefof<View>)
-        (typedefof<IRouteBuilder>, typedefof<RouteBuilder>)
-        (typedefof<Router>, typedefof<Router>)
-        (typedefof<StaticContent>, typedefof<StaticContent>)
-        (typedefof<ISessionStore>, typedefof<MemorySessionStore>)
-    ] |> List.iter(fun (t1, t2) -> container.Register(Component.For(t1).ImplementedBy(t2).LifeStyle.Singleton) |> ignore)
+let requestKernelConfig (kernel : IKernel) =
+    kernel
+
+let config (kernel : IKernel) =
+    let kernel =
+        kernel
+            .RegisterInstance(new Config())
+            .Register<IView, View>(LifeTime.Singleton)
+            .Register<AppInfoConfig>(LifeTime.Singleton)
+            .Register<ServerConfig>(LifeTime.Singleton)
+            .Register<StaticContentConfig>(LifeTime.Singleton)
+            .Register<RouteBuilderConfig>(LifeTime.Singleton)
+            .Register<ControllerConfig>(LifeTime.Singleton)
+            .Register<ViewConfig>(LifeTime.Singleton)
+            .Register<MemorySessionConfig>(LifeTime.Singleton)
+            .Register<IRouteBuilder, RouteBuilder>(LifeTime.Singleton)
+            .Register<Router>(LifeTime.Singleton)
+            .Register<StaticContent>(LifeTime.Singleton)
+            .Register<ISessionStore, MemorySessionStore>(LifeTime.Singleton)
     let listenerContainer =
         ListenerContainer()
-            .Use(container.Resolve<StaticContent>())
-            .Use(container.Resolve<Router>())
+            .Use(kernel.Resolve<StaticContent>())
+            .Use(kernel.Resolve<Router>())
             .Use(ErrorHandler())
-    container.Register(Component.For<ListenerContainer>().Instance(listenerContainer).LifeStyle.Singleton)
+    kernel
+        .RegisterInstance(listenerContainer)
+        .RegisterInstance(new RequestKernelConfigurator(requestKernelConfig))
