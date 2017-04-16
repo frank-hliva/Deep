@@ -7,6 +7,7 @@ open System.Text
 open Newtonsoft.Json
 open Newtonsoft.Json.Linq
 open System.Reflection
+open System.Collections.Concurrent
 
 type IConfigSource =
     abstract ToJObject : unit -> JObject
@@ -24,9 +25,15 @@ type ConfigFileSource(path : string) =
         override s.ToJObject() = jObject
 
 type Config(source : IConfigSource) =
-    member c.Config = source.ToJObject()
+    let concurrentDictionary = new ConcurrentDictionary<string, obj>()
+    let configObject = source.ToJObject()
+    member c.Config = configObject
     member c.SelectAs<'t>(path : string) =
-        JsonConvert.DeserializeObject<'t>(source.ToJObject().SelectToken(path).ToString())
+        concurrentDictionary.GetOrAdd(path,
+            fun path ->
+                let jsonString = configObject.SelectToken(path).ToString()
+                let deserialized = JsonConvert.DeserializeObject<'t>(jsonString)
+                deserialized :> obj) :?> 't
     new(path : string) = Config(path |> ConfigFileSource)
     new() =
         let path = Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"])
