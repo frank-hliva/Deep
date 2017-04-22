@@ -45,6 +45,15 @@ module private Img =
         )
         drawingVisual |> toBitmapSource (width, height)
 
+    let addImage (img2 : ImageSource) (rect : Rect) (img1 : ImageSource) =
+        let drawingVisual = new DrawingVisual()
+        (
+            use drawingContext = drawingVisual.RenderOpen()
+            drawingContext.DrawImage(img1, new Rect(0.0, 0.0, img1.Width, img1.Height))
+            drawingContext.DrawImage(img2, rect)
+        )
+        drawingVisual |> toBitmapSource (img1.Width, img1.Height)
+
     let rotate (angle : float) (source : BitmapSource) =
         let transformBitmap = new TransformedBitmap()
         transformBitmap.BeginInit()
@@ -92,6 +101,12 @@ type Image(source : BitmapSource) =
         i.Width > width || i.Height > height
     member i.Rotate(angle : float) =
         new Image(source |> Img.rotate angle)
+    member i.AddImage(img : Image, rect : Rect) =
+        new Image(source |> Img.addImage img.Source rect)
+    member i.AddImage(img : Image, x : float, y : float, width : float, height : float) =
+        i.AddImage(img, new Rect(x, y, width, height))
+    member i.AddImage(img : Image, x : float, y : float) =
+        i.AddImage(img, new Rect(x, y, img.Width, img.Height))
     member i.Save(path : string, encoder : BitmapEncoder) =
         encoder.Frames.Add(BitmapFrame.Create(source))
         use filestream = new FileStream(path, FileMode.Create)
