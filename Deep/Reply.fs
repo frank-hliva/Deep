@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 open System
 open System.IO
@@ -105,6 +105,7 @@ type Reply(request : Request, response : Response, staticContentOptions : Static
     member r.Json(json : string) =
         r.ContentType <- ContentTypes.json
         r.Writer.Write(json)
+
     member r.AsJson(o : obj) = 
         JSON.stringify(o) |> r.Json
     new(request : Request, response : Response, staticContentOptions : StaticContentOptions) =

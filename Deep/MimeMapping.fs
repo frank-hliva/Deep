@@ -1,4 +1,4 @@
-﻿module Deep.MimeMapping
+module Deep.MimeMapping
 
 open System.IO
 open System.Web

@@ -1,4 +1,4 @@
-﻿module Deep.Function
+module Deep.Function
 
 open System
 open System.Reflection

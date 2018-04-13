@@ -1,4 +1,4 @@
-﻿namespace Deep.Multipart
+namespace Deep.Multipart
 
 open System
 open System.IO

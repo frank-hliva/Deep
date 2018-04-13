@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 type ListenerResult =
 | End

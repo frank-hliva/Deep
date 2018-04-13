@@ -1,4 +1,4 @@
-﻿module Deep.Imaging.Sizing
+module Deep.Imaging.Sizing
 
 open System
 open System.Windows

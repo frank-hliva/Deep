@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 open System
 open System.IO
@@ -25,6 +25,14 @@ type ConfigFileSource(path : string) =
         override s.ToJObject() = jObject
 
 type Config(source : IConfigSource) =
+    static let setDevEnv (devEnv : string) (path : string) =
+        let config =
+            path
+            |> File.ReadAllText
+            |> JObject.Parse
+        if config.["AppInfo"].["DEV_ENV"].ToObject<string>() <> devEnv then
+            config.["AppInfo"].["DEV_ENV"] <- JToken.op_Implicit devEnv
+            File.WriteAllText(path, config.ToString())
     let concurrentDictionary = new ConcurrentDictionary<string, obj>()
     let configObject = source.ToJObject()
     member c.Config = configObject
@@ -37,6 +45,11 @@ type Config(source : IConfigSource) =
     new(path : string) = Config(path |> ConfigFileSource)
     new() =
         let path = Path.join([AppDomain.CurrentDomain.BaseDirectory; "../../App.json"])
+#if DEBUG
+        path |> setDevEnv "development"
+#else
+        path |> setDevEnv "production"
+#endif
         Config(path)
 
 type IConfigSection = interface end

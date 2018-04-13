@@ -1,4 +1,4 @@
-﻿module Deep.Headers
+module Deep.Headers
 
 open System
 open System.Net

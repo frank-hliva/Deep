@@ -1,4 +1,4 @@
-﻿namespace Deep.Mvc
+namespace Deep.Mvc
 
 open Deep
 open System.Net
@@ -10,7 +10,7 @@ type ControllerConfig(config : Config) =
     override c.GetAssemblyNames() =
         config.SelectAs<string[]>("Controllers.Assemblies")
 
-module Controller =
+module Controllers =
     let suffix = "Controller"
 
     let findAll (assemblies : Assembly[]) =
@@ -81,7 +81,7 @@ type MvcRouteHandler() =
             let request = container.Resolve<Request>()
             let parameters = request.Params |> Map.map(fun k v -> if k = MvcKeys.Controller || k = MvcKeys.Action then v |> Url.toPascalCase else v)
             (container.Resolve<ControllerConfig>() :> IAssemblyConfig).GetAssemblies()
-            |> Controller.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controller.suffix)
+            |> Controllers.tryFindByName (sprintf "%s%s" parameters.[MvcKeys.Controller] Controllers.suffix)
             |> function
             | Some controllerType -> async {
                 let controller = container.Register(controllerType).Resolve(controllerType)
@@ -119,7 +119,6 @@ open Deep
 open Deep.Routing
 open System.Net
 
-[<CompilationRepresentationAttribute(CompilationRepresentationFlags.ModuleSuffix)>]
 module Controller =
     
     let executeAction (kernel : IKernel) (path : string) = async {

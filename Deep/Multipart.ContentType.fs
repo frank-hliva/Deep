@@ -1,4 +1,4 @@
-﻿module Deep.Multipart.ContentType
+module Deep.Multipart.ContentType
 
 open System.Text
 open System.Net.Mime

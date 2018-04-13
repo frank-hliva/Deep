@@ -1,4 +1,4 @@
-﻿namespace Deep.Collections
+namespace Deep.Collections
 
 open System
 open System.Reflection

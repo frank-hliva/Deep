@@ -1,4 +1,4 @@
-﻿namespace Deep.AssemblyInfo
+namespace Deep.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
@@ -12,7 +12,7 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("")>]
 [<assembly: AssemblyProduct("Deep")>]
-[<assembly: AssemblyCopyright("Copyright ©  2016")>]
+[<assembly: AssemblyCopyright("Copyright ©  2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
 
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: ComVisible(false)>]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[<assembly: Guid("10553a39-e7a5-4329-ac07-fb68416b72e1")>]
+[<assembly: Guid("32c6ec0f-ab0b-48fd-8c77-5ff75a3aa538")>]
 
 // Version information for an assembly consists of the following four values:
 // 

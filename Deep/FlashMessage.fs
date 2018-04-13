@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 type FlashMessage = { Text : string; messageType : string }
 type FlashMessageList = FlashMessage list

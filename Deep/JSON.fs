@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 open Newtonsoft.Json
 open Newtonsoft.Json.Converters

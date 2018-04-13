@@ -1,4 +1,4 @@
-﻿namespace Deep.Imaging.AssemblyInfo
+namespace Deep.Imaging.AssemblyInfo
 
 open System.Reflection
 open System.Runtime.CompilerServices
@@ -12,7 +12,7 @@ open System.Runtime.InteropServices
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("")>]
 [<assembly: AssemblyProduct("Deep.Imaging")>]
-[<assembly: AssemblyCopyright("Copyright ©  2016")>]
+[<assembly: AssemblyCopyright("Copyright ©  2018")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
 
@@ -22,7 +22,7 @@ open System.Runtime.InteropServices
 [<assembly: ComVisible(false)>]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[<assembly: Guid("bc4a39ec-9fb7-43e5-9b16-d55b5b919087")>]
+[<assembly: Guid("a9545675-4438-4166-8074-29d08497822d")>]
 
 // Version information for an assembly consists of the following four values:
 // 

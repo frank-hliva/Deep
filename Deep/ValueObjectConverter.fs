@@ -1,4 +1,4 @@
-﻿namespace Deep
+namespace Deep
 
 open System
 open System.Collections

@@ -1,4 +1,4 @@
-﻿module Deep.Multipart.ItemInfo
+module Deep.Multipart.ItemInfo
 
 open System
 open System.Net.Mime

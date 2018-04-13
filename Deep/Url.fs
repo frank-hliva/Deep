@@ -1,4 +1,4 @@
-﻿module Deep.Url
+module Deep.Url
 
 open System
 

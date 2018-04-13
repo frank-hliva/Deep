@@ -1,4 +1,4 @@
-﻿module Deep.Text
+module Deep.Text
 
 open System.IO
 

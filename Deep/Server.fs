@@ -1,4 +1,4 @@
-﻿module Deep.Server
+module Deep.Server
 
 open System
 open System.Net

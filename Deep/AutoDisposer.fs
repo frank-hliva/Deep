@@ -1,4 +1,4 @@
-﻿module internal Deep.AutoDisposer
+module internal Deep.AutoDisposer
 
 open System
 open Deep

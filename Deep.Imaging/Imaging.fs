@@ -1,4 +1,4 @@
-﻿namespace Deep.Imaging
+namespace Deep.Imaging
 
 open System
 open System.IO
@@ -69,6 +69,9 @@ type Image(source : BitmapSource) =
     static member From(path : string) =
         use stream = File.OpenRead(path)
         Image.From(stream)
+    static member From(buffer : byte[]) =
+        use stream = new MemoryStream(buffer)
+        Image.From(stream)
     static member From(stream : Stream) =
         let bitmapImage = new BitmapImage()
         bitmapImage.BeginInit()
@@ -111,5 +114,10 @@ type Image(source : BitmapSource) =
         encoder.Frames.Add(BitmapFrame.Create(source))
         use filestream = new FileStream(path, FileMode.Create)
         encoder.Save(filestream)
+    member i.SaveToByteArray(encoder : BitmapEncoder) =
+        encoder.Frames.Add(BitmapFrame.Create(source))
+        use memoryStream = new MemoryStream()
+        encoder.Save(memoryStream)
+        memoryStream.ToArray()
     member i.Width = float i.Source.PixelWidth
     member i.Height = float i.Source.PixelHeight
