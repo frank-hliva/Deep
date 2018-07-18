@@ -4,10 +4,10 @@ open System
 open System.Net
 open System.Threading
 
-let listen uriPrefix action =
+let listen (uriPrefixes : string seq) action =
     let listener = new HttpListener()
     listener.IgnoreWriteExceptions <- true
-    listener.Prefixes.Add(uriPrefix)
+    uriPrefixes |> Seq.iter(listener.Prefixes.Add)
     listener.Start()
     let rec loop () = async {
         let! context = Async.FromBeginEnd(listener.BeginGetContext, listener.EndGetContext)

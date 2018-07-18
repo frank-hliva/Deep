@@ -2,6 +2,7 @@ namespace Deep
 
 open Deep
 open Deep.Mvc
+open System
 
 type ErrorHandler() =
 
@@ -20,5 +21,17 @@ type ErrorHandler() =
             | Some exn ->
                 let action = sprintf "Error/Page%d" (exn |> toHttpStatusCode)
                 do! action |> Controller.executeAction kernel
+                return ListenerResult.End 
+            | _ -> return ListenerResult.Next }
+
+type ApiErrorHandler() =
+
+    interface IListener with
+
+        member r.Listen (request : Request) (response : Response) (kernel : IKernel) (exn : exn option) = async {
+            match exn with
+            | Some exn ->
+                let action = "Error/Api"
+                do! action |> Controller.executeAction (kernel.RegisterInstance<exn>(exn))
                 return ListenerResult.End 
             | _ -> return ListenerResult.Next }

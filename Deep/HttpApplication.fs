@@ -44,6 +44,6 @@ type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerCo
         listenerContainer.Apply(kernel)
 
     interface IApplication with
-        override a.Run(uri : string) = Server.listen uri a.Listener
+        override a.Run(uriPrefixes : string seq) = Server.listen uriPrefixes a.Listener
 
     new(applicationKernel, router) = HttpApplication(applicationKernel, router, null)

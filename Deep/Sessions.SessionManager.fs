@@ -36,7 +36,7 @@ type SessionManager(store : ISessionStore, id : string) =
                     Name = cookieName,
                     Value = deepSessionId,
                     Expires = expires,
-                    Expired = false
+                    Expired = false 
                 ) |> response.Cookies.Add
                 deepSessionId
             | deepSessionCookie ->

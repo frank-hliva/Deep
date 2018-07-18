@@ -3,7 +3,7 @@ namespace Deep
 open System
 
 type IApplication =
-    abstract Run : string -> unit
+    abstract Run : string seq -> unit
 
 [<AllowNullLiteral>]
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
@@ -70,3 +70,22 @@ exception HttpException of int * string
 type IAutoDisposable =
     inherit IDisposable
     abstract IsDisposed : bool with get
+
+module TypeConversion =
+
+    let changeType (conversion : Type) (value : obj) =
+        match value with
+        | null -> null
+        | _ ->
+            (if conversion.IsGenericType && conversion.GetGenericTypeDefinition().Equals(typedefof<Nullable<_>>)
+            then Nullable.GetUnderlyingType(conversion)
+            else conversion) |> fun conversion -> Convert.ChangeType(value, conversion)
+
+    let change<'t> (value : obj) =
+        let conversion = typedefof<'t>
+        match value with
+        | null -> Unchecked.defaultof<'t>
+        | _ ->
+            (if conversion.IsGenericType && conversion.GetGenericTypeDefinition().Equals(typedefof<Nullable<_>>)
+            then Nullable.GetUnderlyingType(conversion)
+            else conversion) |> fun conversion -> Convert.ChangeType(value, conversion) :?> 't

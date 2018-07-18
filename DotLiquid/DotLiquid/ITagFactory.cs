@@ -1,4 +1,4 @@
-﻿namespace DotLiquid
+namespace DotLiquid
 {
     public interface ITagFactory
     {

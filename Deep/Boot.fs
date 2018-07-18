@@ -15,13 +15,13 @@ type [<AbstractClass>] Booter(kernel : IKernel) =
         container <- configurator(container)
         b.Config()
     abstract Boot : unit -> unit
-    abstract Boot : uriPrefix : string -> unit
+    abstract Boot : uriPrefixes : string seq -> unit
 
 type ApplicationBooter<'t when 't : not struct and 't :> IApplication>(kernel) =
     inherit Booter(kernel)
     override b.DefaultConfigurator(kernel) =
         kernel.Register<'t>(LifeTime.Singleton)
     override b.Boot() =
-        b.Boot(b.Kernel.Resolve<ServerConfig>().GetServerOptions().UriPrefix)
-    override b.Boot(uriPrefix : string) =
-        b.Kernel.Resolve<'t>().Run(uriPrefix)
+        b.Boot(b.Kernel.Resolve<ServerConfig>().GetServerOptions().UriPrefixes)
+    override b.Boot(uriPrefixes : string seq) =
+        b.Kernel.Resolve<'t>().Run(uriPrefixes)

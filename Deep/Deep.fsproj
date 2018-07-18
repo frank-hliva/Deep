@@ -57,6 +57,7 @@
     <Compile Include="Text.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="Kernel.fs" />
+    <Compile Include="Props.fs" />
     <Compile Include="ValueObjectConverter.fs" />
     <Compile Include="JSON.fs" />
     <Compile Include="Function.fs" />
@@ -91,6 +92,7 @@
     <Compile Include="Server.fs" />
     <Compile Include="Boot.fs" />
     <Compile Include="HttpApplication.fs" />
+    <Compile Include="Naming.fs" />
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -112,6 +114,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

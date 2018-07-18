@@ -1,4 +1,4 @@
-﻿namespace Deep.View.DotLiquid
+namespace Deep.View.DotLiquid
 
 open Deep
 open System.IO

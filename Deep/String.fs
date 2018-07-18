@@ -48,8 +48,8 @@ type StringExtensions () =
     [<Extension>]
     static member inline Webalize(input : string) =
         let rec link acc = function
-        | ' ' :: t | '-' :: t -> t |> link ('-' :: acc)
-        | h :: t when Char.IsLetter h || Char.IsDigit h ->
+        | ' ' :: t | '-' :: t | '_' :: t -> t |> link ('-' :: acc)
+        | h :: t when Char.IsLetter h || Char.IsDigit h || h = '.' ->
             t |> link (Char.ToLower h :: acc)
         | _ :: t -> t |> link acc
         | [] -> acc
@@ -58,9 +58,14 @@ type StringExtensions () =
         |> List.ofSeq |> link [] |> List.rev |> String.Concat
 
     [<Extension>]
-    static member inline Capitalize(input : string) =
+    static member inline UpperCaseFirst(input : string) =
         if String.IsNullOrEmpty input then input
         else input.[0..0].ToUpper() + input.[1..]
+
+    [<Extension>]
+    static member inline LowerCaseFirst(input : string) =
+        if String.IsNullOrEmpty input then input
+        else input.[0..0].ToLower() + input.[1..]
 
     [<Extension>]
     static member inline ToLines(input : string) =
