@@ -78,3 +78,14 @@ type StringExtensions () =
     [<Extension>]
     static member inline IsIntNumber(input : string) =
         input |> Int64.TryParse |> fst
+
+    [<Extension>]
+    static member inline ReplaceAll(input : string, replacements : list<string * string>) =
+        let rec replaceAll (replacements : list<string * string>) (stringBuilder : StringBuilder) =
+            match replacements with
+            | [] -> input
+            | (oldValue, newValue) :: replacements ->
+                replaceAll replacements (stringBuilder.Replace(oldValue, newValue))
+        input
+        |> StringBuilder
+        |> replaceAll replacements
