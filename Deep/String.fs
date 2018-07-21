@@ -83,7 +83,7 @@ type StringExtensions () =
     static member inline ReplaceAll(input : string, replacements : list<string * string>) =
         let rec replaceAll (replacements : list<string * string>) (stringBuilder : StringBuilder) =
             match replacements with
-            | [] -> input
+            | [] -> stringBuilder.ToString()
             | (oldValue, newValue) :: replacements ->
                 replaceAll replacements (stringBuilder.Replace(oldValue, newValue))
         input
