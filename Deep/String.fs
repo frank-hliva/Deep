@@ -4,7 +4,6 @@ module Deep.StringModule
 open System
 open System.Text
 open System.Text.RegularExpressions
-open System.Globalization
 open System.Runtime.CompilerServices
 
 [<Extension>]

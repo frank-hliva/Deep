@@ -54,6 +54,7 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Deep.fs" />
     <Compile Include="String.fs" />
+    <Compile Include="Chars.fs" />
     <Compile Include="Text.fs" />
     <Compile Include="Collections.fs" />
     <Compile Include="Kernel.fs" />
@@ -67,6 +68,7 @@
     <Compile Include="Http.fs" />
     <Compile Include="Headers.fs" />
     <Compile Include="MimeMapping.fs" />
+    <Compile Include="HttpRange.fs" />
     <Compile Include="IO.fs" />
     <Compile Include="Config.fs" />
     <Compile Include="Sessions.fs" />
