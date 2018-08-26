@@ -54,7 +54,9 @@
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Imaging.Sizing.fs" />
     <Compile Include="Imaging.fs" />
+    <Compile Include="Imaging.Video.fs" />
     <Content Include="packages.config" />
+    <None Include="Script1.fsx" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="mscorlib" />
