@@ -89,3 +89,16 @@ module TypeConversion =
             (if conversion.IsGenericType && conversion.GetGenericTypeDefinition().Equals(typedefof<Nullable<_>>)
             then Nullable.GetUnderlyingType(conversion)
             else conversion) |> fun conversion -> Convert.ChangeType(value, conversion) :?> 't
+
+
+module TimeSpan =
+
+    let tryParse (input : string) =
+        let items = input.Split([|':'|])
+        let input =
+            match items.Length with
+            | 2 -> sprintf "%s:00" input
+            | _ -> input
+        let success, timeSpan = input |> TimeSpan.TryParse
+        if success then Some timeSpan
+        else None
