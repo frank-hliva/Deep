@@ -5,6 +5,7 @@ open System
 open System.Text
 open System.Text.RegularExpressions
 open System.Runtime.CompilerServices
+open System.Globalization
 
 [<Extension>]
 type StringExtensions () =
@@ -88,3 +89,16 @@ type StringExtensions () =
         input
         |> StringBuilder
         |> replaceAll replacements
+
+
+[<Extension>]
+type DateTimeExtensions () =
+    
+    [<Extension>]
+    static member inline ToISOString(dateTime : DateTime, ?isUniversal : bool) =
+        let isUniversal = defaultArg isUniversal false
+        let isoDateTimeFormat = CultureInfo.InvariantCulture.DateTimeFormat
+        if isUniversal
+        then isoDateTimeFormat.UniversalSortableDateTimePattern
+        else isoDateTimeFormat.SortableDateTimePattern
+        |> dateTime.ToString
