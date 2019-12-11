@@ -28,6 +28,7 @@ type HttpApplication(applicationKernel : IKernel, listenerContainer : ListenerCo
             requestContainer
                 .Register<Get>(LifeTime.Singleton)
                 .Register<Post>(LifeTime.Singleton)
+                .Register<Posted>(LifeTime.Singleton)
                 .Register<MultipartForm>(LifeTime.Singleton)
                 .Register<Reply>(LifeTime.Singleton)
                 .Register<ISessionManager, SessionManager>(LifeTime.PerResolve)
