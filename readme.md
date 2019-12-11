@@ -1,6 +1,6 @@
 # Deep
 
-F# MVC Web framework version 1.0.0
+F# MVC Web framework version 2.0.1
 
 ## License:
 
@@ -8,11 +8,9 @@ https://github.com/frank-hliva/Deep/blob/master/LICENSE.md
 
 ## Example:
 
-```fs
+```fsharp
 open Deep
 open Deep.Routing
-open Deep.Windsor
-open Castle.Windsor
 open System
 
 [<Get("/test/?param")>]
@@ -23,10 +21,10 @@ let hello (req : Request) (reply : Reply) =
 
 [<EntryPoint>]
 let main argv =
-    let booter = new ApplicationBooter<HttpApplication>(new WindsorContainer())
+    let booter = new ApplicationBooter<HttpApplication>(new Kernel())
     booter.Config(config)
-    booter.Boot("http://127.0.0.1:3000/")
-    Console.WriteLine("Server running on port 3000...")
+    booter.Boot()
+    Console.WriteLine("Server running...")
     Console.ReadKey() |> ignore
     0
 ```
@@ -40,7 +38,8 @@ type HomeController(reply : Reply) =
     member c.Index(flashMessages : FlashMessages) = async {
         c.Title <- "Index"
         do! flashMessages.Send("Flash message")
-        reply.View ["Name" => "world"] }
+        reply.View ["Name" => "world"]
+    }
 
     member c.LearnMore(sessions : ISessionManager) = async {
         c.Title <- "Learn more"
@@ -48,5 +47,6 @@ type HomeController(reply : Reply) =
         do! sessions.SetItem("counter", counter + 1)
         let! counter = sessions.GetItem<int>("counter")
         reply.ViewData.["counter"] <- counter
-        reply.View() }
+        reply.View()
+    }
 ```
