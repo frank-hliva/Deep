@@ -18,6 +18,20 @@ type Post(request : Request) =
     member f.Fields with get() = nameValueCollection
     member f.Item with get(name : string) = nameValueCollection.[name]
 
+type Posted(request : Request) =
+    let lazyDirectInput = lazy (
+        use reader = new StreamReader(request.InputStream)
+        reader.ReadToEnd()
+    )
+    let lazyNameValueCollection = lazy (
+        HttpUtility.ParseQueryString(lazyDirectInput.Value)
+    )
+    member f.Request = request
+    member f.InputStream with get() = request.InputStream
+    member f.DirectInput with get() = lazyDirectInput.Value
+    member f.JsonParse<'t>() = JSON.parse<'t>(lazyDirectInput.Value)
+    member f.Fields with get() = lazyNameValueCollection.Value
+    member f.Item with get(name : string) = lazyNameValueCollection.Value.[name]
 
 type MultipartForm(request : Request) =
     let stream = request.InputStream
