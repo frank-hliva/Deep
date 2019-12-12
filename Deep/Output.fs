@@ -38,6 +38,7 @@ type CompressionOutputProvider(response : HttpListenerResponse, acceptEncoding :
         member p.OutputStream = compressionStream
 
 type Output(request : HttpListenerRequest, response : HttpListenerResponse) =
+
     let mutable isDisposed = false
 
     let tryGetEncoding (acceptEncoding : string) =

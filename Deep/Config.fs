@@ -84,6 +84,7 @@ type AppInfoConfig(config : Config) =
 
 type ServerOptions = {
     UriPrefixes : string seq
+    Headers: string seq
 }
 
 type ServerConfig(config : Config) =
