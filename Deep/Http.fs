@@ -62,8 +62,6 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
 type Response internal (httpListenerResponse : HttpListenerResponse, output : Output, defaultHeaders : string seq) =
     let headers =
         let headers = httpListenerResponse.Headers
-        //headers.Add("Server", "\r\n\r\n")
-        //headers.Add("X-Powered-By", "Deep")
         headers.Add("Server: \r\n\r\n")
         headers.Add("X-Powered-By: Deep")
         if defaultHeaders <> null
