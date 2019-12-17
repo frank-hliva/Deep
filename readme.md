@@ -1,6 +1,6 @@
 # Deep
 
-F# MVC Web framework version 2.0.1
+The MVC Web framework (version 2.0.1) written in F# language. 
 
 ## License:
 

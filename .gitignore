@@ -1,6 +1,8 @@
 .vs
 .vs/
 
+Script1.fsx
+
 # User-specific files
 *.suo
 *.user

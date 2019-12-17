@@ -5,6 +5,7 @@ open System.IO
 open System.IO.Compression
 open System.Text
 open Deep
+open System.Net
 
 module Path =
 
@@ -151,3 +152,22 @@ type File() =
         else
             if options.IsSome then File.sendBinary(path, response, options.Value)
             else File.sendBinary(path, response)
+
+    static member asyncDownloadBuffer (uri : Uri, bytesToGet : int) = async {
+        let request = uri |> WebRequest.Create
+        match request with
+        | :? HttpWebRequest as request ->
+            request.AddRange(0, bytesToGet - 1)
+        | _ -> ()
+        use response = request.GetResponse()
+        use stream = response.GetResponseStream()
+        let buffer = Array.create bytesToGet 0uy
+        let! readed = stream.AsyncRead(buffer, 0, bytesToGet)
+        if readed < bytesToGet
+        then Array.Resize(ref buffer, readed)
+        return buffer
+    }
+
+    static member downloadBuffer (uri : Uri, bytesToGet : int) =
+        File.asyncDownloadBuffer(uri, bytesToGet)
+        |> Async.RunSynchronously

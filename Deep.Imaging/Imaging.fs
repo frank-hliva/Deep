@@ -5,13 +5,17 @@ open System.IO
 open System.Windows
 open System.Windows.Media
 open System.Windows.Media.Imaging
-
+open Deep.IO
 open Deep.Imaging.Sizing
+open Deep.Imaging.Encoding
+open Media.WebP
+open System.Net
 
 module Float =
     let toInt (n : float) = n |> Math.Round |> int
 
 module private Img =
+
     open System.Windows.Controls
 
     let toBitmapSource (width : float, height : float) (visual : DrawingVisual) =
@@ -65,20 +69,37 @@ module private Img =
 type Image(source : BitmapSource) =
     static member Empty(width, height, background : Brush) =
         new Image(Img.newBackground (width, height) background None)
-    static member From(uri : Uri) = new Image(new BitmapImage(uri))
+    static member From(uri : Uri) = 
+        let header = File.downloadBuffer(uri, 13)
+        if WebPInfo.IsWebP(header)
+        then
+            let client = new WebClient()
+            let bytes = client.DownloadData(uri)
+            WebPDecoder.Decode(bytes)
+        else new BitmapImage(uri) :> BitmapSource
+        |> Image
     static member From(path : string) =
-        use stream = File.OpenRead(path)
-        Image.From(stream)
+        path |> Uri |> Image.From
     static member From(buffer : byte[]) =
         use stream = new MemoryStream(buffer)
         Image.From(stream)
     static member From(stream : Stream) =
-        let bitmapImage = new BitmapImage()
-        bitmapImage.BeginInit()
-        bitmapImage.CacheOption <- BitmapCacheOption.OnLoad
-        bitmapImage.StreamSource <- stream
-        bitmapImage.EndInit()
-        new Image(bitmapImage)
+        let headerSize = 13
+        let header = Array.create headerSize 0uy
+        stream.Read(header, 0, headerSize)
+        stream.Position <- stream.Position - (int64 headerSize)
+        if WebPInfo.IsWebP(header)
+        then
+            stream |> WebPDecoder.Decode
+        else
+            let bitmapImage = new BitmapImage()
+            bitmapImage.BeginInit()
+            bitmapImage.CacheOption <- BitmapCacheOption.OnLoad
+            bitmapImage.StreamSource <- stream
+            bitmapImage.EndInit()
+            bitmapImage
+            :> BitmapSource
+        |> Image
     member i.Source = source
     member i.Map(mapper : BitmapSource -> BitmapSource) =
         new Image(i.Source |> mapper)
@@ -110,14 +131,15 @@ type Image(source : BitmapSource) =
         i.AddImage(img, new Rect(x, y, width, height))
     member i.AddImage(img : Image, x : float, y : float) =
         i.AddImage(img, new Rect(x, y, img.Width, img.Height))
-    member i.Save(path : string, encoder : BitmapEncoder) =
-        encoder.Frames.Add(BitmapFrame.Create(source))
-        use filestream = new FileStream(path, FileMode.Create)
-        encoder.Save(filestream)
-    member i.SaveToByteArray(encoder : BitmapEncoder) =
-        encoder.Frames.Add(BitmapFrame.Create(source))
+    member i.Save(stream : Stream, encode : encoder) =
+        i.Source |> encode stream
+    member i.Save(path : string, encode : encoder) =
+        use fileStream = new FileStream(path, FileMode.Create)
+        i.Save(fileStream, encode)
+    member i.SaveToByteArray(encode : encoder) =
         use memoryStream = new MemoryStream()
-        encoder.Save(memoryStream)
+        i.Save(memoryStream, encode)
         memoryStream.ToArray()
     member i.Width = float i.Source.PixelWidth
     member i.Height = float i.Source.PixelHeight
+    member i.ToBitmapSource() = source.Clone()

@@ -1,6 +1,7 @@
 module Deep.Url
 
 open System
+open System.Net
 
 let removeQueryString (url : string) =
     match url.IndexOf "?" with
