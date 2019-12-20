@@ -37,7 +37,6 @@ type Config(source : IConfigSource) =
     let configObject = source.ToJObject()
     member c.Config = configObject
     member c.SelectAs<'t>(path : string) =
-        let t = typeof<'t>
         concurrentDictionary.GetOrAdd(path,
             fun path ->
                 let jsonString = configObject.SelectToken(path).ToString()
