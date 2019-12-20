@@ -10,7 +10,7 @@
     <RootNamespace>Deep.Imaging</RootNamespace>
     <AssemblyName>Deep.Imaging</AssemblyName>
     <UseStandardResourceNames>true</UseStandardResourceNames>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <TargetFSharpCoreVersion>4.4.1.0</TargetFSharpCoreVersion>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Name>Deep.Imaging</Name>
@@ -79,7 +79,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Users\hliva\source\repos\WebP.NET\WebP.NET\WebP.NET.csproj">
+    <ProjectReference Include="..\..\WebP.NET\WebP.NET\WebP.NET.csproj">
       <Name>WebP.NET</Name>
       <Project>{e72d900f-a61e-4dc9-a37b-93cd4d869fe5}</Project>
       <Private>True</Private>

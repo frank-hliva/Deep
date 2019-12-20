@@ -21,6 +21,21 @@ open System.IO
 open System.Net
 open System
 
-let stream = File.OpenRead(@"c:\Pluton\alfa-kocky.webp")
-let img = Image.From(stream)
-img.Save(@"c:\Pluton\zz.webp", Encoder.UseWebP(90.0f))
+open Media.WebP
+
+//let fe = @"c:\Pluton\PlutonCore\PlutonCoreApp\Web\img\alpha-blue.webp" |> File.ReadAllBytes |> WebPFeatures.From
+
+let img = Image.From(@"c:\Pluton\original.tif")
+
+let qualities = seq { for i in 1 .. 10 do yield i * 10 }
+
+//let webPFeatures = WebPFeatures.Create(@"c:\Pluton\test080.webp" |> File.ReadAllBytes)
+
+qualities
+|> Seq.iter
+    (fun q ->
+        //let encoder = new JpegBitmapEncoder()
+        //encoder.QualityLevel <- q
+        img.Save(sprintf @"c:\Pluton\test%s.webp" (q.ToString("000")), Encoder.UseWebP(float32 q))
+    )
+

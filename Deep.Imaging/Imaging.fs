@@ -71,7 +71,7 @@ type Image(source : BitmapSource) =
         new Image(Img.newBackground (width, height) background None)
     static member From(uri : Uri) = 
         let header = File.downloadBuffer(uri, 13)
-        if WebPInfo.IsWebP(header)
+        if WebPFeatures.IsWebP(header)
         then
             let client = new WebClient()
             let bytes = client.DownloadData(uri)
@@ -86,9 +86,9 @@ type Image(source : BitmapSource) =
     static member From(stream : Stream) =
         let headerSize = 13
         let header = Array.create headerSize 0uy
-        stream.Read(header, 0, headerSize)
+        stream.Read(header, 0, headerSize) |> ignore
         stream.Position <- stream.Position - (int64 headerSize)
-        if WebPInfo.IsWebP(header)
+        if WebPFeatures.IsWebP(header)
         then
             stream |> WebPDecoder.Decode
         else
