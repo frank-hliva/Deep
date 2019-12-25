@@ -90,11 +90,10 @@ type MvcRouteHandler() =
     let replyAllowedHttpMethods (controllerType : Type) (actionName : string) (response : Reply) =
         response.StatusCode <- 204
         response.Response.Headers.Add("Access-Control-Allow-Headers: *")
-        match String.Join(", ", controllerType |> allowedHttpMethods actionName) with
-        | "ANY" ->
-            response.Response.Headers.Set("Access-Control-Allow-Methods", "*")
-        | httpMethods ->
-            response.Response.Headers.Set("Access-Control-Allow-Methods", httpMethods)
+        let httpMethods = String.Join(", ", controllerType |> allowedHttpMethods actionName)
+        response.Response.Headers.Set
+            ("Access-Control-Allow-Methods",
+                if httpMethods = HttpMethods.Any then "*" else httpMethods)
         ()
 
     interface IRouteHandler with
