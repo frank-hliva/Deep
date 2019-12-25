@@ -15,11 +15,16 @@ type RouteAttribute(httpMethod : string, routePattern : string, priority : int) 
 
 [<RequireQualifiedAccess>]
 module HttpMethods =
-    let Any = "ANY"
-    let Get = "GET"
-    let Post = "POST"
-    let Put = "PUT"
-    let Delete = "DELETE"
+    let [<Literal>] Any = "ANY"
+    let [<Literal>] Get = "GET"
+    let [<Literal>] Head = "HEAD"
+    let [<Literal>] Post = "POST"
+    let [<Literal>] Put = "PUT"
+    let [<Literal>] Delete = "DELETE"
+    let [<Literal>] Connect = "CONNECT"
+    let [<Literal>] Options = "OPTIONS"
+    let [<Literal>] Trace = "TRACE"
+    let [<Literal>] Patch = "PATCH"
 
 [<RequireQualifiedAccess>]
 module ContentTypes =
@@ -44,6 +49,12 @@ type GetAttribute(routePattern : string, priority : int) =
     new() = GetAttribute("")
 
 [<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
+type HeadAttribute(routePattern : string, priority : int) =
+    inherit RouteAttribute(HttpMethods.Head, routePattern, priority)
+    new(routePattern) = HeadAttribute(routePattern, 0)
+    new() = HeadAttribute("")
+
+[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
 type PostAttribute(routePattern : string, priority : int) =
     inherit RouteAttribute(HttpMethods.Post, routePattern, priority)
     new(routePattern) = PostAttribute(routePattern, 0)
@@ -60,6 +71,30 @@ type DeleteAttribute(routePattern : string, priority : int) =
     inherit RouteAttribute(HttpMethods.Delete, routePattern, priority)
     new(routePattern) = DeleteAttribute(routePattern, 0)
     new() = DeleteAttribute("")
+
+[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
+type ConnectAttribute(routePattern : string, priority : int) =
+    inherit RouteAttribute(HttpMethods.Connect, routePattern, priority)
+    new(routePattern) = ConnectAttribute(routePattern, 0)
+    new() = ConnectAttribute("")
+
+[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
+type OptionsAttribute(routePattern : string, priority : int) =
+    inherit RouteAttribute(HttpMethods.Options, routePattern, priority)
+    new(routePattern) = OptionsAttribute(routePattern, 0)
+    new() = OptionsAttribute("")
+
+[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
+type TraceAttribute(routePattern : string, priority : int) =
+    inherit RouteAttribute(HttpMethods.Trace, routePattern, priority)
+    new(routePattern) = TraceAttribute(routePattern, 0)
+    new() = TraceAttribute("")
+
+[<System.AttributeUsage(System.AttributeTargets.Method, AllowMultiple = true)>]
+type PatchAttribute(routePattern : string, priority : int) =
+    inherit RouteAttribute(HttpMethods.Patch, routePattern, priority)
+    new(routePattern) = PatchAttribute(routePattern, 0)
+    new() = PatchAttribute("")
 
 [<AutoOpen>]
 module Operators =

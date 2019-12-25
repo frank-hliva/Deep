@@ -60,20 +60,42 @@ type MvcRouteHandler() =
         |> tryRegisterDecimalId id
 
     let rec findMethod (methodName : string) (httpMethod : string) (controllerType : Type) =
-        let result =
-            controllerType.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
-            |> Seq.filter(fun mi -> mi.Name = methodName)
-            |> Seq.tryFind
-                (fun mi ->
-                    let routeAttr = mi.GetCustomAttribute<RouteAttribute>()
-                    match httpMethod with
-                    | "" -> routeAttr = null || routeAttr.HttpMethod = HttpMethods.Any
-                    | _ -> routeAttr <> null && routeAttr.HttpMethod = httpMethod)
-            |> function
-            | Some mi -> Some mi
-            | None when httpMethod <> "" -> controllerType |> findMethod methodName ""
-            | None -> None
-        result
+        controllerType.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
+        |> Seq.filter(fun mi -> mi.Name = methodName)
+        |> Seq.tryFind
+            (fun mi ->
+                let routeAttr = mi.GetCustomAttribute<RouteAttribute>()
+                match httpMethod with
+                | "" -> routeAttr = null || routeAttr.HttpMethod = HttpMethods.Any
+                | _ -> routeAttr <> null && routeAttr.HttpMethod = httpMethod)
+        |> function
+        | Some mi -> Some mi
+        | None when httpMethod <> "" -> controllerType |> findMethod methodName ""
+        | None -> None
+
+    let rec allowedHttpMethods (methodName : string) (controllerType : Type) =
+        let rec find acc = function
+        | [] -> acc
+        | (x : MethodInfo) :: xs -> 
+            match x.GetCustomAttribute<RouteAttribute>() with
+            | null -> [HttpMethods.Any]
+            | routeAttr when routeAttr.HttpMethod = HttpMethods.Any ->
+                [HttpMethods.Any]
+            | routeAttr -> xs |> find (routeAttr.HttpMethod :: acc)
+        controllerType.GetMethods(BindingFlags.Public ||| BindingFlags.Instance)
+        |> List.ofArray
+        |> List.filter(fun mi -> mi.Name = methodName)
+        |> find []
+
+    let replyAllowedHttpMethods (controllerType : Type) (actionName : string) (response : Reply) =
+        response.StatusCode <- 204
+        response.Response.Headers.Add("Access-Control-Allow-Headers: *")
+        match String.Join(", ", controllerType |> allowedHttpMethods actionName) with
+        | "ANY" ->
+            response.Response.Headers.Set("Access-Control-Allow-Methods", "*")
+        | httpMethods ->
+            response.Response.Headers.Set("Access-Control-Allow-Methods", httpMethods)
+        ()
 
     interface IRouteHandler with
 
@@ -85,11 +107,12 @@ type MvcRouteHandler() =
             |> function
             | Some controllerType -> async {
                 let controller = container.Register(controllerType).Resolve(controllerType)
+                let actionName = parameters.[MvcKeys.Action]
                 for (methodName, methodType) in 
                     [
                         ("Loaded", ControllerMethodType.Optional)
                         ("BeforeAction", ControllerMethodType.Optional)
-                        (parameters.[MvcKeys.Action], ControllerMethodType.Required)
+                        (actionName, ControllerMethodType.Required)
                         ("AfterAction", ControllerMethodType.Optional)
                     ]
                     do
@@ -105,7 +128,9 @@ type MvcRouteHandler() =
                             | Choice.Choice1Of2 _ -> ()
                             | Choice.Choice2Of2 exn -> return raise(exn)
                         | _ ->
-                            if methodType = ControllerMethodType.Required
+                            if request.HttpMethod = "OPTIONS" && methodName = actionName
+                            then container.Resolve<Reply>() |> replyAllowedHttpMethods controllerType actionName
+                            elif methodType = ControllerMethodType.Required
                             then return raise(HttpException(404, ""))
                             else () }
             | _ -> 

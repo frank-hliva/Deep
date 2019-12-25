@@ -61,7 +61,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
         | _ ->
             match externalResolver with
             | Some resolver -> External(resolver.Resolve(t))
-            | _ -> failwith (sprintf "Type %s not registered" t.Name)
+            | _ -> failwith (sprintf "Type %s is not registered" t.Name)
 
     let chooseParams (c : ConstructorInfo) =
         let parameters = c.GetParameters()
@@ -93,7 +93,7 @@ type Kernel internal (types : KernelMap, externalResolver : IExternalResolver op
                     lock i.Instance (fun () -> i.Instance := Some instance)
                     instance
                 | _ -> failwith "Invalid lifetime"
-            | _ -> failwith (sprintf "Constructor parameter mismatch: %s" (implementation.ToString()))
+            | _ -> failwith (sprintf "Constructor parameter mismatch on type: %s" implementation.FullName)
 
     interface IKernel with
 
