@@ -50,14 +50,22 @@ type Request internal (httpListenerRequest : HttpListenerRequest, parameters : R
     member this.KeepAlive with get() : Boolean = httpListenerRequest.KeepAlive
     member this.RemoteEndPoint with get() : IPEndPoint = httpListenerRequest.RemoteEndPoint
     member this.LocalEndPoint with get() : IPEndPoint = httpListenerRequest.LocalEndPoint
-    
     member this.Root = 
         let url = this.Url
         let port = if url.Port = 80 then "" else sprintf ":%d" url.Port
         sprintf "%s%s%s%s" url.Scheme Uri.SchemeDelimiter url.Host port
     member this.GetReader() : StreamReader = new StreamReader(httpListenerRequest.InputStream)
     member this.Params = parameters
+    member this.GetRemoteClientInfo() = new RemoteClientInfo(this.RemoteEndPoint)
     new (httpListenerRequest) = Request(httpListenerRequest, Map.empty)
+
+and RemoteClientInfo(remoteEndPoint : IPEndPoint) =
+    let ipAddress = lazy remoteEndPoint.Address
+    let lazyIPHostEntry = lazy (Dns.GetHostEntry(ipAddress.Value))
+    member i.IPEndPoint = remoteEndPoint
+    member i.IPAddress with get() = ipAddress.Value
+    member i.IPHostEntry with get() = lazyIPHostEntry.Value
+    member i.HostName with get() = lazyIPHostEntry.Value.HostName
 
 type Response internal (httpListenerResponse : HttpListenerResponse, output : Output, defaultHeaders : string seq) =
     let headers =
