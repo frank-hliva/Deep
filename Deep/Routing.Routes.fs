@@ -25,7 +25,7 @@ type Routes() =
     static member AddRoute (route : route) (routes : routes) =
         routes @ [route]
 
-    static member private AddBase(routes, httpMethod, pattern, handler, priority, filter) =
+    static member private AddBase(routes, httpMethod, pattern, handler, priority, filter): routes =
         routes
         |> Routes.AddRoute
             {

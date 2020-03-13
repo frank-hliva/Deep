@@ -62,6 +62,7 @@
     <Compile Include="Props.fs" />
     <Compile Include="ValueObjectConverter.fs" />
     <Compile Include="JSON.fs" />
+    <Compile Include="Net.fs" />
     <Compile Include="HttpRange.fs" />
     <Compile Include="Function.fs" />
     <Compile Include="Routing.fs" />

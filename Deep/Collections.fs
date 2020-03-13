@@ -3,6 +3,7 @@ namespace Deep.Collections
 open System
 open System.Reflection
 open System.Collections.Generic
+open Microsoft.FSharp.Reflection
 
 module ObjectType =
     let isEnumerable (o : obj) =
