@@ -1,5 +1,7 @@
 .vs
 .vs/
+.ionide
+.ionide/
 
 Script1.fsx
 
