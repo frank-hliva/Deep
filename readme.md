@@ -1,6 +1,6 @@
 # Deep
 
-MVC Web framework and server written in F# for .NET 8.0
+MVC Web framework and server written in F# for .NET 8.0 \
 Version: *3.0.1*
 
 ## License:
