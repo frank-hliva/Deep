@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>	
+    <Compile Include="AssemblyInfo.fs" />
+    <Compile Include="Deep.fs" />
+    <Compile Include="String.fs" />
+    <Compile Include="Chars.fs" />
+    <Compile Include="Text.fs" />
+    <Compile Include="Collections.fs" />
+    <Compile Include="Kernel.fs" />
+    <Compile Include="Props.fs" />
+    <Compile Include="Log.fs" />
+    <Compile Include="ValueObjectConverter.fs" />
+    <Compile Include="JSON.fs" />
+    <Compile Include="Net.fs" />
+    <Compile Include="HttpRange.fs" />
+    <Compile Include="Function.fs" />
+    <Compile Include="Routing.fs" />
+    <Compile Include="Url.fs" />
+    <Compile Include="Output.fs" />
+    <Compile Include="Http.fs" />
+    <Compile Include="Headers.fs" />
+    <Compile Include="MimeMapping.fs" />
+    <Compile Include="Async.fs" />
+    <Compile Include="IO.fs" />
+    <Compile Include="Config.fs" />
+    <Compile Include="Sessions.fs" />
+    <Compile Include="Sessions.MemorySessionStore.fs" />
+    <Compile Include="Sessions.SessionManager.fs" />
+    <Compile Include="FlashMessage.fs" />
+    <Compile Include="Writer.fs" />
+    <Compile Include="View.fs" />
+    <Compile Include="Listeners.fs" />
+    <Compile Include="StaticContent.fs" />
+    <Compile Include="Multipart.fs" />
+    <Compile Include="Multipart.ContentType.fs" />
+    <Compile Include="Multipart.ItemInfo.fs" />
+    <Compile Include="Multipart.MultipartForm.fs" />
+    <Compile Include="Input.fs" />
+    <Compile Include="Reply.fs" />
+    <Compile Include="AutoDisposer.fs" />
+    <Compile Include="Mvc.fs" />
+    <Compile Include="Routing.Routes.fs" />
+    <Compile Include="Routing.RouteBuilder.fs" />
+    <Compile Include="Routing.Router.fs" />
+    <Compile Include="ErrorHandler.fs" />
+    <Compile Include="Server.fs" />
+    <Compile Include="Boot.fs" />
+    <Compile Include="HttpApplication.fs" />
+    <Compile Include="Naming.fs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MimeTypesMap" Version="1.0.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+</Project>
